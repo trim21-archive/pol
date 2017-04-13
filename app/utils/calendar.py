@@ -2,7 +2,6 @@ import re
 from datetime import date, timedelta, time, datetime
 from bs4 import BeautifulSoup, element
 import requests
-import pytz
 from ics import Calendar, Event
 
 
