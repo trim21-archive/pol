@@ -167,3 +167,5 @@ def makeiCs(stuid, passwd):
             return str(c)
         except:
             return False
+    else:
+        return False

@@ -9,7 +9,11 @@ def manyUser():
     try:
         username = request.args.get('username')
         password = request.args.get('password')
-        return makeiCs(username, password)
+        x = makeiCs(username, password)
+        if x:
+            return x
+        else:
+            return 'error'
     except:
         return 'error'
 
