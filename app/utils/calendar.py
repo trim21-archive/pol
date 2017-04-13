@@ -84,8 +84,10 @@ def days_wrapper(week: int, days: str) -> tuple:
 def makeDict(lesson, start_date, if_summer):
     start_time, end_time = times_wrapper(
         lesson['times'], summer=if_summer)
-    begin = datetime.fromtimestamp((datetime.combine(start_date, start_time) - timedelta(hours=8)).timestamp())
-    end = datetime.fromtimestamp((datetime.combine(start_date, end_time) - timedelta(hours=8)).timestamp())
+    begin = datetime.fromtimestamp(
+        (datetime.combine(start_date, start_time) - timedelta(hours=8)).timestamp())
+    end = datetime.fromtimestamp(
+        (datetime.combine(start_date, end_time) - timedelta(hours=8)).timestamp())
     return {"name": lesson["lesson_name"],
             'begin': begin,
             'end': end,
@@ -154,7 +156,9 @@ def makeiCs(stuid, passwd):
                 # print(les)
                 for event in lesson_to_calendar(tr_parser(les)):
                     c.events.append(event)
-            return str(c)
+            s = str(c)
+
+            return s.replace('\n', '\r\n')
         except:
             return False
     else:
