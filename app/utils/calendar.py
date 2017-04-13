@@ -132,8 +132,6 @@ def lesson_to_calendar(lesson: dict) -> list:
         e.begin = event['begin']
         e.end = event['end']
         e.location = event['location']
-        print(event)
-        print(e.begin, e.end, e.duration)
         tmp.append(e)
     return tmp
 
