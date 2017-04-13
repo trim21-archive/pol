@@ -1,5 +1,5 @@
 from flask import Flask, request
-from .utils.calendar import makeiCs
+from utils.calendar import makeiCs
 
 app = Flask(__name__)
 

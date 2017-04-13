@@ -1,6 +1,5 @@
-import csv
 import re
-from datetime import date, timedelta, time, datetime, timedelta
+from datetime import date, timedelta, time, datetime
 from bs4 import BeautifulSoup, element
 import requests
 import pytz
