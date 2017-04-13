@@ -16,7 +16,7 @@ def manyUser():
         password = request.args.get('password')
         x = makeiCs(username, password)
         resp = make_response(x)
-        resp.headers['Content-Type:'] = "text/calendar;charset=UTF-8"
+        resp.headers['Content-Type'] = "text/calendar;charset=UTF-8"
         if x:
             return resp
         else:
