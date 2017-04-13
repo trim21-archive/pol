@@ -154,9 +154,6 @@ def makeiCs(stuid, passwd):
                 # print(les)
                 for event in lesson_to_calendar(tr_parser(les)):
                     c.events.append(event)
-
-            # with open('my.ics', 'w', encoding='utf-8') as f:
-            #     f.writelines(c)
             return str(c)
         except:
             return False

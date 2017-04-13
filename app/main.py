@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, make_response
 from utils.calendar import makeiCs
 
 app = Flask(__name__)
@@ -15,8 +15,10 @@ def manyUser():
         username = request.args.get('username')
         password = request.args.get('password')
         x = makeiCs(username, password)
+        resp = make_response(x)
+        resp.headers['Content-Type:'] = "text/calendar;charset=UTF-8"
         if x:
-            return x
+            return resp
         else:
             return '密码错误'
     except:

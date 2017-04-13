@@ -5,3 +5,5 @@ demo:
 `http://www.trim21.cn:4080/ics?username=<stuid>&password=<password>`
 
 `stuid`和`password`分别是在学校选课系统的学号和密码.
+
+ps:或者`http://www.trim21.cn/ics?username=<stuid>&password=<password>`
