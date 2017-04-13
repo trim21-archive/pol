@@ -1,6 +1,6 @@
 FROM tiangolo/uwsgi-nginx:python3.5
 
-MAINTAINER Sebastian Ramirez <tiangolo@gmail.com>
+MAINTAINER Trim21 <Trim21me@gmail.com>
 
 RUN pip install flask ics requests beautifulsoup4 -U
 
