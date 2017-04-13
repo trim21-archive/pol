@@ -42,8 +42,8 @@ def index():
         <input type="submit" value="get">
     </form>
     <hr>
-    <b>ios用户在输入学号密码之后将事件添加到日历
-hotmail,outlook或者谷歌日历用户使用相应的web客户端订阅打开的链接.</b>
+    <p>ios用户<b>请用safari打开本网页</b>在输入学号密码之后将事件添加到日历
+hotmail,outlook或者谷歌日历用户使用相应的web客户端订阅打开的链接.</p>
 <hr>
     <a href="https://github.com/trim21/sdu2ics">项目主页</a>
 </body>
