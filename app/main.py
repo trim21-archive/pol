@@ -1,7 +1,12 @@
-from flask import Flask, request
+from flask import Flask, request, redirect
 from utils.calendar import makeiCs
 
 app = Flask(__name__)
+
+
+@app.route('/')
+def index():
+    return redirect('https://github.com/Trim21/sdu2ics')
 
 
 @app.route('/ics')
