@@ -87,9 +87,6 @@ def makeDict(lesson, start_date, if_summer):
         lesson['times'], summer=if_summer)
     begin = datetime.fromtimestamp((datetime.combine(start_date, start_time) - timedelta(hours=8)).timestamp())
     end = datetime.fromtimestamp((datetime.combine(start_date, end_time) - timedelta(hours=8)).timestamp())
-
-    end = datetime.fromtimestamp(datetime.combine(start_date, end_time).timestamp(), pytz.timezone('Asia/Shanghai'))
-    # end = datetime.combine(start_date, end_time).timestamp()
     return {"name": lesson["lesson_name"],
             'begin': begin,
             'end': end,
