@@ -1,5 +1,5 @@
 from flask import Flask, request
-from utils.calendar import makeiCs
+from .utils.calendar import makeiCs
 
 app = Flask(__name__)
 
@@ -13,9 +13,9 @@ def manyUser():
         if x:
             return x
         else:
-            return 'error'
+            return '密码错误'
     except:
-        return 'error'
+        return 'url错误'
 
 
 if __name__ == '__main__':
