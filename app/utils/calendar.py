@@ -72,7 +72,7 @@ def days_wrapper(week: int, days: str) -> tuple:
     #     calendar_time = date(2016, 10, 9)
     # ========================
     calendar_time.strftime('%m/%d/%Y')
-    if calendar_time < date(2016, 10, 1) and calendar_time > date(2016, 5, 3):
+    if calendar_time < date(2017, 10, 1) and calendar_time > date(2017, 5, 1):
         if_summer = True
     else:
         if_summer = False
