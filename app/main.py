@@ -1,5 +1,6 @@
-from flask import Flask, request,  make_response
-from utils.calendar import makeiCs
+from flask import Flask, request, make_response
+from utils.calendar import makeICS
+
 app = Flask(__name__)
 
 
@@ -9,7 +10,7 @@ def manyUser():
         username = request.args.get('username')
         password = request.args.get('password')
         # (username)
-        x = makeiCs(username, password)
+        x = makeICS(username, password)
         resp = make_response(x)
         resp.headers['Content-Type'] = "text/calendar;charset=UTF-8"
 
@@ -59,6 +60,24 @@ hotmail,outlook或者谷歌日历用户使用相应的web客户端订阅打开�
 </body>
 
 </html>"""
+
+
+@app.route('/exam')
+def manyUser():
+    try:
+        username = request.args.get('username')
+        password = request.args.get('password')
+        # (username)
+        x = makeICS(username, password)
+        resp = make_response(x)
+        resp.headers['Content-Type'] = "text/calendar;charset=UTF-8"
+
+        if x:
+            return resp
+        else:
+            return '学号不存在或者密码错误.'
+    except:
+        return '学号不存在或者密码错误'
 
 
 if __name__ == '__main__':

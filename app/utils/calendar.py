@@ -1,25 +1,8 @@
 import re
 from datetime import date, timedelta, time, datetime
 from bs4 import BeautifulSoup, element
-import requests
 from ics import Calendar, Event
-
-
-def get_lessen_html(student_ID: str, password: str):
-    s = requests.session()
-    s.get('http://bkjws.sdu.edu.cn')
-    data = {
-        'j_username': student_ID,
-        'j_password': password
-    }
-    r6 = s.post('http://bkjws.sdu.edu.cn/b/ajaxLogin', data=data)
-    if r6.text == '"success"':
-        requests.utils.add_dict_to_cookiejar(s.cookies, data)
-        r3 = s.get('http://bkjws.sdu.edu.cn/f/xk/xs/bxqkb')
-        return r3.text
-    else:
-        return False
-
+from utils.fetch import get_lessen_html
 
 config = {
     "firstMonday": date(2017, 2, 20),
@@ -138,7 +121,7 @@ def lesson_to_calendar(lesson: dict) -> list:
     return tmp
 
 
-def makeiCs(stuid, passwd):
+def makeICS(stuid, passwd):
     stuid = str(stuid)
     passwd = str(passwd)
 
