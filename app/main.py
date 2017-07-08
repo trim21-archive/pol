@@ -14,23 +14,15 @@ def manyUser():
         print(auth)
         username = auth['username']
         password = auth['password']
-    except:
-        resp = make_response(json.dumps(
-            {'error': 'username or password error'}))
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        return resp, 401
-    try:
         s = SduBkjws(username, password)
     except:
         resp = make_response(json.dumps(
             {'error': 'username or password error'}))
-        resp.headers['Access-Control-Allow-Origin'] = '*'
         return resp, 401
     s = json.dumps(s.get_now_score(), ensure_ascii=False,
                    indent='  ', sort_keys=True)
     resp = make_response(s)
     resp.headers['Content-Type'] = "application/json;charset=UTF-8"
-    resp.headers['Access-Control-Allow-Origin'] = '*'
     return resp
 
 
