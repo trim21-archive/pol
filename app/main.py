@@ -1,14 +1,18 @@
 from flask import Flask, request, make_response
 from sdu_bkjws import SduBkjws
 import json
+import base64
 app = Flask(__name__)
 
 
 @app.route('/exam-result')
 def manyUser():
     try:
-        username = request.args.get('username')
-        password = request.args.get('password')
+        auth = request.args.get('auth')
+        auth = base64.b64decode(auth).decode()
+        auth = json.loads(auth)
+        username = auth['username']
+        password = auth['password']
     except:
         return json.dumps({'error': 'username or password required'}), 401
     try:
