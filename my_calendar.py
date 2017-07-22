@@ -5,7 +5,6 @@ from bs4 import BeautifulSoup, element
 from ics import Calendar, Event
 from sdu_bkjws import SduBkjws
 
-from fetch import get_lessen_html
 
 config = {
     "firstMonday": date(2017, 2, 20),
@@ -124,8 +123,7 @@ def lesson_to_calendar(lesson: dict) -> list:
     return tmp
 
 
-def makeICS(stuid, passwd):
-    s = SduBkjws(stuid, passwd)
+def makeICS(s: SduBkjws):
     lessons = s.get_lesson()
     if lessons:
         try:

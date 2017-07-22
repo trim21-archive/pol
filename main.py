@@ -9,64 +9,36 @@ from my_calendar import makeICS
 app = Flask(__name__)
 
 
+def parserAuth(fn):
+    def wrapper():
+        try:
+            auth = request.args.get('auth')
+            auth = base64.b64decode(auth).decode()
+            auth = json.loads(auth)
+            print(auth)
+            username = auth['username']
+            password = auth['password']
+            s = SduBkjws(username, password)
+        except:
+            resp = make_response(json.dumps(
+                {'error': 'username or password error'}))
+            return resp, 401
+        return fn(s)
+
+    return wrapper
+
+
 @app.route('/exam-result')
-def examResult():
-    try:
-        auth = request.args.get('auth')
-        auth = base64.b64decode(auth).decode()
-        auth = json.loads(auth)
-        print(auth)
-        username = auth['username']
-        password = auth['password']
-        s = SduBkjws(username, password)
-    except:
-        resp = make_response(json.dumps(
-            {'error': 'username or password error'}))
-        return resp, 401
-    s = json.dumps(s.get_now_score(), ensure_ascii=False,
-                   indent='  ', sort_keys=True)
-    resp = make_response(s)
-    resp.headers['Content-Type'] = "application/json;charset=UTF-8"
-    return resp
-
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    try:
-        auth = request.args.get('auth')
-        auth = base64.b64decode(auth).decode()
-        auth = json.loads(auth)
-        print(auth)
-        username = auth['username']
-        password = auth['password']
-        s = SduBkjws(username, password)
-    except:
-        resp = make_response(json.dumps(
-            {'error': 'username or password error'}))
-        return resp, 401
-
-    x = makeICS(username, password)
-    resp = make_response(x)
-    resp.headers['Content-Type'] = "text/calendar;charset=UTF-8"
-    return resp
+@parserAuth
+def examResult(s: SduBkjws):
+    return json.dumps(s.get_now_score(), ensure_ascii=False,
+                      sort_keys=True)
 
 
 @app.route('/ics')
-def manyUser():
-    try:
-        auth = request.args.get('auth')
-        auth = base64.b64decode(auth).decode()
-        auth = json.loads(auth)
-        print(auth)
-        username = auth['username']
-        password = auth['password']
-        s = SduBkjws(username, password)
-    except:
-        resp = make_response(json.dumps(
-            {'error': 'username or password error'}))
-        return resp, 401
-
-    x = makeICS(username, password)
+@parserAuth
+def manyUser(s: SduBkjws):
+    x = makeICS(s)
     resp = make_response(x)
     resp.headers['Content-Type'] = "text/calendar;charset=UTF-8"
     return resp
