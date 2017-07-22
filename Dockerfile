@@ -2,8 +2,7 @@ FROM tiangolo/uwsgi-nginx:python3.5
 
 MAINTAINER Trim21 <Trim21me@gmail.com>
 
-RUN pip install pip -U && \
- pip install flask sdu-bkjws beautifulsoup4 requests ics -U
+RUN pip install flask==0.12.2 sdu-bkjws==1.0.0 beautifulsoup4==4.6.0 requests==2.18.1 ics==0.3.1
 
 # Add app configuration to Nginx
 COPY nginx.conf /etc/nginx/conf.d/
