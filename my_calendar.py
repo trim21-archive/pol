@@ -1,8 +1,11 @@
 import re
 from datetime import date, timedelta, time, datetime
+
 from bs4 import BeautifulSoup, element
 from ics import Calendar, Event
-from utils.fetch import get_lessen_html
+from sdu_bkjws import SduBkjws
+
+from fetch import get_lessen_html
 
 config = {
     "firstMonday": date(2017, 2, 20),
@@ -122,25 +125,15 @@ def lesson_to_calendar(lesson: dict) -> list:
 
 
 def makeICS(stuid, passwd):
-    stuid = str(stuid)
-    passwd = str(passwd)
-
-    r = get_lessen_html(stuid, passwd)
-    if r:
+    s = SduBkjws(stuid, passwd)
+    lessons = s.get_lesson()
+    if lessons:
         try:
-            soup = BeautifulSoup(r, "html.parser")
-            s = soup.find('table',
-                          attrs={"class": "table table-striped table-bordered table-hover",
-                                 "id": "ysjddDataTableId"})
-            tr_box = s.find_all('tr')
             c = Calendar()
-
-            for les in tr_box[1:]:
-                # print(les)
-                for event in lesson_to_calendar(tr_parser(les)):
+            for lesson in lessons:
+                for event in lesson_to_calendar(lesson):
                     c.events.append(event)
             s = str(c)
-
             return s.replace('\n', '\r\n')
         except:
             return False
