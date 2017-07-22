@@ -111,7 +111,6 @@ def lesson_to_calendar(lesson: dict) -> list:
                 events_box.append(makeDict(lesson, start_date, if_summer))
 
     tmp = list()
-    # print(events_box)
     for event in events_box:
         e = Event()
         e.name = event['name']
@@ -125,14 +124,11 @@ def lesson_to_calendar(lesson: dict) -> list:
 def makeICS(s: SduBkjws):
     lessons = s.get_lesson()
     if lessons:
-        try:
-            c = Calendar()
-            for lesson in lessons:
-                for event in lesson_to_calendar(lesson):
-                    c.events.append(event)
-            s = str(c)
-            return s.replace('\n', '\r\n')
-        except:
-            return False
+        c = Calendar()
+        for lesson in lessons:
+            for event in lesson_to_calendar(lesson):
+                c.events.append(event)
+        s = str(c)
+        return s.replace('\n', '\r\n')
     else:
         return False
