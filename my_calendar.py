@@ -1,20 +1,19 @@
 import re
 from datetime import date, timedelta, time, datetime
 
-from bs4 import BeautifulSoup, element
+from bs4 import element
 from ics import Calendar, Event
 from sdu_bkjws import SduBkjws
 
 
 config = {
-    "firstMonday": date(2017, 2, 20),
-    "end": date(2017, 6, 26)
+    "firstMonday": date(2017, 9, 11),
+    "end": date(2018, 1, 15)
 }
 
 holiday_list = list()
-holiday_list += [date(2017, 4, x) for x in range(2, 5)]
-holiday_list += [date(2017, 5, x) for x in range(28, 31)]
-holiday_list.append(date(2017, 5, 1))
+holiday_list += [date(2017, 1, x) for x in range(1, 8)]
+holiday_list.append(date(2018, 1, 1))
 
 
 def tr_parser(tr: element.Tag) -> dict:
