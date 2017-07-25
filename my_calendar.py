@@ -1,4 +1,3 @@
-import re
 from datetime import date, timedelta, time, datetime
 
 from ics import Calendar, Event

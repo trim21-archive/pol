@@ -1,5 +1,7 @@
 import base64
 import json
+from json import JSONDecodeError
+import binascii
 from functools import wraps
 from flask import Flask, request, make_response
 from sdu_bkjws import SduBkjws
@@ -13,21 +15,24 @@ def parserAuth(fn):
     @wraps(fn)
     def wrapper():
         try:
-            auth = request.args.get('auth')
-            auth = base64.b64decode(auth).decode()
-            auth = json.loads(auth)
-        except Exception as e:
+            auth = request.args.get('auth', None)
+            if auth:
+                auth = base64.b64decode(auth).decode()
+                auth = json.loads(auth)
+        except JSONDecodeError:
             return make_response('error'), 404
-        # try:
-        print(auth)
-        username = auth['username']
-        password = auth['password']
-        s = SduBkjws(username, password)
-        return fn(s)
-        # except Exception as e:
-        #     resp = make_response(
-        #         json.dumps({'error': str(e)}))
-        #     return resp, 401
+        except binascii.Error:
+            return make_response('error'), 404
+        try:
+            print(auth)
+            username = auth['username']
+            password = auth['password']
+            s = SduBkjws(username, password)
+            return fn(s)
+        except Exception as e:
+            resp = make_response(
+                json.dumps({'error': str(e)}))
+            return resp, 401
 
     return wrapper
 
