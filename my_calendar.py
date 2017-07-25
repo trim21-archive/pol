@@ -1,9 +1,10 @@
 import re
 from datetime import date, timedelta, time, datetime
 
-from bs4 import element
 from ics import Calendar, Event
+from icalendar import Calendar as iCalendar
 from sdu_bkjws import SduBkjws
+from holiday_parser import is_holiday
 
 
 config = {
@@ -14,20 +15,6 @@ config = {
 holiday_list = list()
 holiday_list += [date(2017, 1, x) for x in range(1, 8)]
 holiday_list.append(date(2018, 1, 1))
-
-
-def tr_parser(tr: element.Tag) -> dict:
-    td_box = tr.find_all('td')
-    return {"lesson_num_long": td_box[1].text,
-            "lesson_name": td_box[2].text,
-            "lesson_num_short": td_box[3].text,
-            "credit": td_box[4].text,
-            "school": td_box[6].text,
-            "teacher": td_box[7].text,
-            "weeks": td_box[8].text,
-            "days": td_box[9].text,
-            "times": td_box[10].text,
-            "place": td_box[11].text}
 
 
 def times_wrapper(x: str, summer=False):
@@ -49,20 +36,14 @@ def times_wrapper(x: str, summer=False):
 def days_wrapper(week: int, days: str) -> tuple:
     days = int(days) - 1
     calendar_time = config["firstMonday"] + timedelta(weeks=week, days=days)
-    # ======================== 人工干预
-    # if calendar_time == date(2016, 10, 6):
-    #     calendar_time = date(2016, 10, 8)
-    # elif calendar_time == date(2016, 10, 7):
-    #     calendar_time = date(2016, 10, 9)
-    # ========================
-    calendar_time.strftime('%m/%d/%Y')
-    if calendar_time < date(2017, 10, 1) and calendar_time > date(2017, 5, 1):
+    # calendar_time.strftime('%m/%d/%Y')
+    if date(2017, 5, 1) < calendar_time < date(2017, 10, 1):
         if_summer = True
     else:
         if_summer = False
-    if_holiday = True if calendar_time in holiday_list else False
-    if_term = True if calendar_time < config['end'] else False
-    return (calendar_time, if_summer, if_holiday, if_term)
+    if_holiday = is_holiday(calendar_time)
+    if_term = calendar_time < config['end']
+    return calendar_time, if_summer, if_holiday, if_term
 
 
 def makeDict(lesson, start_date, if_summer):
@@ -80,35 +61,19 @@ def makeDict(lesson, start_date, if_summer):
 
 def lesson_to_calendar(lesson: dict) -> list:
     events_box = list()
-    holiday = 0
-    for i in (i for i in range(len(lesson['weeks'])) if lesson['weeks'][i] == '1'):
-        start_date, if_summer, if_holiday, if_term = days_wrapper(i, lesson[
-            'days'])
+    week = list(lesson['weeks'])
+    for index, value in enumerate(week):
+        start_date, if_summer, if_holiday, if_term = days_wrapper(index, lesson['days'])
         if if_holiday:
-            holiday += 1
-        elif if_term:
-            events_box.append(makeDict(lesson, start_date, if_summer))
-    weeks = lesson['weeks']
-    while holiday > 0:
-        holiday -= 1
-        if not re.search('111', weeks):
-            week = re.search('100+', weeks).start() + 2
-            weeks = weeks[0:week] + '1' + weeks[week + 1:-1]
-            start_date, if_summer, if_holiday, if_term = days_wrapper(
-                week, lesson['days'])
-            if if_holiday:
-                holiday += 1
-            elif if_term:
-                events_box.append(makeDict(lesson, start_date, if_summer))
+            week[index] = False
+        elif not if_term:
+            week[index] = False
+        elif value:
+            week[index] = True
         else:
-            week = re.search('100+', weeks).start() + 2
-            weeks = weeks[0:week] + '1' + weeks[week - 1:-1]
-            start_date, if_summer, if_holiday, if_term = days_wrapper(
-                week, lesson['days'])
-            if if_holiday:
-                holiday += 1
-            elif if_term:
-                events_box.append(makeDict(lesson, start_date, if_summer))
+            week[index] = True
+        if week[index]:
+            events_box.append(makeDict(lesson, start_date, if_summer))
 
     tmp = list()
     for event in events_box:
@@ -128,7 +93,10 @@ def makeICS(s: SduBkjws):
         for lesson in lessons:
             for event in lesson_to_calendar(lesson):
                 c.events.append(event)
+        c.creator = 'Trim21'
         s = str(c)
-        return s.replace('\n', '\r\n')
+        cal = iCalendar.from_ical(s.replace('\n', '\r\n'))
+        cal['X-WR-CALNAME'] = '山大课表'
+        return cal.to_ical()
     else:
         return False

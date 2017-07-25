@@ -18,16 +18,16 @@ def parserAuth(fn):
             auth = json.loads(auth)
         except Exception as e:
             return make_response('error'), 404
-        try:
-            print(auth)
-            username = auth['username']
-            password = auth['password']
-            s = SduBkjws(username, password)
-            return fn(s)
-        except Exception as e:
-            resp = make_response(
-                json.dumps({'error': str(e)}))
-            return resp, 401
+        # try:
+        print(auth)
+        username = auth['username']
+        password = auth['password']
+        s = SduBkjws(username, password)
+        return fn(s)
+        # except Exception as e:
+        #     resp = make_response(
+        #         json.dumps({'error': str(e)}))
+        #     return resp, 401
 
     return wrapper
 
