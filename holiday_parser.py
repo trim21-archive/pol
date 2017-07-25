@@ -7,9 +7,9 @@ from glob import glob
 def get_calendar_text():
     if not glob('./ics'):
         with open('./ics', 'w+', encoding='utf8') as f:
-            ics_text = requests.get('https://p42-calendars.icloud.com/published/2'
-                                    '/nbjx744gis1ym0gytzefog4u4wifrcfg81sdjqajtlbifmccal2rlbq'
-                                    '-tx2tslz3aw2fzkrds2idpbiiuv2r1fzfhnilocaqegcxoktavua').text
+            ics_text = requests.get(
+                'https://p42-calendars.icloud.com/published/2/nbjx744gIs1ym0gyTzeFOg4u4WiFrCfG81sdJQaJtLbiFMCCal2rLBQ'
+                '-TX2tslz3aW2FZKRDS2iDPbIiUv2R1FzfhnIlOcAqEGCXoKtAVUA').text
             f.write(ics_text)
     else:
         with open('./ics', 'r', encoding='utf8') as f:
