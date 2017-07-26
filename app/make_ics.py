@@ -1,10 +1,11 @@
 from datetime import date, timedelta, time, datetime
-
+import uuid
+import re
+import pytz
 from ics import Calendar, Event
 from icalendar import Calendar as iCalendar
-from sdu_bkjws import SduBkjws
+import icalendar
 from holiday_parser import is_holiday
-
 
 config = {
     "firstMonday": date(2017, 9, 11),
@@ -45,7 +46,7 @@ def days_wrapper(week: int, days: str) -> tuple:
     return calendar_time, if_summer, if_holiday, if_term
 
 
-def makeDict(lesson, start_date, if_summer):
+def make_dict(lesson, start_date, if_summer):
     start_time, end_time = times_wrapper(
         lesson['times'], summer=if_summer)
     begin = datetime.fromtimestamp(
@@ -58,7 +59,7 @@ def makeDict(lesson, start_date, if_summer):
             "location": lesson["place"], }
 
 
-def lesson_to_calendar(lesson: dict) -> list:
+def lesson_to_event(lesson: dict) -> list:
     events_box = list()
     week = list(lesson['weeks'])
     for index, value in enumerate(week):
@@ -72,7 +73,7 @@ def lesson_to_calendar(lesson: dict) -> list:
         else:
             week[index] = True
         if week[index]:
-            events_box.append(makeDict(lesson, start_date, if_summer))
+            events_box.append(make_dict(lesson, start_date, if_summer))
 
     tmp = list()
     for event in events_box:
@@ -85,17 +86,56 @@ def lesson_to_calendar(lesson: dict) -> list:
     return tmp
 
 
-def makeICS(s: SduBkjws):
-    lessons = s.get_lesson()
-    if lessons:
-        c = Calendar()
-        for lesson in lessons:
-            for event in lesson_to_calendar(lesson):
-                c.events.append(event)
-        c.creator = 'Trim21'
-        s = str(c)
-        cal = iCalendar.from_ical(s.replace('\n', '\r\n'))
-        cal['X-WR-CALNAME'] = '山大课表'
-        return cal.to_ical()
-    else:
-        return False
+def from_lesson_to_ics(lessons: list):
+    event_box = list()
+    for lesson in lessons:
+        for event in lesson_to_event(lesson):
+            event_box.append(event)
+    return event_list_to_ics(event_box, '山大课表')
+
+
+def exam_to_event(exam: dict):
+    sjsj_regex = re.compile(r"(\d*)年(\d*)月(\d*)日(.*)-(.*)")
+    time_regex = re.compile(r"(\d*):(\d*)")
+    year, month, day, start_time, end_time = sjsj_regex.findall(exam['sjsj'])[0]
+    start_hour, start_minute = time_regex.findall(start_time)[0]
+    end_hour, end_minute = time_regex.findall(end_time)[0]
+    year = int(year)
+    month = int(month)
+    day = int(day)
+    start_hour = int(start_hour)
+    start_minute = int(start_minute)
+    end_hour = int(end_hour)
+    end_minute = int(end_minute)
+    start_time = datetime(year, month, day, start_hour, start_minute, tzinfo=pytz.timezone('Asia/Shanghai'))
+    end_time = datetime(year, month, day, end_hour, end_minute, tzinfo=pytz.timezone('Asia/Shanghai'))
+    e = icalendar.Event()
+    e['dtstart'] = icalendar.vDatetime(start_time).to_ical()
+    e['dtend'] = icalendar.vDatetime(end_time).to_ical()
+    e['summary'] = exam['kcm']
+    e['location'] = exam['xqmc'] + exam['jxljs']
+    e['description'] = '{} {} {}  {} {}  {} {}  {}'.format(exam['kcm'], exam['sjsj'],
+                                                           exam['xqmc'], exam['jxlm'], exam['jxljs'],
+                                                           exam['ksfsmc'], exam['ksffmc'],
+                                                           '' if not exam['ksbz'] else exam['ksbz'])
+    e['uid'] = uuid.uuid4()
+    return e
+
+
+def from_exam_to_ics(exams: list) -> str:
+    c = icalendar.Calendar()
+    c['summary'] = '考试安排'
+    c['prodid'] = 'Trim21'
+    c['version'] = '2.0'
+    c['X-WR-CALNAME'] = '考试安排'
+    for exam in exams:
+        c.add_component(exam_to_event(exam))
+    return c.to_ical()
+
+
+def event_list_to_ics(events: list, ics_name: str):
+    c = Calendar(events=events, creator='Trim21')
+    s = str(c)
+    cal = iCalendar.from_ical(s.replace('\n', '\r\n'))
+    cal['X-WR-CALNAME'] = ics_name
+    return cal.to_ical()
