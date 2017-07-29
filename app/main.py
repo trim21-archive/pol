@@ -40,6 +40,12 @@ def parserAuth(fn):
     return wrapper
 
 
+@app.route('/login')
+@parserAuth
+def login(s: sdu_bkjws.SduBkjws):
+    return json.dumps(s.detail)
+
+
 @app.route('/exam-result')
 @parserAuth
 def examResult(s: sdu_bkjws.SduBkjws):
