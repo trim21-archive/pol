@@ -19,7 +19,6 @@ def get_calendar_text():
 
 def is_holiday(dt: datetime.date):
     ic = icalendar.Calendar.from_ical(get_calendar_text())
-    print(dt)
     for event in ic.subcomponents:
         if str(event['summary']).find('假期') != -1:
             start = event['dtstart'].dt

@@ -2,7 +2,6 @@ from datetime import date, timedelta, time, datetime
 import uuid
 import re
 import pytz
-from ics import Calendar, Event
 from icalendar import Calendar as iCalendar
 import icalendar
 from holiday_parser import is_holiday
@@ -36,7 +35,6 @@ def times_wrapper(x: str, summer=False):
 def days_wrapper(week: int, days: str) -> tuple:
     days = int(days) - 1
     calendar_time = config["firstMonday"] + timedelta(weeks=week, days=days)
-    # calendar_time.strftime('%m/%d/%Y')
     if date(2017, 5, 1) < calendar_time < date(2017, 10, 1):
         if_summer = True
     else:
@@ -47,15 +45,10 @@ def days_wrapper(week: int, days: str) -> tuple:
 
 
 def make_dict(lesson, start_date, if_summer):
-    start_time, end_time = times_wrapper(
-        lesson['times'], summer=if_summer)
-    begin = datetime.fromtimestamp(
-        (datetime.combine(start_date, start_time) - timedelta(hours=8)).timestamp())
-    end = datetime.fromtimestamp(
-        (datetime.combine(start_date, end_time) - timedelta(hours=8)).timestamp())
+    start_time, end_time = times_wrapper(lesson['times'], summer=if_summer)
     return {"name": lesson["lesson_name"],
-            'begin': begin,
-            'end': end,
+            'dtstart': datetime.combine(start_date, start_time).replace(tzinfo=pytz.timezone('Asia/Shanghai')),
+            'dtend': datetime.combine(start_date, end_time).replace(tzinfo=pytz.timezone('Asia/Shanghai')),
             "location": lesson["place"], }
 
 
@@ -77,21 +70,15 @@ def lesson_to_event(lesson: dict) -> list:
 
     tmp = list()
     for event in events_box:
-        e = Event()
-        e.name = event['name']
-        e.begin = event['begin']
-        e.end = event['end']
-        e.location = event['location']
-        tmp.append(e)
+        ie = icalendar.Event()
+        ie['dtstart'] = icalendar.vDatetime(event['dtstart']).to_ical()
+        ie['dtend'] = icalendar.vDatetime(event['dtend']).to_ical()
+        ie['summary'] = event['name']
+        ie['location'] = event['location']
+        ie['uid'] = uuid.uuid4()
+        tmp.append(ie)
     return tmp
 
-
-def from_lesson_to_ics(lessons: list):
-    event_box = list()
-    for lesson in lessons:
-        for event in lesson_to_event(lesson):
-            event_box.append(event)
-    return event_list_to_ics(event_box, '山大课表')
 
 
 def exam_to_event(exam: dict):
@@ -122,9 +109,21 @@ def exam_to_event(exam: dict):
     return e
 
 
+def from_lesson_to_ics(lessons: list):
+    event_box = list()
+    for lesson in lessons:
+        for event in lesson_to_event(lesson):
+            event_box.append(event)
+    cal = iCalendar()
+    for event in event_box:
+        cal.add_component(event)
+    cal['prodid'] = 'Trim21'
+    cal['version'] = '2.0'
+    cal['X-WR-CALNAME'] = '山大课表'
+    return cal.to_ical()
+
 def from_exam_to_ics(exams: list) -> str:
     c = icalendar.Calendar()
-    c['summary'] = '考试安排'
     c['prodid'] = 'Trim21'
     c['version'] = '2.0'
     c['X-WR-CALNAME'] = '考试安排'
@@ -133,9 +132,31 @@ def from_exam_to_ics(exams: list) -> str:
     return c.to_ical()
 
 
-def event_list_to_ics(events: list, ics_name: str):
-    c = Calendar(events=events, creator='Trim21')
-    s = str(c)
-    cal = iCalendar.from_ical(s.replace('\n', '\r\n'))
-    cal['X-WR-CALNAME'] = ics_name
-    return cal.to_ical()
+def calendar(s, query: dict) -> str:
+    c = icalendar.Calendar()
+    c['prodid'] = 'Trim21'
+    c['version'] = '2.0'
+    summary = ''
+    if query['exam']:
+        for lesson in s.lessons:
+            for event in lesson_to_event(lesson):
+                c.add_component(event)
+        summary += '课表'
+    if query['curriculum']:
+        today = date.today()
+        if today.month <= 2:
+            xq = 1
+            year = today.year - 1
+        elif 2 < today.month < 8:
+            xq = 2
+            year = today.year - 1
+        else:
+            xq = 1
+            year = today.year
+        xnxq = '{}-{}-{}'.format(year, year + 1, xq)
+        e = s.get_exam_time(xnxq)  # type: list
+        for exam in e:
+            c.add_component(exam_to_event(exam))
+        summary += ' 考试安排'
+    c['X-WR-CALNAME'] = summary
+    return c.to_ical()

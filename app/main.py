@@ -17,6 +17,7 @@ def parserAuth(fn):
         try:
             auth = request.args.get('auth', None)
             if auth:
+                auth = auth.replace('@', '=')
                 auth = base64.b64decode(auth).decode()
             else:
                 return 'This page does not exist', 404
@@ -60,6 +61,44 @@ def manyUser(s: sdu_bkjws.SduBkjws):
     resp = make_response(x)
     resp.headers['Content-Type'] = "text/calendar;charset=UTF-8"
     return resp
+
+
+@app.route('/calendar/<auth>')
+def calendar(auth):
+    try:
+        if auth:
+            auth = base64.b64decode(auth).decode()
+        else:
+            return 'you need query', 404
+    except binascii.Error:
+        return make_response('error'), 404
+    try:
+        auth = json.loads(auth)
+    except json.JSONDecodeError:
+        return make_response('error'), 404
+    try:
+        print(auth)
+        username = auth['username']
+        password = auth['password']
+        s = sdu_bkjws.SduBkjws(username, password)
+        exam = request.args.get('exam', False) == 'true'
+        curriculum = request.args.get('curriculum', False) == 'true'
+        if not (exam or curriculum):
+            return make_response('error'), 404
+        query = {'exam': exam, 'curriculum': curriculum}
+        r = make_ics.calendar(s, query)
+        r = make_response(r)
+        print(request.user_agent)
+        if request.user_agent.string.find('Mozilla') != -1:
+            # return send_file('./openInSafari.html')
+            r.headers['Content-Type'] = "text/plain;charset=UTF-8"
+        else:
+            r.headers['Content-Type'] = "text/calendar;charset=UTF-8"
+        return r, 200
+    except Exception as e:
+        resp = make_response(
+            json.dumps({'error': str(e)}))
+        return resp, 401
 
 
 @app.route('/exam-arrangement')
