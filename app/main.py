@@ -1,10 +1,11 @@
 import base64
-import json
 import binascii
 import functools
+import json
 from datetime import date
-from flask import Flask, request, make_response
+
 import sdu_bkjws
+from flask import Flask, request, make_response
 
 import make_ics
 
@@ -50,7 +51,8 @@ def login(s: sdu_bkjws.SduBkjws):
 @app.route('/exam-result')
 @parserAuth
 def examResult(s: sdu_bkjws.SduBkjws):
-    return json.dumps(s.get_now_score(), ensure_ascii=False,
+    result = s.get_fail_score() + s.get_now_score() + s.get_past_score()
+    return json.dumps(result, ensure_ascii=False,
                       sort_keys=True)
 
 
