@@ -137,12 +137,12 @@ def calendar(s, query: dict) -> str:
     c['prodid'] = 'Trim21'
     c['version'] = '2.0'
     summary = ''
-    if query['exam']:
+    if query['curriculum']:
         for lesson in s.lessons:
             for event in lesson_to_event(lesson):
                 c.add_component(event)
         summary += '课表'
-    if query['curriculum']:
+    if query['exam']:
         today = date.today()
         if today.month <= 2:
             xq = 1
