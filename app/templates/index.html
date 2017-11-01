@@ -1,0 +1,47 @@
+{% extends "components/base.html" %}
+{% block title %}Index{% endblock %}
+{% block head %}
+    {{ super() }}
+    <style>
+        pre {
+            font-size: 18px;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="row text-center">
+        <div class="col-md-12">
+            <h1>一些可能会用到的小工具</h1>
+            <pre class="text-left">
+做了一点微小的工作:
+    1. 查询成绩的详情,比如平时分,期末考试分
+    2. 把教务系统的课表转成了iOS和Hotmail,Gmail支持的标准icalendar格式
+       可以直接在iOS日历或者用你的邮件账号订阅你的课表</pre>
+        </div>
+        <div class="row">
+            <hr>
+        </div>
+        <div class="row">
+            <div class="md-col-12">
+
+                <h1>
+                    这么个人的事情,当然需要登录了
+                </h1>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+            <form class="form-signin" action="menu" method="post">
+                <label for="inputEmail" class="sr-only">student ID</label>
+                <input type="text" id="inputStudent" class="form-control" placeholder="student id"
+                       name="student_id"
+                       required=""
+                       autofocus="">
+                <label for="inputPassword" class="sr-only">Password</label>
+                <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required="">
+                <button id="submit" class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

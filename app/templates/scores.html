@@ -1,0 +1,33 @@
+{% extends 'components/base.html' %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>课程名</th>
+                    <th>学分</th>
+                    <th>平时成绩</th>
+                    <th>期中成绩</th>
+                    <th>期末成绩</th>
+                    <th>总分</th>
+                    <th>备注</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for lesson in lessons %}
+                    <tr class='{{ 'danger' if not lesson['pass'] }}'>
+                        <td>{{ lesson['kcm'] }}</td>
+                        <td>{{ lesson['xf'] }}</td>
+                        <td>{{ lesson['pscj'] }}</td>
+                        <td>{{ lesson['qzcj'] }}</td>
+                        <td>{{ lesson['qmcj'] }}</td>
+                        <td>{{ lesson['kscjView'] }}</td>
+                        <td>{{ lesson['bz'] }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

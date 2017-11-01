@@ -1,0 +1,27 @@
+{% extends 'components/base.html' %}
+{% block head %}
+    {{ super() }}
+    <script src="https://cdn.bootcss.com/clipboard.js/1.7.1/clipboard.min.js"></script>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <p>你的ics地址
+            </p>
+            <a id="url" href="https://www.trim21.cn/calendar/{{ auth }}">
+                https://www.trim21.cn/calendar/{{ auth }}
+            </a>
+            <button class="btn btn-default" data-clipboard-target="#url">点我复制网址</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <a href="webcal://www.trim21.cn/calendar/{{ auth }}">
+                <button class="btn btn-default">iOS用户点我</button>
+            </a>
+        </div>
+    </div>
+    <script>
+        var clipboard = new Clipboard('.btn');
+    </script>
+{% endblock %}
