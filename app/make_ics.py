@@ -1,9 +1,11 @@
-from datetime import date, timedelta, time, datetime
-import uuid
 import re
+import uuid
+from datetime import date, timedelta, time, datetime
+
+import icalendar
 import pytz
 from icalendar import Calendar as iCalendar
-import icalendar
+
 from holiday_parser import is_holiday
 
 config = {
