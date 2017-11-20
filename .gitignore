@@ -3,3 +3,4 @@
 .vscode
 *.pyc
 ics
+app.py

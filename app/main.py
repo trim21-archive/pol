@@ -15,10 +15,11 @@ app = Flask(__name__)
 
 def parserAuth(fn):
     @functools.wraps(fn)
-    def wrapper():
+    def wrapper(auth=None):
         try:
-            auth = request.cookies.get('auth', '')
-            auth = request.args.get('auth', auth)
+            if not auth:
+                auth = request.cookies.get('auth', '')
+                auth = request.args.get('auth', auth)
             if auth:
                 auth = auth.replace('@', '=')
                 auth = base64.b64decode(auth).decode()
@@ -118,40 +119,20 @@ def calendar_menu():
 
 
 @app.route('/calendar/<auth>')
-def calendar(auth):
+@parserAuth
+def calendar(s):
     try:
-        if auth:
-            auth = base64.b64decode(auth).decode()
-        else:
-            return 'you need query', 404
-    except binascii.Error:
-        return make_response('error'), 404
-    try:
-        auth = json.loads(auth)
-    except json.JSONDecodeError:
-        return make_response('error'), 404
-    try:
-        print(auth)
-        username = auth['username']
-        password = auth['password']
-        s = sdu_bkjws.SduBkjws(username, password)
-        exam = request.args.get('exam', False) == 'true'
-        curriculum = request.args.get('curriculum', False) == 'true'
-        if not (exam or curriculum):
-            return make_response('error'), 404
-        query = {'exam': exam, 'curriculum': curriculum}
+        query = {'curriculum': True, 'exam': False}
         r = make_ics.calendar(s, query)
         r = make_response(r)
-        print(request.user_agent)
         if request.user_agent.string.find('Mozilla') != -1:
-            # return send_file('./openInSafari.html')
             r.headers['Content-Type'] = "text/plain;charset=UTF-8"
         else:
             r.headers['Content-Type'] = "text/calendar;charset=UTF-8"
         return r, 200
     except Exception as e:
         resp = make_response(
-            json.dumps({'error': str(e)}))
+            json.dumps({'error': 233}))
         return resp, 401
 
 
