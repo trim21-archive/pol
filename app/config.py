@@ -22,4 +22,4 @@ class Configuration(object):
     # TEMPLATES_AUTO_RELOAD = True
 
 
-workload = 256
+workload = 1024 * 2
