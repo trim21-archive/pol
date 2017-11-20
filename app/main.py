@@ -53,8 +53,9 @@ def parser_auth(fn):
 @flask_login.login_required
 def logout():
     flask_login.logout_user()
-    r = make_response(redirect('/'))
-    return r
+    # r = make_response(redirect('/'))
+    flask.flash('登出成功')
+    return render_template('index.html')
 
 
 @app.route('/')
@@ -90,10 +91,10 @@ def login():
 
                 flask_login.login_user(u)
                 flask.flash('login success')
-                return redirect('/menu')
+                return render_template('menu.html')
             else:
                 flask.flash('不要投机取巧哦')
-                return redirect('/')
+                return render_template('index.html')
         except requests.ConnectionError:
             flask.flash('可能是校外暂时无法访问教务系统,用手机流量试试,如果可以访问请联系我')
         except sdu_bkjws.AuthFailure as v:
@@ -101,10 +102,10 @@ def login():
         except Exception as e:
             flask.flash(str(e))
         finally:
-            return redirect(url_for('index'))
+            return render_template('index.html')
     else:
         flask.flash('请点击验证码通过验证')
-        return redirect(url_for('index'))
+        return render_template('index.html')
 
 
 @app.route('/menu', methods=['GET', ])
