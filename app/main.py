@@ -13,7 +13,7 @@ from flask_login import LoginManager
 import make_ics
 import models
 from app import app
-from config import ppoi_secret, workload
+from config import ppoi_secret, workload, hostname
 
 
 login_manager = LoginManager()
@@ -28,7 +28,7 @@ def load_user(auth):
 @login_manager.unauthorized_handler
 def unauthorized():
     flask.flash('需要先登录')
-    return redirect('/')
+    return redirect('{}/'.format(hostname))
 
 
 @app.context_processor
@@ -53,9 +53,8 @@ def parser_auth(fn):
 @flask_login.login_required
 def logout():
     flask_login.logout_user()
-    # r = make_response(redirect('/'))
-    flask.flash('登出成功')
-    return render_template('index.html')
+    r = make_response(redirect('{}/'.format(hostname)))
+    return r
 
 
 @app.route('/')
@@ -80,9 +79,8 @@ def login():
             r = r.json()
         except requests.ConnectionError:
             flask.flash('验证码暂时无法验证,请联系我')
-            return redirect('/')
+            return redirect('{}/'.format(hostname))
         try:
-            print(r)
             if r['success']:
                 s = sdu_bkjws.SduBkjws(student_id, password)
                 auth = base64.b64encode(json.dumps({'username': student_id, 'password': password}).encode()).decode()
@@ -91,10 +89,10 @@ def login():
 
                 flask_login.login_user(u)
                 flask.flash('login success')
-                return render_template('menu.html')
+                return redirect('{}/menu'.format(hostname))
             else:
                 flask.flash('不要投机取巧哦')
-                return render_template('index.html')
+                return redirect('{}/'.format(hostname))
         except requests.ConnectionError:
             flask.flash('可能是校外暂时无法访问教务系统,用手机流量试试,如果可以访问请联系我')
         except sdu_bkjws.AuthFailure as v:
@@ -102,10 +100,10 @@ def login():
         except Exception as e:
             flask.flash(str(e))
         finally:
-            return render_template('index.html')
+            return redirect("{}/".format(hostname))
     else:
         flask.flash('请点击验证码通过验证')
-        return render_template('index.html')
+        return redirect('{}/'.format(hostname))
 
 
 @app.route('/menu', methods=['GET', ])

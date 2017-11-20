@@ -8,8 +8,11 @@ db_path = os.path.join(os.environ.get('HOME', os.environ.get('USERPROFILE')), 'd
 sec = os.getenv('website_secret')
 ppoi_secret = os.getenv('ppoi_key', '')
 
-if not sec and ppoi_secret:
-    print('mission sec or ppoi_secret')
+if not sec:
+    print('missing sec')
+    exit(1)
+if not ppoi_secret:
+    print('missing ppoi_secret')
     exit(1)
 
 class Configuration(object):
@@ -32,3 +35,6 @@ class Configuration(object):
 workload = 1024 * 2
 if os.environ.get('DEV', False):
     workload = 256
+hostname = 'https://www.trim21.cn'
+if os.environ.get('DEV', False):
+    hostname = 'http://localhost:800'
