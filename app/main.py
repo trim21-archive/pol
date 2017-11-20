@@ -8,20 +8,14 @@ from itertools import combinations
 import requests
 import sdu_bkjws
 from flask import Flask, request, make_response, render_template, redirect
-from flask_login import LoginManager
 
 import make_ics
 from config import ppoi_secret, workload
 
-lm = LoginManager()
-
 app = Flask(__name__)
 app.config.from_object('config.Configuration')
 
-lm.init_app(app)
 
-
-@lm.user_loader
 def load_user(auth):
     try:
         if not auth:
