@@ -6,7 +6,8 @@ from itertools import combinations
 import flask_login
 import requests
 import sdu_bkjws
-from flask import request, make_response, render_template, redirect
+import flask
+from flask import request, make_response, render_template, redirect, url_for
 from flask_login import LoginManager
 
 import make_ics
@@ -26,8 +27,8 @@ def load_user(auth):
 
 @login_manager.unauthorized_handler
 def unauthorized():
-    # do stuff
-    return render_template('unlogin.html')
+    flask.flash('需要先登录')
+    return redirect('/')
 
 
 @app.context_processor
@@ -40,13 +41,11 @@ def parser_auth(fn):
     def wrapper():
         username = flask_login.current_user.username
         password = flask_login.current_user.password
-
         s = sdu_bkjws.SduBkjws(username, password)
         if s:
             return fn(s)
         else:
             return 'password or username error', 401
-
     return wrapper
 
 
@@ -55,23 +54,22 @@ def parser_auth(fn):
 def logout():
     flask_login.logout_user()
     r = make_response(redirect('/'))
-    # r.set_cookie('auth', '')
     return r
 
 
 @app.route('/')
 def index():
+    if flask_login.current_user.is_active:
+        return render_template('menu.html')
     return render_template('index.html')
 
 
-@app.route('/login', methods=['POST', 'GET'])
+@app.route('/login', methods=['POST'])
 def login():
-    if request.method == 'GET':
-        return redirect('/')
     student_id = request.form.get('student_id', None)
     password = request.form.get('password', None)
     token = request.form.get('projectpoi-captcha-token', None)
-    # token = True
+
     if student_id and password and token:
         try:
             r = requests.post('https://api.ppoi.org/token/verify',
@@ -79,6 +77,10 @@ def login():
                                     'token': token,
                                     'hashes': workload})
             r = r.json()
+        except requests.ConnectionError:
+            flask.flash('验证码暂时无法验证,请联系我')
+            return redirect('/')
+        try:
             print(r)
             if r['success']:
                 s = sdu_bkjws.SduBkjws(student_id, password)
@@ -86,15 +88,23 @@ def login():
 
                 u = models.User(auth)
 
-                u = flask_login.login_user(u, True)
-
-                resp = make_response(redirect('/menu'))
-                return resp
+                flask_login.login_user(u)
+                flask.flash('login success')
+                return redirect('/menu')
             else:
-                # return redirect('/')
-                return render_template('index.html', message='不要投机取巧哦')
+                flask.flash('不要投机取巧哦')
+                return redirect('/')
+        except requests.ConnectionError:
+            flask.flash('可能是校外暂时无法访问教务系统,用手机流量试试,如果可以访问请联系我')
+        except sdu_bkjws.AuthFailure as v:
+            flask.flash(str(v))
         except Exception as e:
-            return str(e)
+            flask.flash(str(e))
+        finally:
+            return redirect(url_for('index'))
+    else:
+        flask.flash('请点击验证码通过验证')
+        return redirect(url_for('index'))
 
 
 @app.route('/menu', methods=['GET', ])
@@ -126,28 +136,17 @@ def exam_result(s: sdu_bkjws.SduBkjws):
             i = result.index(d1)
             result.pop(i)
     result.reverse()
-    # result = list(set(result))
     resp = make_response(render_template('scores.html', lessons=result))
 
     return resp
-    # return json.dumps(result, ensure_ascii=False,
-    #                   sort_keys=True)
 
 
 @app.route('/calendar')
 @flask_login.login_required
 def calendar_menu():
     auth = flask_login.current_user.auth
-    try:
-        auth = auth.replace('@', '=')
-        j = json.loads(base64.b64decode(auth).decode())
-        if j.get('username', False) and j.get('password'):
-            return render_template('calendar.html', auth=auth)
-        else:
-            raise json.JSONDecodeError
-    except json.JSONDecodeError:
-        r = make_response(render_template('index.html', message=auth))
-        return r, 401
+    auth = auth.replace('@', '=')
+    return render_template('calendar.html', auth=auth)
 
 
 @app.route('/calendar/<auth>')
@@ -157,7 +156,6 @@ def calendar(auth):
         s = sdu_bkjws.SduBkjws(user.username, user.password)
         r = make_ics.calendar(s)
         r = make_response(r)
-
         if request.user_agent.string.find('Mozilla') != -1:
             r.headers['Content-Type'] = "text/plain;charset=UTF-8"
         else:
@@ -171,8 +169,8 @@ def calendar(auth):
 
 @app.errorhandler(404)
 def page_not_found(error):
-    return 'This page does not exist', 404
-
+    flask.flash('Page Not Found')
+    return render_template('index.html'), 404
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True, port=800)

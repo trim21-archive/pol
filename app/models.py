@@ -62,6 +62,7 @@ class User(object):
             self.username = auth['username']
             self.password = auth['password']
             self.auth = auth_string
+            # self.s = s
         else:
             raise ValueError('you must input a auth')
 

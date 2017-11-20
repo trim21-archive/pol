@@ -6,8 +6,11 @@ from flask_peewee.db import Database
 db_path = os.path.join(os.environ.get('HOME', os.environ.get('USERPROFILE')), 'db', 'www.trim21.cn.db')
 
 sec = os.getenv('website_secret')
-ppoi_secret = os.getenv('ppoi_key')
+ppoi_secret = os.getenv('ppoi_key', '')
 
+if not sec and ppoi_secret:
+    print('mission sec or ppoi_secret')
+    exit(1)
 
 class Configuration(object):
     # DATABASE = {
@@ -16,11 +19,16 @@ class Configuration(object):
     #     'check_same_thread': False,
     # }
     DEBUG = False
+    TEMPLATES_AUTO_RELOAD = True
+
     SECRET_KEY = sec
-    SESSION_COOKIE_SECURE = True
-    # REMEMBER_COOKIE_SECURE = True
+
+    # flask-login
+    REMEMBER_COOKIE_SECURE = True
+
     REMEMBER_COOKIE_DURATION = datetime.timedelta(minutes=30)
-    # TEMPLATES_AUTO_RELOAD = True
 
 
 workload = 1024 * 2
+if os.environ.get('DEV', False):
+    workload = 256
