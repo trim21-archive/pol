@@ -5,7 +5,7 @@ import datetime
 import pytz
 from peewee import *
 
-from app import db
+# from app import db
 
 tz = pytz.timezone('Asia/Shanghai')
 
