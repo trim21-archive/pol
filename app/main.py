@@ -139,7 +139,6 @@ def exam_result(s: sdu_bkjws.SduBkjws):
 
 
 @app.route('/calendar')
-# @parser_auth()
 @flask_login.login_required
 def calendar_menu():
     auth = flask_login.current_user.auth
