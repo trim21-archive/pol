@@ -82,7 +82,6 @@ def lesson_to_event(lesson: dict) -> list:
     return tmp
 
 
-
 def exam_to_event(exam: dict):
     sjsj_regex = re.compile(r"(\d*)年(\d*)月(\d*)日(.*)-(.*)")
     time_regex = re.compile(r"(\d*):(\d*)")
@@ -124,6 +123,7 @@ def from_lesson_to_ics(lessons: list):
     cal['X-WR-CALNAME'] = '山大课表'
     return cal.to_ical()
 
+
 def from_exam_to_ics(exams: list) -> str:
     c = icalendar.Calendar()
     c['prodid'] = 'Trim21'
@@ -144,21 +144,5 @@ def calendar(s, query: dict) -> str:
             for event in lesson_to_event(lesson):
                 c.add_component(event)
         summary += '课表'
-    if query['exam']:
-        today = date.today()
-        if today.month <= 2:
-            xq = 1
-            year = today.year - 1
-        elif 2 < today.month < 8:
-            xq = 2
-            year = today.year - 1
-        else:
-            xq = 1
-            year = today.year
-        xnxq = '{}-{}-{}'.format(year, year + 1, xq)
-        e = s.get_exam_time(xnxq)  # type: list
-        for exam in e:
-            c.add_component(exam_to_event(exam))
-        summary += ' 考试安排'
     c['X-WR-CALNAME'] = summary
     return c.to_ical()

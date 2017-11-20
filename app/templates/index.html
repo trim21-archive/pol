@@ -12,7 +12,6 @@
     <div class="row text-center">
         <div class="col-md-12">
             <h1>一些可能会用到的小工具</h1>
-            <h2>现在教务系统屏蔽了校外访问,我也不清楚什么时候才能开放,你可以自己试试,说不定就能进去了呢..</h2>
             <pre class="text-left">
 做了一点微小的工作:
     1. 查询成绩的详情,比如平时分,期末考试分
@@ -26,7 +25,8 @@
             <div class="md-col-12">
 
                 <h1>
-                    这么个人的事情,当然需要登录了
+                    这么个人的事情,当然需要登录了,请通过验证码-.-
+                    不要问我edge和IE为什么不能用,请用Chrome或者Firefox
                 </h1>
             </div>
         </div>
@@ -40,7 +40,17 @@
                        required=""
                        autofocus="">
                 <label for="inputPassword" class="sr-only">Password</label>
-                <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required="">
+                <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password"
+                       required="">
+                <script src="https://ppoi.org/lib/captcha.min.js" async></script>
+                <div class="projectpoi-captcha"
+                     data-hashes="{{ workload }}"
+                     data-key="DG8wtDDZHmatfrDorR1P9zWk"
+                     data-whitelabel="true"
+                     data-disable-elements="#submit">
+                    <em>加载验证码中...<br>
+                        如果加载不成功,请关闭ADblock!</em>
+                </div>
                 <button id="submit" class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
             </form>
         </div>

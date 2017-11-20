@@ -1,19 +1,56 @@
 import base64
 import binascii
+import datetime
 import functools
 import json
-from datetime import date
 from itertools import combinations
 
+import requests
 import sdu_bkjws
-from flask import Flask, request, make_response, render_template
+from flask import Flask, request, make_response, render_template, redirect
+from flask_login import LoginManager
 
 import make_ics
+from config import ppoi_secret, workload
+
+lm = LoginManager()
 
 app = Flask(__name__)
+app.config.from_object('config.Configuration')
+
+lm.init_app(app)
 
 
-def parserAuth(fn):
+@lm.user_loader
+def load_user(auth):
+    try:
+        if not auth:
+            auth = request.cookies.get('auth', '')
+            auth = request.args.get('auth', auth)
+        if auth:
+            auth = auth.replace('@', '=')
+            auth = base64.b64decode(auth).decode()
+            auth = json.loads(auth)
+        else:
+            return 'This page does not exist', 404
+    except binascii.Error:
+        return
+    except json.JSONDecodeError:
+        return
+
+    username = auth('username', False)
+    password = auth('password', False)
+    if username and password:
+        return auth
+    return
+
+
+@app.context_processor
+def context():
+    return dict(workload=workload)
+
+
+def parser_auth(fn):
     @functools.wraps(fn)
     def wrapper(auth=None):
         try:
@@ -36,7 +73,10 @@ def parserAuth(fn):
             username = auth['username']
             password = auth['password']
             s = sdu_bkjws.SduBkjws(username, password)
-            return fn(s)
+            if s:
+                return fn(s)
+            else:
+                return fn()
         except Exception as e:
             resp = make_response(
                 json.dumps({'error': str(e)}))
@@ -45,34 +85,48 @@ def parserAuth(fn):
     return wrapper
 
 
+@app.route('/logout')
+def logout():
+    r = make_response(redirect('/'))
+    r.set_cookie('auth', '')
+    return r
+
+
 @app.route('/')
 def index():
     return render_template('index.html')
-
-
-@app.route('/login')
-def login():
-    return render_template('login.html')
 
 
 @app.route('/menu', methods=['POST', ])
 def menu():
     student_id = request.form.get('student_id', None)
     password = request.form.get('password', None)
-    if student_id and password:
+    token = request.form.get('projectpoi-captcha-token', None)
+    if student_id and password and token:
         try:
-            s = sdu_bkjws.SduBkjws(student_id, password)
-            resp = make_response(render_template('menu.html'))
-            auth = base64.b64encode(json.dumps({'username': student_id, 'password': password}).encode()).decode()
+            r = requests.post('https://api.ppoi.org/token/verify',
+                              data={'secret': ppoi_secret,
+                                    'token': token,
+                                    'hashes': workload})
+            r = r.json()
+            print(r)
+            if r['success']:
+                s = sdu_bkjws.SduBkjws(student_id, password)
 
-            resp.set_cookie('auth', auth)
-            return resp
+                resp = make_response(render_template('menu.html'))
+
+                auth = base64.b64encode(json.dumps({'username': student_id, 'password': password}).encode()).decode()
+
+                resp.set_cookie('auth', auth, expires=datetime.datetime.today() + datetime.timedelta(hours=1))
+                return resp
+            else:
+                return render_template('index.html', message='不要投机取巧哦')
         except Exception as e:
-            return str(e) + '<a href="/"> go back </a>', 401
+            return str(e)
 
 
 @app.route('/exam-result')
-@parserAuth
+@parser_auth
 def examResult(s: sdu_bkjws.SduBkjws):
     result = s.get_fail_score() + s.get_now_score() + s.get_past_score()
     for lesson in result:
@@ -101,25 +155,24 @@ def examResult(s: sdu_bkjws.SduBkjws):
     #                   sort_keys=True)
 
 
-@app.route('/curriculum')
-@parserAuth
-def manyUser(s: sdu_bkjws.SduBkjws):
-    x = make_ics.from_lesson_to_ics(s.get_lesson())
-    resp = make_response(x)
-    resp.headers['Content-Type'] = "text/calendar;charset=UTF-8"
-    return resp
-
-
 @app.route('/calendar')
+# @parser_auth()
 def calendar_menu():
-    auth = request.cookies.get('auth', False)
-    if not auth:
-        return render_template('index.html')
-    return render_template('calendar.html', auth=auth)
+    auth = request.cookies.get('auth', '')
+    try:
+        auth = auth.replace('@', '=')
+        j = json.loads(base64.b64decode(auth).decode())
+        if j.get('username', False) and j.get('password'):
+            return render_template('calendar.html', auth=auth)
+        else:
+            raise json.JSONDecodeError
+    except json.JSONDecodeError:
+        r = make_response(render_template('index.html', message=auth))
+        return r, 401
 
 
 @app.route('/calendar/<auth>')
-@parserAuth
+@parser_auth
 def calendar(s):
     try:
         query = {'curriculum': True, 'exam': False}
@@ -134,27 +187,6 @@ def calendar(s):
         resp = make_response(
             json.dumps({'error': 233}))
         return resp, 401
-
-
-@app.route('/exam-arrangement')
-@parserAuth
-def exam(s: sdu_bkjws.SduBkjws):
-    today = date.today()
-    if today.month <= 2:
-        xq = 1
-        year = today.year - 1
-    elif 2 < today.month < 8:
-        xq = 2
-        year = today.year - 1
-    else:
-        xq = 1
-        year = today.year
-    xnxq = '{}-{}-{}'.format(year, year + 1, xq)
-    e = s.get_exam_time(xnxq)
-    ics = make_ics.from_exam_to_ics(e)
-    resp = make_response(ics)
-    resp.headers['Content-Type'] = "text/calendar;charset=UTF-8"
-    return resp
 
 
 @app.errorhandler(404)
