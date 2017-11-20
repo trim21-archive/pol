@@ -7,6 +7,5 @@ flask-login
 pytz
 requests
 sdu-bkjws
-ics
 icalendar
 beautifulsoup4
