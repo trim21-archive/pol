@@ -8,8 +8,8 @@
         <div class="col-md-12">
             <p>你的ics地址
             </p>
-            <a id="url" href="/calendar/{{ auth.replace('=', '@') }}">
-                https://www.trim21.cn/calendar/{{ auth.replace('=', '@') }}
+            <a id="url" href="/calendar/{{ current_user.auth }}">
+                https://www.trim21.cn/calendar/{{ current_user.auth }}
             </a>
         </div>
     </div>
@@ -20,7 +20,7 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <a href="webcal://www.trim21.cn/calendar/{{ auth }}">
+            <a href="webcals://www.trim21.cn/calendar/{{ current_user.auth }}">
                 <button class="btn btn-default">iOS用户点我</button>
             </a>
         </div>

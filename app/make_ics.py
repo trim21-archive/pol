@@ -134,15 +134,14 @@ def from_exam_to_ics(exams: list) -> str:
     return c.to_ical()
 
 
-def calendar(s, query: dict) -> str:
+def calendar(s) -> str:
     c = icalendar.Calendar()
     c['prodid'] = 'Trim21'
     c['version'] = '2.0'
     summary = ''
-    if query['curriculum']:
-        for lesson in s.lessons:
-            for event in lesson_to_event(lesson):
-                c.add_component(event)
-        summary += '课表'
+    for lesson in s.lessons:
+        for event in lesson_to_event(lesson):
+            c.add_component(event)
+    summary += '课表'
     c['X-WR-CALNAME'] = summary
     return c.to_ical()

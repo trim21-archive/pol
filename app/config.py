@@ -1,4 +1,5 @@
 # config
+import datetime
 import os
 
 # db_path = os.path.join(os.environ.get('HOME', os.environ.get('USERPROFILE')), 'db', 'example.db')
@@ -16,8 +17,9 @@ class Configuration(object):
     DEBUG = False
     SECRET_KEY = sec
     SESSION_COOKIE_SECURE = True
-    REMEMBER_COOKIE_SECURE = True
+    # REMEMBER_COOKIE_SECURE = True
+    REMEMBER_COOKIE_DURATION = datetime.timedelta(minutes=30)
     # TEMPLATES_AUTO_RELOAD = True
 
 
-workload = 512 * 1
+workload = 256

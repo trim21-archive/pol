@@ -23,7 +23,40 @@
             </div>
         </div>
     {% endif %}
+    {% if current_user.is_authenticated %}
+        <div class="row">
+
+            <div class="col-md-3">
+                <a href="/menu">
+                    <button class="btn btn-default">menu</button>
+                </a>
+            </div>
+
+            <div class="col-md-3">
+                <a href="/calendar">
+                    <button class="btn btn-default">日历</button>
+                </a>
+            </div>
+
+            <div class="col-md-3">
+                <a href="/exam-result">
+                    <button class="btn btn-default">考试成绩详情</button>
+                </a>
+            </div>
+
+            <div class="col-md-3">
+                <a href="/logout">
+                    <button class="btn btn-default">logout</button>
+                </a>
+            </div>
+        </div>
+    {% endif %}
+
     <div id="content">{% block content %}{% endblock %}</div>
+
+    <div class="row">
+        <div class="col-md-12"><a href="mailto://trim21me@hotmail.com">Contact me trim21me@hotmail.com</a></div>
+    </div>
 </div>
 </body>
 </html>

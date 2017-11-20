@@ -1,4 +1,6 @@
 {% extends 'components/base.html' %}
 {% block content %}
-
+    {% if current_user.is_authenticated %}
+        Hi {{ current_user.username }}!
+    {% endif %}
 {% endblock %}
