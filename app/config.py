@@ -1,8 +1,9 @@
 # config
 import datetime
 import os
+from flask_peewee.db import Database
 
-# db_path = os.path.join(os.environ.get('HOME', os.environ.get('USERPROFILE')), 'db', 'example.db')
+db_path = os.path.join(os.environ.get('HOME', os.environ.get('USERPROFILE')), 'db', 'www.trim21.cn.db')
 
 sec = os.getenv('website_secret')
 ppoi_secret = os.getenv('ppoi_key')

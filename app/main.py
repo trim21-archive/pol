@@ -1,23 +1,19 @@
 import base64
-import binascii
-import datetime
 import functools
 import json
 from itertools import combinations
 
-import flask
 import flask_login
 import requests
 import sdu_bkjws
-from flask import Flask, request, make_response, render_template, redirect
+from flask import request, make_response, render_template, redirect
 from flask_login import LoginManager
 
 import make_ics
-from config import ppoi_secret, workload
 import models
+from app import app
+from config import ppoi_secret, workload
 
-app = Flask(__name__)
-app.config.from_object('config.Configuration')
 
 login_manager = LoginManager()
 login_manager.init_app(app)

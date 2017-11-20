@@ -1,0 +1,12 @@
+flask
+werkzeug
+jinja2
+peewee
+flask-peewee
+flask-login
+pytz
+requests
+sdu-bkjws
+ics
+icalendar
+beautifulsoup4
