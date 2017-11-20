@@ -58,7 +58,7 @@ def parser_auth(fn):
 @flask_login.login_required
 def logout():
     flask_login.logout_user()
-    r = make_response(redirect('/'))
+    r = make_response(redirect('https://www.trim21.cn/'))
     # r.set_cookie('auth', '')
     return r
 
@@ -71,7 +71,7 @@ def index():
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'GET':
-        return redirect('/')
+        return redirect('https://www.trim21.cn/')
     student_id = request.form.get('student_id', None)
     password = request.form.get('password', None)
     token = request.form.get('projectpoi-captcha-token', None)
@@ -92,7 +92,7 @@ def login():
 
                 u = flask_login.login_user(u, True)
 
-                resp = make_response(redirect('/menu'))
+                resp = make_response(redirect('https://www.trim21.cn/menu'))
                 return resp
             else:
                 # return redirect('/')
