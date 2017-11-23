@@ -56,10 +56,10 @@ def make_dict(lesson, start_date, if_summer):
 
 r1 = re.compile(r'(?P<start>\d+)-(?P<end>\d+)周上')
 r2 = re.compile(r'(\d+,?)+周上')
-r3 = re.compile(r'(\d+)',)
+r3 = re.compile(r'(\d+)', )
 
 
-def from_week_str_to_list(weeks: str)->list:
+def from_week_str_to_list(weeks: str) -> list:
     r1_result = r1.match(weeks)
     if r1_result:
         start = int(r1_result.group('start'))
@@ -67,7 +67,6 @@ def from_week_str_to_list(weeks: str)->list:
         return [start <= x + 1 <= end for x in range(end)]
     r2_result = r2.match(weeks)
     if r2_result:
-
         r3_result = [int(x) for x in r3.findall(weeks)]
         return [x + 1 in r3_result for x in range(max(r3_result))]
     raise ValueError('我还没有遇到过<pre>{}</pre>这样的上课时间,请联系我支持这种格式'.format(weeks))
@@ -75,19 +74,22 @@ def from_week_str_to_list(weeks: str)->list:
 
 def lesson_to_event(lesson: dict) -> list:
     events_box = list()
+    print(lesson)
     week = from_week_str_to_list(lesson['weeks'])
+    print(week)
     for index, value in enumerate(week):
         start_date, if_summer, if_holiday, if_term = days_wrapper(index, lesson['days'])
         if if_holiday:
             week[index] = False
         elif not if_term:
             week[index] = False
-        elif value:
-            week[index] = True
-        else:
-            week[index] = True
+        # elif value:
+        #     week[index] = True
+        # else:
+        #     week[index] = True
         if week[index]:
             events_box.append(make_dict(lesson, start_date, if_summer))
+    print(week)
 
     tmp = list()
     for event in events_box:

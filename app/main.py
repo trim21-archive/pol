@@ -15,7 +15,6 @@ import models
 from app import app
 from config import ppoi_secret, workload, hostname
 
-
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -46,6 +45,7 @@ def parser_auth(fn):
             return fn(s)
         else:
             return 'password or username error', 401
+
     return wrapper
 
 
@@ -170,6 +170,7 @@ def calendar(auth):
 def page_not_found(error):
     flask.flash('Page Not Found')
     return render_template('index.html'), 404
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True, port=800)
