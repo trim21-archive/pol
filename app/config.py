@@ -6,13 +6,9 @@ from flask_peewee.db import Database
 db_path = os.path.join(os.environ.get('HOME', os.environ.get('USERPROFILE')), 'db', 'www.trim21.cn.db')
 
 sec = os.getenv('website_secret')
-ppoi_secret = os.getenv('ppoi_key', '')
 
 if not sec:
     print('missing sec')
-    exit(1)
-if not ppoi_secret:
-    print('missing ppoi_secret')
     exit(1)
 
 class Configuration(object):
@@ -32,7 +28,6 @@ class Configuration(object):
     REMEMBER_COOKIE_DURATION = datetime.timedelta(minutes=30)
 
 
-workload = 1024 * 2
 if os.environ.get('DEV', False):
     workload = 256
 hostname = 'https://www.trim21.cn'

@@ -13,7 +13,7 @@ from flask_login import LoginManager
 import make_ics
 import models
 from app import app
-from config import ppoi_secret, workload, hostname
+from config import hostname
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -28,11 +28,6 @@ def load_user(auth):
 def unauthorized():
     flask.flash('需要先登录')
     return redirect('{}/'.format(hostname))
-
-
-@app.context_processor
-def context():
-    return dict(workload=workload)
 
 
 def parser_auth(fn):
@@ -68,31 +63,17 @@ def index():
 def login():
     student_id = request.form.get('student_id', None)
     password = request.form.get('password', None)
-    token = request.form.get('projectpoi-captcha-token', None)
 
-    if student_id and password and token:
+    if student_id and password:
         try:
-            r = requests.post('https://api.ppoi.org/token/verify',
-                              data={'secret': ppoi_secret,
-                                    'token': token,
-                                    'hashes': workload})
-            r = r.json()
-        except requests.ConnectionError:
-            flask.flash('验证码暂时无法验证,请联系我')
-            return redirect('{}/'.format(hostname))
-        try:
-            if r['success']:
-                s = sdu_bkjws.SduBkjws(student_id, password)
-                auth = base64.b64encode(json.dumps({'username': student_id, 'password': password}).encode()).decode()
+            s = sdu_bkjws.SduBkjws(student_id, password)
+            auth = base64.b64encode(json.dumps({'username': student_id, 'password': password}).encode()).decode()
 
-                u = models.User(auth)
+            u = models.User(auth)
 
-                flask_login.login_user(u)
-                flask.flash('login success')
-                return redirect('{}/menu'.format(hostname))
-            else:
-                flask.flash('不要投机取巧哦')
-                return redirect('{}/'.format(hostname))
+            flask_login.login_user(u)
+            flask.flash('login success')
+            return redirect('{}/menu'.format(hostname))
         except requests.ConnectionError:
             flask.flash('可能是校外暂时无法访问教务系统,用手机流量试试,如果可以访问请联系我')
         except sdu_bkjws.AuthFailure as v:
