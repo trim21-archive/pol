@@ -9,8 +9,8 @@ from icalendar import Calendar as iCalendar
 from holiday_parser import is_holiday
 
 config = {
-    "firstMonday": date(2017, 9, 11),
-    "end": date(2018, 1, 15)
+    "firstMonday": date(2018, 3, 5),
+    "end": date(2018, 7, 2)
 }
 
 holiday_list = list()
