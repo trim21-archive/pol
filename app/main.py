@@ -143,7 +143,7 @@ def calendar(auth):
         return r, 200
     except Exception as e:
         resp = make_response(
-            json.dumps({'error': str(e)}))
+            json.dumps({'error': str(e)}, ensure_ascii=False))
         return resp, 401
 
 
