@@ -10,7 +10,7 @@ from holiday_parser import is_holiday
 
 config = {
     "firstMonday": date(2018, 9, 10),
-    "end": date(2018, 1, 7)
+    "end": date(2019, 1, 7)
 }
 
 holiday_list = list()
