@@ -121,7 +121,7 @@ def exam_result(s: sdu_bkjws.SduBkjws):
     return resp
 
 
-@app.route('/calendar')
+@app.route('/cld')
 @flask_login.login_required
 def calendar_menu():
     auth = flask_login.current_user.auth
