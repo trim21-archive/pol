@@ -11,4 +11,4 @@ RUN pip install -r /app/requirements.txt
 
 WORKDIR /app
 
-CMD gunicorn -k gevent --log-level=debug --bind 0.0.0.0:8000 main.app
+CMD gunicorn -k gevent --log-level=debug --bind 0.0.0.0:8000 main:app
