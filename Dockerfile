@@ -1,12 +1,14 @@
-FROM tiangolo/uwsgi-nginx:python3.5
+FROM python:3.6-slim-stretch
 
 MAINTAINER Trim21 <Trim21me@gmail.com>
+EXPOSE 8000
 
 # Add app configuration to Nginx
-COPY nginx.conf /etc/nginx/conf.d/
-
-# Copy sample app
-COPY ./app /app
+COPY app /app
 
 # install dependences
 RUN pip install -r /app/requirements.txt
+
+WORKDIR /app
+
+CMD gunicorn -k gevent --log-level=debug --bind 0.0.0.0:8000 main.app

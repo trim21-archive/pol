@@ -9,3 +9,6 @@ requests
 sdu-bkjws
 icalendar
 beautifulsoup4
+
+gevent
+gunicorn
