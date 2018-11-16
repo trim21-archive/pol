@@ -10,13 +10,17 @@ from holiday_parser import is_holiday
 
 config = {
     "firstMonday": date(2018, 9, 10),
-    "end": date(2019, 1, 7)
+    "end"        : date(2019, 1, 7)
 }
 
 holiday_list = list()
 holiday_list += [date(2017, 1, x) for x in range(1, 8)]
 holiday_list.append(date(2018, 1, 1))
 
+local_tz = pytz.timezone('Asia/Shanghai')
+
+
+# print(local_tz)
 
 def times_wrapper(x: str, summer=False):
     if summer:
@@ -48,9 +52,9 @@ def days_wrapper(week: int, days: str) -> tuple:
 
 def make_dict(lesson, start_date, if_summer):
     start_time, end_time = times_wrapper(lesson['times'], summer=if_summer)
-    return {"name": lesson["lesson_name"],
-            'dtstart': datetime.combine(start_date, start_time).replace(tzinfo=pytz.timezone('Asia/Shanghai')),
-            'dtend': datetime.combine(start_date, end_time).replace(tzinfo=pytz.timezone('Asia/Shanghai')),
+    return {"name"    : lesson["lesson_name"],
+            'dtstart' : local_tz.localize(datetime.combine(start_date, start_time)),
+            'dtend'   : local_tz.localize(datetime.combine(start_date, end_time)),
             "location": lesson["place"], }
 
 
@@ -72,11 +76,12 @@ def from_week_str_to_list(weeks: str) -> list:
     raise ValueError('我还没有遇到过<pre>{}</pre>这样的上课时间,请联系我支持这种格式'.format(weeks))
 
 
+utc_tz = pytz.timezone('UTC')
+
+
 def lesson_to_event(lesson: dict) -> list:
     events_box = list()
-    print(lesson)
     week = from_week_str_to_list(lesson['weeks'])
-    print(week)
     for index, value in enumerate(week):
         start_date, if_summer, if_holiday, if_term = days_wrapper(index, lesson['days'])
         if if_holiday:
@@ -89,13 +94,13 @@ def lesson_to_event(lesson: dict) -> list:
         #     week[index] = True
         if week[index]:
             events_box.append(make_dict(lesson, start_date, if_summer))
-    print(week)
-
     tmp = list()
     for event in events_box:
+        start_time = event['dtstart']
+        end_time = event['dtend']
         ie = icalendar.Event()
-        ie['dtstart'] = icalendar.vDatetime(event['dtstart']).to_ical()
-        ie['dtend'] = icalendar.vDatetime(event['dtend']).to_ical()
+        ie['dtstart'] = icalendar.vDatetime(start_time.astimezone(utc_tz)).to_ical()
+        ie['dtend'] = icalendar.vDatetime(end_time.astimezone(utc_tz)).to_ical()
         ie['summary'] = event['name']
         ie['location'] = event['location']
         ie['uid'] = uuid.uuid4()
@@ -116,8 +121,9 @@ def exam_to_event(exam: dict):
     start_minute = int(start_minute)
     end_hour = int(end_hour)
     end_minute = int(end_minute)
-    start_time = datetime(year, month, day, start_hour, start_minute, tzinfo=pytz.timezone('Asia/Shanghai'))
-    end_time = datetime(year, month, day, end_hour, end_minute, tzinfo=pytz.timezone('Asia/Shanghai'))
+
+    start_time = local_tz.localize(datetime(year, month, day, start_hour, start_minute))
+    end_time = local_tz.localize(datetime(year, month, day, end_hour, end_minute))
     e = icalendar.Event()
     e['dtstart'] = icalendar.vDatetime(start_time).to_ical()
     e['dtend'] = icalendar.vDatetime(end_time).to_ical()
