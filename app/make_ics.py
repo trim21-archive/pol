@@ -105,6 +105,7 @@ def lesson_to_event(lesson: dict) -> list:
         ie['summary'] = event['name']
         ie['location'] = event['location']
         ie['uid'] = uuid.uuid4()
+        ie['description'] = event['location']
         tmp.append(ie)
     return tmp
 
