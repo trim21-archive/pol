@@ -9,13 +9,11 @@ from icalendar import Calendar as iCalendar
 from holiday_parser import is_holiday
 
 config = {
-    "firstMonday": date(2019, 1, 25),
+    "firstMonday": date(2019, 2, 25),
     "end": date(2019, 6, 24)
 }
 
 holiday_list = list()
-holiday_list += [date(2017, 1, x) for x in range(1, 8)]
-holiday_list.append(date(2018, 1, 1))
 
 local_tz = pytz.timezone('Asia/Shanghai')
 
@@ -41,7 +39,7 @@ def times_wrapper(x: str, summer=False):
 def days_wrapper(week: int, days: str) -> tuple:
     days = int(days) - 1
     calendar_time = config["firstMonday"] + timedelta(weeks=week, days=days)
-    if date(2017, 5, 1) < calendar_time < date(2017, 10, 1):
+    if date(2019, 5, 1) < calendar_time < date(2019, 10, 1):
         if_summer = True
     else:
         if_summer = False
