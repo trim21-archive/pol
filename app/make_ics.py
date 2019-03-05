@@ -9,8 +9,8 @@ from icalendar import Calendar as iCalendar
 from holiday_parser import is_holiday
 
 config = {
-    "firstMonday": date(2018, 9, 10),
-    "end"        : date(2019, 1, 7)
+    "firstMonday": date(2019, 1, 25),
+    "end": date(2019, 6, 24)
 }
 
 holiday_list = list()
@@ -52,9 +52,10 @@ def days_wrapper(week: int, days: str) -> tuple:
 
 def make_dict(lesson, start_date, if_summer):
     start_time, end_time = times_wrapper(lesson['times'], summer=if_summer)
-    return {"name"    : lesson["lesson_name"],
-            'dtstart' : local_tz.localize(datetime.combine(start_date, start_time)),
-            'dtend'   : local_tz.localize(datetime.combine(start_date, end_time)),
+    return {"name": lesson["lesson_name"],
+            'dtstart': local_tz.localize(
+                datetime.combine(start_date, start_time)),
+            'dtend': local_tz.localize(datetime.combine(start_date, end_time)),
             "location": lesson["place"], }
 
 
@@ -83,7 +84,8 @@ def lesson_to_event(lesson: dict) -> list:
     events_box = list()
     week = from_week_str_to_list(lesson['weeks'])
     for index, value in enumerate(week):
-        start_date, if_summer, if_holiday, if_term = days_wrapper(index, lesson['days'])
+        start_date, if_summer, if_holiday, if_term = days_wrapper(index, lesson[
+            'days'])
         if if_holiday:
             week[index] = False
         elif not if_term:
@@ -99,7 +101,8 @@ def lesson_to_event(lesson: dict) -> list:
         start_time = event['dtstart']
         end_time = event['dtend']
         ie = icalendar.Event()
-        ie['dtstart'] = icalendar.vDatetime(start_time.astimezone(utc_tz)).to_ical()
+        ie['dtstart'] = icalendar.vDatetime(
+            start_time.astimezone(utc_tz)).to_ical()
         ie['dtend'] = icalendar.vDatetime(end_time.astimezone(utc_tz)).to_ical()
         ie['summary'] = event['name']
         ie['location'] = event['location']
@@ -122,17 +125,25 @@ def exam_to_event(exam: dict):
     end_hour = int(end_hour)
     end_minute = int(end_minute)
 
-    start_time = local_tz.localize(datetime(year, month, day, start_hour, start_minute))
-    end_time = local_tz.localize(datetime(year, month, day, end_hour, end_minute))
+    start_time = local_tz.localize(
+        datetime(year, month, day, start_hour, start_minute))
+    end_time = local_tz.localize(
+        datetime(year, month, day, end_hour, end_minute))
     e = icalendar.Event()
     e['dtstart'] = icalendar.vDatetime(start_time).to_ical()
     e['dtend'] = icalendar.vDatetime(end_time).to_ical()
     e['summary'] = exam['kcm']
     e['location'] = exam['xqmc'] + exam['jxljs']
-    e['description'] = '{} {} {}  {} {}  {} {}  {}'.format(exam['kcm'], exam['sjsj'],
-                                                           exam['xqmc'], exam['jxlm'], exam['jxljs'],
-                                                           exam['ksfsmc'], exam['ksffmc'],
-                                                           '' if not exam['ksbz'] else exam['ksbz'])
+    e['description'] = '{} {} {}  {} {}  {} {}  {}'.format(exam['kcm'],
+                                                           exam['sjsj'],
+                                                           exam['xqmc'],
+                                                           exam['jxlm'],
+                                                           exam['jxljs'],
+                                                           exam['ksfsmc'],
+                                                           exam['ksffmc'],
+                                                           '' if not exam[
+                                                               'ksbz'] else
+                                                           exam['ksbz'])
     e['uid'] = uuid.uuid4()
     return e
 
