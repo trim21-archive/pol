@@ -4,11 +4,6 @@ import secrets
 
 
 class Configuration(object):
-    # DATABASE = {
-    #     'name': db_path,
-    #     'engine': 'peewee.SqliteDatabase',
-    #     'check_same_thread': False,
-    # }
     DEBUG = False
     TEMPLATES_AUTO_RELOAD = True
 

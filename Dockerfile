@@ -3,12 +3,13 @@ FROM python:3.7-slim
 LABEL MAINTAINER="Trim21 <Trim21me@gmail.com>"
 EXPOSE 8000
 
-# Add app configuration to Nginx
-COPY app /app
+COPY ./requirements.txt /requirements.txt
 
 # install dependences
-RUN pip install -r /app/requirements.txt
+RUN pip install -r /requirements.txt
 
-WORKDIR /app
+COPY app /app
 
-CMD gunicorn -k gevent --bind 0.0.0.0:8000 main:app
+WORKDIR /
+
+CMD gunicorn -k gevent --bind 0.0.0.0:8000 app:app

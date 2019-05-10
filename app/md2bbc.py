@@ -1,42 +1,11 @@
 import mistune
-from flask import Flask, request, Response
-from app import app
-
-
-@app.route('/md2bbc')
-def md2bbc_index():
-    return """<!doctype html>
-<html lang="zh">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
-</head>
-<body>
-<form action="/md2bbc" method="post">
-  <h1>paste your markdown here</h1>
-  <textarea name="markdown" id="" cols="30" rows="10" placeholder="paste your markdown here">
-
-  </textarea>
-  <input type="submit">
-</form>
-
-</body>
-</html>"""
-
-
-@app.route('/md2bbc', methods=['POST'])
-def rmd2bbc_render():
-
-    return Response(
-        markdown(request.form.get('markdown', '')), mimetype='text/plain'
-    )
+from flask import Response, request
+from flask.views import MethodView
 
 
 class Render(mistune.Renderer):
-    def not_support(self, func):
+    @staticmethod
+    def not_support(func):
         return f"[s] unsupported {func} [/s]"
 
     def newline(self):
@@ -109,4 +78,20 @@ class Render(mistune.Renderer):
         return ''
 
 
-markdown = mistune.Markdown(renderer=Render(escape=True, hard_wrap=True))
+class Markdown2BBcode(MethodView):
+    markdown = mistune.Markdown(renderer=Render(escape=True, hard_wrap=True))
+
+    def get(self):
+        return """<!doctype html><html lang="zh"><head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>convert Markdown to BBcode</title></head>
+<body><form action="/md2bbc" method="post"><h1>paste your markdown here</h1>
+<textarea name="markdown" style='width: 100%' rows="10"></textarea>
+<input type="submit"></form></body></html>"""
+
+    def post(self):
+        return Response(
+            self.markdown(request.form.get('markdown', '')),
+            mimetype='text/plain'
+        )
