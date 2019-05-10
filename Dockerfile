@@ -1,4 +1,4 @@
-FROM python:3.7-slim-skretch
+FROM python:3.7-slim
 
 LABEL MAINTAINER="Trim21 <Trim21me@gmail.com>"
 EXPOSE 8000
