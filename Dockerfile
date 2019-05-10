@@ -1,6 +1,6 @@
-FROM python:3.6-slim-stretch
+FROM python:3.7-alpine3.9
 
-MAINTAINER Trim21 <Trim21me@gmail.com>
+LABEL MAINTAINER="Trim21 <Trim21me@gmail.com>"
 EXPOSE 8000
 
 # Add app configuration to Nginx
@@ -11,4 +11,4 @@ RUN pip install -r /app/requirements.txt
 
 WORKDIR /app
 
-CMD gunicorn -k gevent --log-level=debug --bind 0.0.0.0:8000 main:app
+CMD gunicorn -k gevent --bind 0.0.0.0:8000 main:app
