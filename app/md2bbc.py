@@ -6,7 +6,7 @@ from flask.views import MethodView
 class Render(mistune.Renderer):
     @staticmethod
     def not_support(func):
-        return f"[s] unsupported {func} [/s]"
+        return f'[s] unsupported {func} [/s]'
 
     def newline(self):
         return '\n'

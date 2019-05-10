@@ -1,9 +1,14 @@
+"""
+configuration for project
+"""
 import datetime
-import os
 import secrets
 
 
-class Configuration(object):
+class Configuration:
+    """
+    flask config
+    """
     DEBUG = False
     TEMPLATES_AUTO_RELOAD = True
 
@@ -13,10 +18,3 @@ class Configuration(object):
     REMEMBER_COOKIE_SECURE = True
 
     REMEMBER_COOKIE_DURATION = datetime.timedelta(minutes=30)
-
-
-if os.environ.get('DEV', False):
-    workload = 256
-hostname = 'https://www.trim21.cn'
-if os.environ.get('DEV', False):
-    hostname = 'http://localhost:800'

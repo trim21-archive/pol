@@ -1,8 +1,7 @@
-import flask
-from flask import Flask, render_template
-
+# pylint: disable=C0103
 from app.deprecation import bind_deprecated_path
 from app.md2bbc import Markdown2BBcode
+from flask import Flask, flash, render_template
 
 app = Flask(__name__)
 app.config.from_object('app.config.Configuration')
@@ -18,5 +17,5 @@ def index():
 
 @app.errorhandler(404)
 def page_not_found(error):
-    flask.flash('Page Not Found')
+    flash('Page Not Found')
     return render_template('index.html'), 404

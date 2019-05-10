@@ -1,6 +1,5 @@
-from flask import Flask
-
 from app.deprecation.make_ics import calendar
+from flask import Flask
 
 
 def bind_deprecated_path(app: Flask):
