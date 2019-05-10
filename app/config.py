@@ -1,15 +1,7 @@
-# config
 import datetime
 import os
-from flask_peewee.db import Database
+import secrets
 
-db_path = os.path.join(os.environ.get('HOME', os.environ.get('USERPROFILE')), 'db', 'www.trim21.cn.db')
-
-sec = os.getenv('website_secret')
-
-if not sec:
-    print('missing sec')
-    exit(1)
 
 class Configuration(object):
     # DATABASE = {
@@ -20,7 +12,7 @@ class Configuration(object):
     DEBUG = False
     TEMPLATES_AUTO_RELOAD = True
 
-    SECRET_KEY = sec
+    SECRET_KEY = secrets.token_hex(32)
 
     # flask-login
     REMEMBER_COOKIE_SECURE = True

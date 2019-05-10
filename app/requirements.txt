@@ -1,14 +1,8 @@
-flask
-werkzeug
-jinja2
-peewee
-flask-peewee
-flask-login
-pytz
-requests
-sdu-bkjws
-icalendar
-beautifulsoup4
+flask==0.12.4
+jinja2==2.8.1
+pytz==2018.4
+requests==2.21.0
+icalendar==4.0.3
 
-gevent
-gunicorn
+gevent==1.3.6
+gunicorn==19.9.0
