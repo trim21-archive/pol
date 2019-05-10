@@ -7,4 +7,4 @@ COPY ./requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
 COPY app /app
 
-CMD gunicorn -w 2 -k gevent --bind 0.0.0.0:8000 app:app
+CMD gunicorn --threads 3 -w 2 -k gevent --bind 0.0.0.0:8000 app:app
