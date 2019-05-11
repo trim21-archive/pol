@@ -28,7 +28,7 @@ class Render(mistune.Renderer):
 
     def header(self, text, level, raw=None):
         return (
-            self.linebreak() + f'[size={26-level*2}]{text}[/size]' +
+            self.linebreak() + f'[size={26 - level * 2}]{text}[/size]' +
             self.linebreak()
         )
 
@@ -36,7 +36,7 @@ class Render(mistune.Renderer):
         return self.linebreak() + f'[code]{code}[/code]' + self.linebreak()
 
     def link(self, link, title, text):
-        return f'[url={link}]{title or link}[/url]'
+        return f'[url={link}]{text or link}[/url]'
 
     def image(self, src, title, text):
         return f'[img]{src}[/img]'
