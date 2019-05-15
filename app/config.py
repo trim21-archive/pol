@@ -2,6 +2,7 @@
 configuration for project
 """
 import datetime
+import os
 import secrets
 
 
@@ -18,3 +19,4 @@ class Configuration:
     REMEMBER_COOKIE_SECURE = True
 
     REMEMBER_COOKIE_DURATION = datetime.timedelta(minutes=30)
+    REDIS = os.getenv('REDIS')
