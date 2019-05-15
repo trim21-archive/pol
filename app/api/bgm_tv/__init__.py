@@ -6,13 +6,12 @@ from icalendar import Calendar, Event
 
 
 def bgm_calendar(user_id):
-    r = requests.get(
+    res = requests.get(
         f'https://mirror.api.bgm.rin.cat/user/{user_id}/collection',
         {
             'cat': 'watching',
         },
-    )
-    res = r.json()
+    ).json()
     if 'code' in res:
         return "username doesn't exists", 404
 
@@ -33,8 +32,14 @@ def bgm_calendar(user_id):
             for item in bangumi[k % 7]:
                 event = Event()
                 event.add('summary', item['name'])
-                event.add('dtstart', datetime.datetime.now().date())
-                event.add('dtend', datetime.datetime.now().date())
+                event.add(
+                    'dtstart',
+                    datetime.datetime.now().date() + datetime.timedelta(i - 1)
+                )
+                event.add(
+                    'dtend',
+                    datetime.datetime.now().date() + datetime.timedelta(i - 1)
+                )
                 cal.add_component(event)
     return cal.to_ical().decode('utf8'), 200, {
         'content-type': 'text/calendar; charset=utf-8',
