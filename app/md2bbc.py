@@ -82,7 +82,10 @@ markdown2bbcode = mistune.Markdown(renderer=Render(escape=True, hard_wrap=True))
 router = APIRouter()
 
 
-@router.get('/md2bbc', response_class=HTMLResponse)
+@router.get(
+    '/md2bbc',
+    response_class=HTMLResponse,
+)
 def md2bbc():
     return """<!doctype html><html lang="zh"><head>
     <meta charset="UTF-8">
@@ -93,6 +96,11 @@ def md2bbc():
     <input type="submit"></form></body></html>"""
 
 
-@router.post('/md2bbc', response_class=PlainTextResponse, tags=[])
+@router.post(
+    '/md2bbc',
+    response_class=PlainTextResponse,
+    tags=[],
+    summary='convert markdown to bbcode',
+)
 def render_md2bbc(markdown: str = Form('')):
     return markdown2bbcode(markdown)

@@ -8,10 +8,6 @@ repos:
       - id: check-docstring-first
       - id: mixed-line-ending
         args: [--fix=lf]
-        exclude: '\.vbs$'
-      - id: mixed-line-ending
-        args: [--fix=crlf]
-        files: '\.vbs$'
 
       - id: check-json
       # check for file bigger than 500kb

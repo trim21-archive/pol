@@ -11,7 +11,11 @@ from app.responses import CalendarResponse
 router = APIRouter()
 
 
-@router.get('/calendar/bgm.tv/{user_id}', response_class=CalendarResponse)
+@router.get(
+    '/calendar/bgm.tv/{user_id}',
+    summary='iCalendar for watching bangumi',
+    response_class=CalendarResponse
+)
 def bgm_calendar(user_id: str):
     res = requests.get(
         f'https://mirror.api.bgm.rin.cat/user/{user_id}/collection',
