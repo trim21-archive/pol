@@ -1,6 +1,6 @@
 import mistune
-from flask import Response, request
-from flask.views import MethodView
+from fastapi import APIRouter, Form
+from starlette.responses import HTMLResponse, PlainTextResponse
 
 
 class Render(mistune.Renderer):
@@ -78,20 +78,21 @@ class Render(mistune.Renderer):
         return ''
 
 
-class Markdown2BBcode(MethodView):
-    markdown = mistune.Markdown(renderer=Render(escape=True, hard_wrap=True))
+markdown2bbcode = mistune.Markdown(renderer=Render(escape=True, hard_wrap=True))
+router = APIRouter()
 
-    def get(self):
-        return """<!doctype html><html lang="zh"><head>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
-<title>convert Markdown to BBcode</title></head>
-<body><form action="/md2bbc" method="post"><h1>paste your markdown here</h1>
-<textarea name="markdown" style='width: 100%' rows="10"></textarea>
-<input type="submit"></form></body></html>"""
 
-    def post(self):
-        return Response(
-            self.markdown(request.form.get('markdown', '')),
-            mimetype='text/plain'
-        )
+@router.get('/md2bbc', response_class=HTMLResponse)
+def md2bbc():
+    return """<!doctype html><html lang="zh"><head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>convert Markdown to BBcode</title></head>
+    <body><form action="/md2bbc" method="post"><h1>paste your markdown here</h1>
+    <textarea name="markdown" style='width: 100%' rows="10"></textarea>
+    <input type="submit"></form></body></html>"""
+
+
+@router.post('/md2bbc', response_class=PlainTextResponse, tags=[])
+def render_md2bbc(markdown: str = Form('')):
+    return markdown2bbcode(markdown)

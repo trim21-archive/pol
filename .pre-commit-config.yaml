@@ -21,11 +21,6 @@ repos:
       - id: double-quote-string-fixer
       - id: fix-encoding-pragma
         args: [--remove]
-  - repo: https://github.com/pycqa/flake8
-    rev: 3.7.7
-    require_serial: false
-    hooks:
-      - id: flake8
 
   - repo: https://github.com/pre-commit/pre-commit
     rev: v1.15.2
@@ -40,6 +35,13 @@ repos:
 
   - repo: local
     hooks:
+      - id: autoflake
+        name: autoflake
+        entry: autoflake
+        require_serial: true
+        language: python
+        types: [python]
+        args: ['--in-place', '--remove-unused-variables', '--remove-all-unused-imports']
       - id: isort
         name: isort
         entry: isort

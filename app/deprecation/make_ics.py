@@ -1,14 +1,23 @@
+# pylint: disable=C0103
+import datetime
 from datetime import datetime
 
-import pytz
-
 import icalendar
-from flask import make_response, request
+import pytz
+from fastapi import APIRouter, Header
 
+from app.responses import CalendarResponse
+
+router = APIRouter()
 UTC_TZ = pytz.timezone('UTC')
 
 
-def calendar(auth):
+@router.get(
+    '/calendar/{auth}',
+    response_class=CalendarResponse,
+    deprecated=True,
+)
+def calendar(*, user_agent: str = Header('')):
     calc = icalendar.Calendar()
     calc['prodid'] = 'Trim21'
     calc['version'] = '2.0'
@@ -24,9 +33,4 @@ def calendar(auth):
     event['description'] = '由于本人已经毕业，所以本项目不再维护，请取消订阅本日历，或从github获取代码自己部署'
     calc.add_component(event)
 
-    response = make_response(calc.to_ical())
-    if request.user_agent.string.find('Mozilla') != -1:
-        response.headers['Content-Type'] = 'text/plain;charset=UTF-8'
-    else:
-        response.headers['Content-Type'] = 'text/calendar;charset=UTF-8'
-    return response, 200
+    return calc.to_ical()

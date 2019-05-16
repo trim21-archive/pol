@@ -1,6 +1,7 @@
-from app.deprecation.make_ics import calendar
-from flask import Flask
+from fastapi import FastAPI
+
+from .make_ics import router
 
 
-def bind_deprecated_path(app: Flask):
-    app.route('/calendar/<auth>')(calendar)
+def bind_deprecated_path(app: FastAPI):
+    app.include_router(router)

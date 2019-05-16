@@ -1,11 +1,18 @@
 # pylint: disable=C0103
 import datetime
 from collections import defaultdict
+
 import requests
+from fastapi import APIRouter
 from icalendar import Calendar, Event
 
+from app.responses import CalendarResponse
 
-def bgm_calendar(user_id):
+router = APIRouter()
+
+
+@router.get('/calendar/bgm.tv/{user_id}', response_class=CalendarResponse)
+def bgm_calendar(user_id: str):
     res = requests.get(
         f'https://mirror.api.bgm.rin.cat/user/{user_id}/collection',
         {
@@ -41,6 +48,4 @@ def bgm_calendar(user_id):
                     datetime.datetime.now().date() + datetime.timedelta(i - 1)
                 )
                 cal.add_component(event)
-    return cal.to_ical().decode('utf8'), 200, {
-        'content-type': 'text/calendar; charset=utf-8',
-    }
+    return cal.to_ical().decode('utf8')
