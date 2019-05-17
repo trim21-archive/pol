@@ -1,3 +1,6 @@
+import asyncio
+from warnings import warn
+
 import sentry_sdk
 from fastapi import FastAPI
 from sentry_asgi import SentryMiddleware
@@ -23,3 +26,7 @@ if config.DSN:
 bind_deprecated_path(app)
 app.include_router(api_router, prefix='/api.v1')
 app.include_router(md2bbc_router)
+for router in app.routes:
+    if router.path not in ['/', '/openapi.json']:
+        if not asyncio.iscoroutinefunction(router.endpoint):
+            warn(f'{router.path} is not async function')

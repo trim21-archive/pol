@@ -86,7 +86,7 @@ router = APIRouter()
     '/md2bbc',
     response_class=HTMLResponse,
 )
-def md2bbc():
+async def md2bbc():
     return """<!doctype html><html lang="zh"><head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -102,5 +102,5 @@ def md2bbc():
     tags=[],
     summary='convert markdown to bbcode',
 )
-def render_md2bbc(markdown: str = Form('')):
+async def render_md2bbc(markdown: str = Form('')):
     return markdown2bbcode(markdown)

@@ -4,7 +4,7 @@ from datetime import datetime
 
 import icalendar
 import pytz
-from fastapi import APIRouter, Header
+from fastapi import APIRouter
 
 from app.responses import CalendarResponse
 
@@ -17,7 +17,7 @@ UTC_TZ = pytz.timezone('UTC')
     response_class=CalendarResponse,
     deprecated=True,
 )
-def calendar(*, user_agent: str = Header('')):
+async def calendar():
     calc = icalendar.Calendar()
     calc['prodid'] = 'Trim21'
     calc['version'] = '2.0'
