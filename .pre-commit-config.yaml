@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.2.1
+    rev: v2.2.3
     hooks:
       - id: check-merge-conflict
       - id: trailing-whitespace
@@ -19,15 +19,15 @@ repos:
         args: [--remove]
 
   - repo: https://github.com/pre-commit/pre-commit
-    rev: v1.15.2
+    rev: v1.16.1
     hooks:
       - id: validate_manifest
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v1.16.1
+    rev: v1.16.0
     hooks:
       - id: pyupgrade
-        args: ['--py3-only',]
+        args: ['--py36-plus',]
 
   - repo: local
     hooks:

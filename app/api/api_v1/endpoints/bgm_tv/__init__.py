@@ -2,8 +2,8 @@
 import datetime
 from collections import defaultdict
 
-import requests
-from fastapi import APIRouter
+import requests_async as requests
+from fastapi import APIRouter, HTTPException
 from icalendar import Calendar, Event
 
 from app.responses import CalendarResponse
@@ -16,15 +16,15 @@ router = APIRouter()
     summary='iCalendar for watching bangumi',
     response_class=CalendarResponse
 )
-def bgm_calendar(user_id: str):
-    res = requests.get(
-        f'https://mirror.api.bgm.rin.cat/user/{user_id}/collection',
-        {
+async def bgm_calendar(user_id: str):
+    r = await requests.get(
+        f'https://mirror.api.bgm.rin.cat/user/{user_id}/collection', {
             'cat': 'watching',
-        },
-    ).json()
+        }
+    )
+    res = r.json()
     if 'code' in res:
-        return "username doesn't exists", 404
+        raise HTTPException(404, "username doesn't exists")
 
     cal = Calendar()
     cal.add('prodid', '-//trim21//www.trim21.cn//')

@@ -7,4 +7,7 @@ COPY ./requirements/prod.txt /requirements.txt
 RUN pip install -r /requirements.txt
 COPY app /app
 
-CMD  ["uvicorn", "app.fast:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.fast:app", \
+        "--host", "0.0.0.0", \
+        "--port", "8000", \
+        "--workers", "3"]
