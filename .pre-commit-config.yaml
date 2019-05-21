@@ -29,6 +29,11 @@ repos:
       - id: pyupgrade
         args: ['--py36-plus',]
 
+  - repo: https://github.com/Trim21/find-trailing-comma
+    rev: v0.0.1
+    hooks:
+      - id: find-trailing-comma
+
   - repo: local
     hooks:
       - id: autoflake

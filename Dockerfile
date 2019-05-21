@@ -7,11 +7,8 @@ COPY ./requirements/prod.txt /requirements.txt
 RUN pip install -r /requirements.txt -i https://mirrors.ustc.edu.cn/pypi/web/simple
 COPY app /app
 
-#CMD ["uvicorn", "app.fast:app", "--workers", "3", \
-#        "--host", "0.0.0.0", "--port", "8000", \
-#        "--http", "httptools", "--loop", "uvloop", \
-#        "--lifespan", "off" \
-#    ]
+ARG DAO_COMMIT_SHA
+ENV COMMIT_SHA=$DAO_COMMIT_SHA
 
 CMD gunicorn app.fast:app \
         -w 3 -k uvicorn.workers.UvicornWorker \

@@ -8,7 +8,10 @@ from icalendar import Calendar, Event
 
 from app.responses import CalendarResponse
 
+from .view_ip import router as view_ip_router
+
 router = APIRouter()
+router.include_router(view_ip_router, prefix='/view_ip')
 
 
 @router.get(
