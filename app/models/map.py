@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List
+from typing import List, Optional, Union
 
 from pydantic import BaseModel
 
@@ -12,7 +12,7 @@ class SubjectTypeEnum(str, Enum):
     real = 'Real'
 
 
-class Relation(BaseModel):
+class Edges(BaseModel):
     id: str
     relation: str
     source: int
@@ -20,17 +20,18 @@ class Relation(BaseModel):
     map: int
 
 
-class Subject(BaseModel):
+class Nodes(BaseModel):
     id: int
     subject_id: int
     name: str
     name_cn: str
     image: str = 'lain.bgm.tv/img/no_icon_subject.png'
+    begin: Optional[Union[str, None]]
     subject_type: SubjectTypeEnum
     info: dict
     map: int
 
 
 class Map(BaseModel):
-    edges: List[Relation]
-    nodes: List[Subject]
+    edges: List[Edges]
+    nodes: List[Nodes]

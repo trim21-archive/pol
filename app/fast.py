@@ -54,6 +54,4 @@ for router in app.routes:
 
 @app.on_event('startup')
 async def setup():
-    print('startup')
     app.redis_pool = await setup_redis_pool()
-    print('after startup')

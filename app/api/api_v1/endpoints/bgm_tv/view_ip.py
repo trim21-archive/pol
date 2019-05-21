@@ -1,11 +1,10 @@
-from aioredis.commands import Redis
 from fastapi import APIRouter, Depends
 from peewee import DoesNotExist
 from peewee_async import Manager
 from starlette.responses import Response
 
 from app import curd
-from app.db.depends import get_db, get_redis
+from app.db.depends import get_db
 from app.models.map import Map
 from app.models.subject import Subject
 
@@ -22,21 +21,19 @@ async def bgm_calendar(subject_id: int, db: Manager = Depends(get_db)):
 async def bgm_ip_map(
     subject_id: int,
     db: Manager = Depends(get_db),
-    redis: Redis = Depends(get_redis),
+    # redis: Redis = Depends(get_redis),
 ):
     try:
-        r = await redis.get(f'map-subject-{subject_id}')
-
-        if r:
-            return r
-
+        # r = await redis.get(f'map-subject-{subject_id}')
+        # if r:
+        #     return r
         nodes, edges = await curd.map.get_by_subject_id(db, subject_id)
         print(nodes, edges)
         rd = format_data(
             [x.dict() for x in nodes],
             [x.dict() for x in edges],
         )
-        await redis.set(f'map-subject-{subject_id}', rd, expire=60 * 60 * 2)
+        # await redis.set(f'map-subject-{subject_id}', rd, expire=60 * 60 * 2)
         return rd
 
     except DoesNotExist:
@@ -47,6 +44,9 @@ def format_data(nodes, edges):
     r_nodes = {}
     r_edges = []
     for index, item in enumerate(nodes):
+        item['begin'] = item['info'].get(
+            '放送开始', [item['info'].get('发售日', [''])[0]]
+        )[0]
         item['subject_id'] = item['id']
         item['image'] = 'https://' + item.get(
             'image', 'lain.bgm.tv/img/no_icon_subject.png'

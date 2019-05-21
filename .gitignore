@@ -3,3 +3,5 @@
 .vscode
 *.pyc
 ics
+env
+source.sh
