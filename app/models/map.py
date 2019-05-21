@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Optional, Union
+from typing import List
 
 from pydantic import BaseModel
 
@@ -26,7 +26,6 @@ class Nodes(BaseModel):
     name: str
     name_cn: str
     image: str = 'lain.bgm.tv/img/no_icon_subject.png'
-    begin: Optional[Union[str, None]]
     subject_type: SubjectTypeEnum
     info: dict
     map: int

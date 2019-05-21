@@ -44,9 +44,6 @@ def format_data(nodes, edges):
     r_nodes = {}
     r_edges = []
     for index, item in enumerate(nodes):
-        item['begin'] = item['info'].get(
-            '放送开始', [item['info'].get('发售日', [''])[0]]
-        )[0]
         item['subject_id'] = item['id']
         item['image'] = 'https://' + item.get(
             'image', 'lain.bgm.tv/img/no_icon_subject.png'
