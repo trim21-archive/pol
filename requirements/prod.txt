@@ -11,7 +11,7 @@ uvicorn==0.7.1
 pymysql==0.9.3
 python-multipart==0.0.5
 email-validator==1.0.4
-sentry-asgi==0.1.5
+sentry-asgi==0.2.0
 requests-async==0.5.0
 uvloop==0.12.2; sys_platform == 'linux'
 httptools==0.0.13
