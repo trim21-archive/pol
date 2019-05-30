@@ -4,7 +4,7 @@
 pytz==2019.1
 icalendar==4.0.3
 mistune==0.8.4
-cython==0.29.7
+cython==0.29.9
 gunicorn[gevent]==19.9.0
 fastapi==0.21.0
 uvicorn==0.7.1
