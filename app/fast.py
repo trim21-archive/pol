@@ -4,9 +4,11 @@ from warnings import warn
 import sentry_sdk
 from fastapi import FastAPI
 from sentry_asgi import SentryMiddleware
+from starlette.middleware import sessions
 from starlette.requests import Request
 from starlette.responses import Response
 
+from app.api import bgm_tv_auto_tracker
 from app.api.api_v1.api import api_router
 from app.core import config
 from app.db.database import objects
@@ -20,16 +22,23 @@ app = FastAPI(
     redoc_url=None,
     openapi_url='/openapi.json',
     description='出于兴趣写的一些api，源码见'
-    '[github](https://github.com/Trim21/personal-website)\n\n'
+    '[GitHub](https://github.com/Trim21/personal-website)\n'
     f'当前版本[{config.COMMIT_SHA}](https://github.com/Trim21/personal-website/tree/{config.COMMIT_SHA})',
     version='0.0.1',
 )
 if config.DSN:
     sentry_sdk.init(dsn=config.DSN)
     app.add_middleware(SentryMiddleware)
-
+app.add_middleware(
+    sessions.SessionMiddleware, https_only=True, secret_key=config.SECRET_KEY
+)
 bind_deprecated_path(app)
 app.include_router(api_router, prefix='/api.v1')
+app.include_router(
+    bgm_tv_auto_tracker.router,
+    prefix='/bgm-tv-auto-tracker',
+    tags=['bgm-tv-auto-tracker'],
+)
 app.include_router(md2bbc_router)
 
 

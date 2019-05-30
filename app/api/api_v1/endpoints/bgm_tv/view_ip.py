@@ -11,7 +11,11 @@ from app.models.subject import Subject
 router = APIRouter()
 
 
-@router.get('/meta/subject/{subject_id}', response_model=Subject)
+@router.get(
+    '/meta/subject/{subject_id}',
+    response_model=Subject,
+    include_in_schema=False,
+)
 async def bgm_calendar(subject_id: int, db: Manager = Depends(get_db)):
     s = await curd.subject.get_by_id(db, subject_id)
     return s.dict()

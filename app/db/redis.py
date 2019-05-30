@@ -13,7 +13,7 @@ class PickleRedis(Redis):
             return pickle.loads(r)
 
     async def set(self, key, value, *, expire=0, pexpire=0, exist=None):
-        Redis.set(
+        await Redis.set(
             self,
             key,
             pickle.dumps(value),

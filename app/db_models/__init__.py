@@ -1,3 +1,4 @@
+import datetime
 import json
 
 import peewee as pw
@@ -100,3 +101,98 @@ class Info(S.BgmIpViewer):
     subject_id = pw.IntegerField(primary_key=True)
     key = pw.CharField()
     value = pw.CharField()
+
+
+class UserToken(S.BgmIpViewer):
+    user_id = pw.IntegerField(primary_key=True)
+    scope = pw.CharField(default='')
+    token_type = pw.CharField()
+    expires_in = pw.IntegerField()
+    auth_time = pw.IntegerField(
+        default=lambda: datetime.datetime.now().timestamp()
+    )
+    access_token = pw.FixedCharField(50)
+    refresh_token = pw.FixedCharField(50)
+    username = pw.CharField(default='')
+    nickname = pw.CharField(default='')
+    usergroup = pw.IntegerField(default=0)
+
+
+class BgmTvAutoTrackerAccessToken(S.BgmIpViewer):
+    user_id = pw.IntegerField(index=True)
+    access_token = pw.FixedCharField(index=True)
+
+
+class Ep(S.BgmIpViewer):
+    subject_id = pw.IntegerField(index=True)
+    ep_id = pw.IntegerField(primary_key=True)
+    name = pw.CharField(max_length=400)
+    episode = pw.CharField()
+
+
+class EpSource(S.BgmIpViewer):
+    class Meta:
+        primary_key = pw.CompositeKey('source', 'source_ep_id')
+        table_name = 'ep_source'
+
+    subject_id = pw.IntegerField(index=True)
+    source = pw.FixedCharField(max_length=40)
+    source_ep_id = pw.CharField()
+    bgm_ep_id = pw.IntegerField()
+    episode = pw.IntegerField()
+
+
+class BangumiSource(S.BgmIpViewer):
+    class Meta:
+        primary_key = pw.CompositeKey('source', 'bangumi_id')
+        table_name = 'bangumi_source'
+
+    source = pw.FixedCharField()
+    bangumi_id = pw.CharField()
+    subject_id = pw.IntegerField()
+
+
+class MissingBangumi(S.BgmIpViewer):
+    class Meta:
+        primary_key = pw.CompositeKey('source', 'bangumi_id')
+        table_name = 'missing_bangumi'
+
+    source = pw.FixedCharField()
+    bangumi_id = pw.CharField()
+
+
+class UserSubmitEpisode(S.BgmIpViewer):
+    class Meta:
+        table_name = 'user_submit_episode'
+
+    source = pw.FixedCharField(max_length=40)
+    source_ep_id = pw.CharField()
+    bgm_ep_id = pw.IntegerField()
+    episode = pw.IntegerField()
+    user_id = pw.IntegerField()
+    create_time = pw.DateTimeField(default=datetime.datetime.now)
+    modify_time = pw.DateTimeField(default=datetime.datetime.now)
+
+
+class UserSubmitBangumi(S.BgmIpViewer):
+    class Meta:
+        table_name = 'user_submit_bangumi'
+
+    source = pw.FixedCharField(max_length=40)
+    subject_id = pw.IntegerField()
+    bangumi_id = pw.CharField()
+    user_id = pw.IntegerField()
+    create_time = pw.DateTimeField(default=datetime.datetime.now)
+    modify_time = pw.DateTimeField(default=datetime.datetime.now)
+
+
+if __name__ == '__main__':
+    print('main')
+    with S.BgmIpViewer._meta.database.allow_sync():
+        EpSource.create_table()
+        UserToken.create_table()
+        BgmTvAutoTrackerAccessToken.create_table()
+        BangumiSource.create_table()
+        MissingBangumi.create_table()
+        UserSubmitBangumi.create_table()
+        UserSubmitEpisode.create_table()
