@@ -18,12 +18,6 @@ repos:
       - id: fix-encoding-pragma
         args: [--remove]
 
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v1.16.0
-    hooks:
-      - id: pyupgrade
-        args: ['--py36-plus',]
-
   - repo: https://github.com/Trim21/find-trailing-comma
     rev: v0.0.1
     hooks:
@@ -31,13 +25,24 @@ repos:
 
   - repo: local
     hooks:
+      - id: pyupgrade
+        name: pyupgrade
+        entry: pyupgrade
+        require_serial: true
+        language: python
+        types: [python]
+        args: ['--py36-plus',]
+
       - id: autoflake
         name: autoflake
         entry: autoflake
         require_serial: true
         language: python
         types: [python]
-        args: ['--in-place', '--remove-unused-variables', '--remove-all-unused-imports']
+        args: ['--in-place',
+               '--remove-unused-variables',
+               '--remove-all-unused-imports']
+
       - id: isort
         name: isort
         entry: isort
