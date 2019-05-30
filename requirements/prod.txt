@@ -16,7 +16,7 @@ requests-async==0.5.0
 uvloop==0.12.2; sys_platform == 'linux'
 httptools==0.0.13
 gunicorn==19.9.0
-peewee-async==0.6.0a
+peewee-async==0.6.3a0
 peewee>=3.9.0,<4.0.0
 aiomysql==0.0.20
 aioredis==1.2.0
