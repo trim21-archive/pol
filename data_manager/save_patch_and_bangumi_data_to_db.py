@@ -2,23 +2,27 @@ import json
 import pathlib
 from os import path
 
-import tqdm
+import requests
 
 from app.db import database
 from app.db_models import BangumiSource, MissingBangumi
 
 base_dir = pathlib.Path(path.dirname(__file__))
 
-# data = requests.get(
-#     'https://cdn.jsdelivr.net/gh/bangumi-data/bangumi-data/dist/data.json'
-# ).json()
-with (base_dir / '..' / 'bangumi-data' / 'dist' /
-      'data.json').open('r', encoding='utf-8') as f:
-    data = json.load(f)
+data_json = base_dir / '..' / 'bangumi-data' / 'dist' / 'data.json'
+
+if data_json.exists():
+    with data_json.open('r', encoding='utf-8') as f:
+        data = json.load(f)
+else:
+    data = requests.get(
+        'https://cdn.jsdelivr.net/gh/bangumi-data/bangumi-data/dist/data.json'
+    ).json()
 
 
 def save_bangumi_data_to_db():
-    for item in tqdm.tqdm(data['items']):
+    l = []
+    for item in data['items']:
         d = {'title': item['titleTranslate'].get('zh-Hans', None)}
         if not d['title']:
             d['title'] = item['title']
@@ -40,19 +44,24 @@ def save_bangumi_data_to_db():
             if site_bangumi.get('id', None):
                 d['subject_id'] = site_bangumi.get('id', None)
                 if d.get('bangumi_id'):
-                    BangumiSource.replace(
-                        bangumi_id=d['bangumi_id'],
-                        source=d['website'],
-                        subject_id=d['subject_id'],
-                    ).execute()
+                    l.append(
+                        dict(
+                            bangumi_id=d['bangumi_id'],
+                            source=d['website'],
+                            subject_id=d['subject_id'],
+                        )
+                    )
+    BangumiSource.insert_many(l).on_conflict(
+        preserve=(BangumiSource.subject_id, )
+    ).execute()
 
 
 def save_patch_to_db():
 
     with open(base_dir / 'patch.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
-
-    for item in tqdm.tqdm(data):
+    l = []
+    for item in data:
         # for item in items:
         website = item['website']
         if item.get('subject_id'):
@@ -67,17 +76,20 @@ def save_patch_to_db():
             bangumi_id = item['bangumiID']
         else:
             raise ValueError('item has no bangumi id')
-
-        BangumiSource.insert(
-            bangumi_id=bangumi_id,
-            source=website,
-            subject_id=subject_id,
-        ).on_conflict_replace('REPLACE',
-                              preserve=(BangumiSource.subject_id, )).execute()
+        l.append(
+            dict(
+                bangumi_id=bangumi_id,
+                source=website,
+                subject_id=subject_id,
+            )
+        )
         MissingBangumi.delete().where(
             MissingBangumi.source == website,
             MissingBangumi.bangumi_id == bangumi_id,
         ).execute()
+    BangumiSource.insert_many(l).on_conflict(
+        preserve=(BangumiSource.subject_id, )
+    ).execute()
 
 
 if __name__ == '__main__':
@@ -85,4 +97,4 @@ if __name__ == '__main__':
         # BangumiSource.create_table()
         # MissingBangumi.create_table()
         save_bangumi_data_to_db()
-        # save_patch_to_db()
+        save_patch_to_db()

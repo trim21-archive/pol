@@ -6,5 +6,5 @@ api_router = APIRouter()
 api_router.include_router(
     bgm_tv_auto_tracker.router,
     prefix='/bgm_tv_auto_tracker',
-    tags=['bgm-tv-auto-tracker', 'unstable'],
+    tags=['bgm_tv_spider-tv-auto-tracker', 'unstable'],
 )

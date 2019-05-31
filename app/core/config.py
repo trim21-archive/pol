@@ -31,7 +31,7 @@ assert len(SECRET_KEY) == 32
 class BgmTvAutoTracker:
     APP_ID = os.environ.get('BGM_TV_AUTO_TRACKER_APP_ID')
     APP_SECRET = os.environ.get('BGM_TV_AUTO_TRACKER_APP_SECRET')
-    callback_url = '{}://{}/bgm-tv-auto-tracker/api.v0/oauth_callback'.format(
+    callback_url = '{}://{}/bgm_tv_spider-tv-auto-tracker/api.v0/oauth_callback'.format(
         PROTOCOL, HOST
     )
     oauth_url = 'https://bgm.tv/oauth/authorize?' + urlencode({

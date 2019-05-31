@@ -2,7 +2,7 @@ pytz==2019.1
 icalendar==4.0.3
 mistune==0.8.4
 cython==0.29.9
-gunicorn[gevent]==19.9.0
+gunicorn==19.9.0
 fastapi==0.26.0
 uvicorn==0.7.1
 starlette==0.12.0
@@ -22,3 +22,13 @@ aioredis==1.2.0
 
 passlib[bcrypt]==1.7.1
 pyjwt==1.7.1
+
+# for spider
+
+scrapy-redis
+tqdm
+scrapy
+lxml
+python-dateutil
+
+leveldb; sys_platform == 'linux'

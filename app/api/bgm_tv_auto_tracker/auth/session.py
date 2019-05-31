@@ -8,7 +8,7 @@ from app.api.bgm_tv_auto_tracker.auth.scheme import cookie_scheme
 from app.db.depends import get_redis
 from app.db.redis import PickleRedis
 
-KEY_PREFIX = 'personal-website:bgm-tv-auto-tracker:session:'
+KEY_PREFIX = 'personal-website:bgm_tv_spider-tv-auto-tracker:session:'
 
 
 class SessionValue(BaseModel):
@@ -22,7 +22,9 @@ async def get_session(
 ) -> SessionValue:
     r = await redis.get(KEY_PREFIX + token)
     if not r:
-        raise HTTPException(401, 'you need to auth your bgm.tv account first')
+        raise HTTPException(
+            401, 'you need to auth your bgm_tv_spider.tv account first'
+        )
     return r
 
 

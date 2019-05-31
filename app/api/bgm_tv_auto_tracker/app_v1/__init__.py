@@ -103,5 +103,5 @@ async def get_bgm_tv_ep_id(
 
 
 @router.post('/collect_episode_info', include_in_schema=False)
-def collect_episode_info(info: BiliBiliSubmitInfo):
+async def collect_episode_info(info: BiliBiliSubmitInfo):
     return info.dict()

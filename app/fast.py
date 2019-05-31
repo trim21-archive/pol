@@ -23,7 +23,8 @@ app = FastAPI(
     openapi_url='/openapi.json',
     description='出于兴趣写的一些api，源码见'
     '[GitHub](https://github.com/Trim21/personal-website)\n'
-    f'当前版本[{config.COMMIT_SHA}](https://github.com/Trim21/personal-website/tree/{config.COMMIT_SHA})',
+    f'当前版本[{config.COMMIT_SHA}]'
+    f'(https://github.com/Trim21/personal-website/tree/{config.COMMIT_SHA})',
     version='0.0.1',
 )
 if config.DSN:
@@ -36,8 +37,8 @@ bind_deprecated_path(app)
 app.include_router(api_router, prefix='/api.v1')
 app.include_router(
     bgm_tv_auto_tracker.router,
-    prefix='/bgm-tv-auto-tracker',
-    tags=['bgm-tv-auto-tracker'],
+    prefix='/bgm_tv_spider-tv-auto-tracker',
+    tags=['bgm_tv_spider-tv-auto-tracker'],
 )
 app.include_router(md2bbc_router)
 
@@ -56,9 +57,8 @@ async def server_version_middleware(request: Request, call_next):
 
 
 for router in app.routes:
-    if router.path not in ['/', '/openapi.json']:
-        if not asyncio.iscoroutinefunction(router.endpoint):
-            warn(f'{router.path} is not async function')
+    if not asyncio.iscoroutinefunction(router.endpoint):
+        warn(f'{router.path} {router.endpoint} is not async function')
 
 
 @app.on_event('startup')

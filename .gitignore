@@ -1,7 +1,10 @@
 # Created by .ignore support plugin (hsz.mobi)
 .idea
 .vscode
-*.pyc
 ics
 env
 source.sh
+.scrapy
+a.html
+*.py[cod]
+cron

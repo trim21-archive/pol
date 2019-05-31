@@ -15,7 +15,7 @@ router.include_router(view_ip_router, prefix='/view_ip')
 
 
 @router.get(
-    '/calendar/bgm.tv/{user_id}',
+    '/calendar/bgm_tv_spider.tv/{user_id}',
     summary='iCalendar for watching bangumi',
     response_class=CalendarResponse
 )
