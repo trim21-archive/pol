@@ -6,13 +6,16 @@ import requests
 
 from bgm_tv_spider import settings
 
-redis_client = redis.Redis(
-    host=settings.REDIS_HOST, db=0, **settings.REDIS_PARAMS
-)
 
-r = requests.get('http://mirror.bgm.rin.cat/wiki')
+def main():
+    redis_client = redis.Redis(
+        host=settings.REDIS_HOST, db=0, **settings.REDIS_PARAMS
+    )
 
-response = parsel.Selector(r.text)
+    r = requests.get('http://mirror.bgm.rin.cat/wiki')
+
+    response = parsel.Selector(r.text)
+    redis_client.lpush(settings.REDIS_START_URL_KEY, *parse(response))
 
 
 def parse(response: parsel.Selector):
@@ -28,11 +31,8 @@ def parse(response: parsel.Selector):
         if '/subject/' in link:
             url = urllib.parse.urljoin('http://mirror.bgm.rin.cat/wiki', link)
             print(url)
-            redis_client.lpush(
-                settings.REDIS_START_URL_KEY,
-                urllib.parse.urljoin('http://mirror.bgm.rin.cat/wiki', link)
-            )
+            yield
 
 
 if __name__ == '__main__':
-    parse(response)
+    main()
