@@ -25,7 +25,7 @@ pyjwt==1.7.1
 
 # for spider
 
-scrapy-redis
+scrapy-redis==0.6.8
 tqdm
 scrapy
 lxml
