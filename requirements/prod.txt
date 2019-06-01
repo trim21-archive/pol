@@ -27,7 +27,7 @@ pyjwt==1.7.1
 
 scrapy-redis
 tqdm
-scrapy
+scrapy==1.6.0
 lxml
 python-dateutil
 
