@@ -1,3 +1,3 @@
 [submodule "bangumi-data"]
 	path = bangumi-data
-	url = git@github.com:bangumi-data/bangumi-data.git
+	url = https://github.com/bangumi-data/bangumi-data.git
