@@ -31,4 +31,4 @@ scrapy
 lxml
 python-dateutil
 
-leveldb; sys_platform == 'linux'
+leveldb==0.194; sys_platform == 'linux'
