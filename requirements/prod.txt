@@ -29,6 +29,6 @@ scrapy-redis
 tqdm
 scrapy
 lxml
-python-dateutil
+python-dateutil==2.8.0
 
 leveldb; sys_platform == 'linux'
