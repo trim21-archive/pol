@@ -98,6 +98,8 @@ DUPEFILTER_KEY = 'bgm_tv_spider:dupefilter'
 SCHEDULER_PERSIST = False
 SCHEDULER = 'scrapy_redis.scheduler.Scheduler'
 SCHEDULER_QUEUE_KEY = 'bgm_tv_spider:scheduler'
+REDIS_PARAMS = {}
+REDIS_START_URL_KEY = 'bgm_tv_spider:start_urls'
 
 if 'windows' in platform.platform().lower():
     HTTPCACHE_ENABLED = True

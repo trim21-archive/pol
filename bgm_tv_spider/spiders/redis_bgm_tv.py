@@ -4,6 +4,7 @@ from typing import List
 from scrapy import Request
 from scrapy_redis.spiders import RedisSpider
 
+from bgm_tv_spider import settings
 from bgm_tv_spider.items import EpItem, RelationItem, SubjectItem, TagItem
 from bgm_tv_spider.myTypes import TypeResponse, TypeSelectorList
 
@@ -24,7 +25,7 @@ collector = {
 class BgmTvSpider(RedisSpider):
     name = 'redis_bgm_tv'
     allowed_domains = ['mirror.bgm.rin.cat']
-    redis_key = 'bgm_tv_spider:start_urls'
+    redis_key = settings.REDIS_START_URL_KEY
     redis_batch_size = 50
 
     def parse(self, response: TypeResponse):
