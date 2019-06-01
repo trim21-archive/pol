@@ -119,3 +119,4 @@ else:
     MYSQL_DBNAME = os.environ.get('MYSQL_DBNAME')
     MYSQL_USER = os.environ.get('MYSQL_USER')
     MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD')
+    REDIS_PARAMS = {'password': os.environ.get('REDIS_PASSWORD')}
