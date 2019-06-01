@@ -3,7 +3,7 @@ icalendar==4.0.3
 mistune==0.8.4
 cython==0.29.9
 gunicorn==19.9.0
-fastapi==0.26.0
+fastapi==0.27.0
 uvicorn==0.7.1
 starlette==0.12.0
 python-multipart==0.0.5 # for request body form-data parser
@@ -25,10 +25,8 @@ pyjwt==1.7.1
 
 # for spider
 
-scrapy-redis
-tqdm
-scrapy
-lxml
-python-dateutil
-
-leveldb; sys_platform == 'linux'
+scrapy-redis==0.6.8
+tqdm==4.32.1
+scrapy==1.6.0
+lxml==4.3.3
+python-dateutil==2.8.0
