@@ -4,7 +4,6 @@ from warnings import warn
 import sentry_sdk
 from fastapi import FastAPI
 from sentry_asgi import SentryMiddleware
-from starlette.middleware import sessions
 from starlette.requests import Request
 from starlette.responses import Response
 
@@ -30,9 +29,6 @@ app = FastAPI(
 if config.DSN:
     sentry_sdk.init(dsn=config.DSN)
     app.add_middleware(SentryMiddleware)
-app.add_middleware(
-    sessions.SessionMiddleware, https_only=True, secret_key=config.SECRET_KEY
-)
 bind_deprecated_path(app)
 app.include_router(api_router, prefix='/api.v1')
 app.include_router(
