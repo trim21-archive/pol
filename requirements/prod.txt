@@ -28,7 +28,7 @@ pyjwt==1.7.1
 scrapy-redis
 tqdm
 scrapy
-lxml
+lxml==4.3.3
 python-dateutil
 
 leveldb; sys_platform == 'linux'
