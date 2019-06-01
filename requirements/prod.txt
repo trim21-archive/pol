@@ -26,7 +26,7 @@ pyjwt==1.7.1
 # for spider
 
 scrapy-redis
-tqdm
+tqdm==4.32.1
 scrapy
 lxml
 python-dateutil
