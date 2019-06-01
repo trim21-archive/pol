@@ -8,12 +8,12 @@ from pydantic import BaseModel
 from starlette.exceptions import HTTPException
 
 from app import db_models
+from app.api.bgm_tv_auto_tracker.models import BiliBiliSubmitInfo
 from app.db.depends import get_db
 from app.db_models import BangumiSource
 from app.models.bangumi_source import BangumiSourceEnum
 
 from . import user_submit
-from .models import BiliBiliSubmitInfo
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/token')
 
@@ -34,7 +34,9 @@ class SubjectIdResponse(BaseModel):
 
 
 @router.get(
-    '/subject_id/{source}/{bangumi_id}', response_model=SubjectIdResponse
+    '/subject_id/{source}/{bangumi_id}',
+    response_model=SubjectIdResponse,
+    include_in_schema=False
 )
 async def get_subject_id(
     bangumi_id: str,
@@ -60,7 +62,7 @@ async def get_subject_id(
     return resp
 
 
-@router.get('/eps/{source}/{bangumi_id}')
+@router.get('/eps/{source}/{bangumi_id}', include_in_schema=False)
 async def get_eps(
     source_ep_id: str,
     source: BangumiSourceEnum,
@@ -85,7 +87,11 @@ class EpIdResponse(BaseModel):
     episode: int
 
 
-@router.get('/ep_id/{source}/{source_ep_id}', response_model=EpIdResponse)
+@router.get(
+    '/ep_id/{source}/{source_ep_id}',
+    response_model=EpIdResponse,
+    include_in_schema=False
+)
 async def get_bgm_tv_ep_id(
     source_ep_id: str,
     source: BangumiSourceEnum,

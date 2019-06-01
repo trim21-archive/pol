@@ -1,4 +1,3 @@
-from collections import defaultdict
 from typing import Union
 
 from twisted.enterprise import adbapi
@@ -9,11 +8,8 @@ from bgm_tv_spider.models import Ep, Relation, Subject, Tag
 
 
 class MysqlPipeline:
-    item_container = defaultdict(list)
-
     def open_spider(self, spider):
         self.dbpool = adbapi.ConnectionPool(
-            # "MySQLdb",
             'pymysql',
             db=settings.MYSQL_DBNAME,
             host=settings.MYSQL_HOST,
@@ -28,93 +24,53 @@ class MysqlPipeline:
         item: Union[SubjectItem, RelationItem, TagItem, EpItem],
         spider,
     ):
-        append_result = self.append(item)
-        if append_result:
-            query = self.dbpool.runInteraction(
-                self.do_insert,
-                item,
-                self.item_container[item.__class__.__name__],
-            )
-            # 处理异常
-            query.addErrback(self.handle_error, item, spider)
+        query = self.dbpool.runInteraction(self.do_insert, item)
+        # 处理异常
+        query.addErrback(self.handle_error, item, spider)
         return item
 
-    @staticmethod
-    def handle_error(failure, item, spider):
+    def handle_error(self, failure, item, spider):
         # 处理异步插入的异常
         print(item)
         print(failure)
 
-    def append(self, item):
-        item_class_name = item.__class__.__name__
-
+    def do_insert(self, cursor, item):
+        # 会从dbpool取出cursor
+        # 执行具体的插入
         if isinstance(item, SubjectItem):
             if not item['name']:
                 item['name'] = item['name_cn']
-            self.item_container[item_class_name].append(dict(**item))
-            return len(self.item_container[item_class_name]) >= 20
+            # if not item['name_cn']:
+            #     item['name_cn'] = item['name']
+            insert_sql = Subject.insert(**item).on_conflict(
+                preserve=(
+                    Subject.name_cn,
+                    Subject.name,
+                    Subject.image,
+                    Subject.tags,
+                    Subject.locked,
+                    Subject.info,
+                    Subject.score_details,
+                    Subject.score,
+                    Subject.wishes,
+                    Subject.done,
+                    Subject.doings,
+                    Subject.on_hold,
+                    Subject.dropped,
+                ),
+            ).sql()
         elif isinstance(item, RelationItem):
-            self.item_container[item_class_name].append(
-                dict(id=f'{item["source"]}-{item["target"]}', **item)
-            )
-            # return len(self.item_container[item_class_name]) >= 100
+            insert_sql = Relation.insert(
+                id=f'{item["source"]}-{item["target"]}', **item
+            ).on_conflict(preserve=(Relation.relation, ), ).sql()
         elif isinstance(item, TagItem):
-            self.item_container[item_class_name].append(dict(**item))
-            # return len(self.item_container[item_class_name]) >= 100
+            insert_sql = Tag.insert(
+                **item
+            ).on_conflict(preserve=(Tag.count, ), ).sql()
         elif isinstance(item, EpItem):
-            self.item_container[item_class_name].append(dict(**item))
-            # return len(self.item_container[item_class_name]) >= 100
+            insert_sql = Ep.insert(**item).on_conflict(
+                preserve=(Ep.subject_id, Ep.name, Ep.episode)
+            ).sql()
         else:
             return
-        return len(self.item_container[item_class_name]) >= 50
-
-    def do_insert(self, cursor, item, container):
-        item_class_name = item.__class__.__name__
-
-        insert_sql = do_bulk_upsert(
-            item_class_name,
-            container=self.item_container[item_class_name],
-        )
-        if insert_sql:
-            cursor.execute(*insert_sql)
-        self.item_container[item_class_name] = list()
-
-    def close_spider(self, spider):
-        for key, container in self.item_container.items():
-            insert_sql = do_bulk_upsert(key, container)
-            if insert_sql:
-                self.dbpool.runQuery(*insert_sql)
-
-
-def do_bulk_upsert(item_class_name, container: list):
-    if not container:
-        return
-    if item_class_name == SubjectItem.__name__:
-        return Subject.insert_many(container).on_conflict(
-            preserve=(
-                Subject.name_cn,
-                Subject.name,
-                Subject.image,
-                Subject.tags,
-                Subject.locked,
-                Subject.info,
-                Subject.score_details,
-                Subject.score,
-                Subject.wishes,
-                Subject.done,
-                Subject.doings,
-                Subject.on_hold,
-                Subject.dropped,
-            ),
-        ).sql()
-    if item_class_name == RelationItem.__name__:
-        return Relation.insert_many(container).on_conflict(
-            preserve=(Relation.relation, ),
-        ).sql()
-    if item_class_name == TagItem.__name__:
-        return Tag.insert_many(container).on_conflict(preserve=(Tag.count,
-                                                                ), ).sql()
-    if item_class_name == EpItem.__name__:
-        return Ep.insert_many(container).on_conflict(
-            preserve=(Ep.subject_id, Ep.name, Ep.episode)
-        ).sql()
+        cursor.execute(*insert_sql)

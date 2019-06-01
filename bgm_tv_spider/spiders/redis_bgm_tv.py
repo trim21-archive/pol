@@ -1,13 +1,10 @@
-import os
 from collections import defaultdict
 from typing import List
 
-import peewee as pw
-import scrapy.downloadermiddlewares.defaultheaders
 from scrapy import Request
+from scrapy_redis.spiders import RedisSpider
 
 from bgm_tv_spider.items import EpItem, RelationItem, SubjectItem, TagItem
-from bgm_tv_spider.models import Subject
 from bgm_tv_spider.myTypes import TypeResponse, TypeSelectorList
 
 
@@ -24,27 +21,38 @@ collector = {
 }
 
 
-class BgmTvSpider(scrapy.Spider):
-    name = 'bgm_tv'
-    allowed_domains = ['mirror.bgm_tv_spider.rin.cat']
-    start_urls = []
-
-    def start_requests(self):
-        start = int(os.getenv('SPIDER_START', '1'))
-        end = os.getenv(
-            'SPIDER_END',
-            str(Subject.select(pw.fn.MAX(Subject.id)).scalar() + 2000),
-        )
-        end = int(end)
-        if os.getenv('SPIDER_DONT_CACHE'):
-            meta = {'dont_cache': True}
-        else:
-            meta = {}
-        for i in range(start, end):
-            yield Request(url_from_id(i), meta=meta)
+class BgmTvSpider(RedisSpider):
+    name = 'redis_bgm_tv'
+    allowed_domains = ['mirror.bgm.rin.cat']
+    redis_key = 'bgm_tv_spider:start_urls'
+    redis_batch_size = 50
 
     def parse(self, response: TypeResponse):
         subject_id = int(response.url.split('/')[-1])
+        if '502 Bad Gateway' in response.text:
+            if response.meta.get('delay_request'):
+                self.logger.error(
+                    '502 content, status: %s %s %s',
+                    response.status,
+                    response.meta,
+                    response.url,
+                )
+                self.logger.info('Retry request in a few seconds...')
+            # d = defer.Deferred()
+            # reactor.callLater(
+            #     5,
+            #     d.callback,
+            yield Request(
+                url=response.url,
+                meta={'dont_cache': True, 'delay_request': 5},
+                dont_filter=True,
+                callback=self.parse
+            )
+            return
+            # )
+            # What? Are we returning a deferred? That's crazy!
+            # return d
+
         if '出错了' not in response.text:
             subject_item = SubjectItem()
             if '条目已锁定' in response.text:
@@ -52,11 +60,17 @@ class BgmTvSpider(scrapy.Spider):
                 subject_item['locked'] = True
 
             subject_type = response.xpath(
-                '//*[@id="panelInterestWrapper"]//div[contains(@class, '
-                '"global_score")]'
+                '//*[@id="panelInterestWrapper"]'
+                '//div[contains(@class,"global_score")]'
                 '/div/small[contains(@class, "grey")]/text()'
             ).extract_first()
-
+            if not subject_type:
+                with open(
+                    '.scrapy/debug/' + response.url.split('/')[-1] + '.html',
+                    'w',
+                    encoding='utf8'
+                ) as f:
+                    f.write(response.text)
             subject_item['subject_type'] = subject_type.split()[1]
             if subject_item['subject_type'] == 'Anime':
                 yield from get_ep_list(response, subject_id)

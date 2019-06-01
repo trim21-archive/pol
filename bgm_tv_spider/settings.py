@@ -1,19 +1,5 @@
 import os
 import platform
-import sys
-
-# Override the default request headers:
-import scrapy
-
-# pymysql.install_as_MySQLdb()
-# Scrapy settings for tutorial project
-#
-# For simplicity, this file contains only settings considered important or
-# commonly used. You can find more settings consulting the documentation:
-#
-#     https://doc.scrapy.org/en/latest/topics/settings.html
-#     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
-#     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
 BOT_NAME = 'bgm_tv_spider'
 LOG_LEVEL = 'INFO'
@@ -31,25 +17,14 @@ FEED_EXPORT_ENCODING = 'utf-8'
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 CONCURRENT_REQUESTS = 16
 
-# Configure a delay for requests for the same website (default: 0)
-# See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
-# See also autothrottle settings and docs
-# DOWNLOAD_DELAY = 0.1
-# The download delay setting will honor only one of:
-# CONCURRENT_REQUESTS_PER_DOMAIN = 16
-# CONCURRENT_REQUESTS_PER_IP = 16
-
-# Disable cookies (enabled by default)
-# COOKIES_ENABLED = False
-
-# Disable Telnet Console (enabled by default)
-# TELNETCONSOLE_ENABLED = False
-
+# Override the default request headers:
 DEFAULT_REQUEST_HEADERS = {
     # 'Accept-Encoding': 'gzip, deflate, br',
-    'User-Agent': f'bgm_tv_spider-ip-viewer bgm_tv_spider '
-    f'scrapy {scrapy.__version__} python {sys.version} '
-    f'see github.com/Trim21/bgm_tv_spider-ip-viewer/ for more details',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+    'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36',
+    # 'User-Agent': f'bgm_tv_spider-ip-viewer bgm_tv_spider '
+    # f'scrapy {scrapy.__version__} python {sys.version} '
+    # f'see github.com/Trim21/bgm_tv_spider-ip-viewer/ for more details',
     'Accept-Encoding': 'gzip, deflate',
 }
 
@@ -57,6 +32,7 @@ DEFAULT_REQUEST_HEADERS = {
 # See https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 SPIDER_MIDDLEWARES = {
     #    'tutorial.middlewares.TutorialSpiderMiddleware': 543,
+    'bgm_tv_spider.middlewares.DelayedRequestsMiddleware': 233,
     'scrapy.spidermiddlewares.httperror.HttpErrorMiddleware': None,
     'scrapy.spidermiddlewares.offsite.OffsiteMiddleware': None,
     'scrapy.spidermiddlewares.referer.RefererMiddleware': None,
@@ -69,18 +45,12 @@ SPIDER_MIDDLEWARES = {
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-    # 'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware
-    # ': None,
-    # 'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware'
-    # : None,
-    # 'scrapy.downloadermiddlewares.retry.RetryMiddleware'
-    # : None,
-    # 'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware
-    # ': None,
-    # 'scrapy.downloadermiddlewares.redirect.RedirectMiddleware'
-    # : None,
-    # 'scrapy.downloadermiddlewares.stats.DownloaderStats'
-    # : None,
+    # 'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware': None,
+    # 'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware': None,
+    # 'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': None,
+    # 'scrapy.downloadermiddlewares.redirect.RedirectMiddleware': None,
+    # 'scrapy.downloadermiddlewares.stats.DownloaderStats': None,
+    # 'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
     'scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware': None,
     'scrapy.downloadermiddlewares.httpauth.HttpAuthMiddleware': None,
     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
@@ -97,40 +67,55 @@ EXTENSIONS = {
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    # 'bgm_tv_spider.pipelines.MongoDBPipeline': 300,
     'bgm_tv_spider.pipelines.MysqlPipeline': 400,
 }
+# DEPTH_PRIORITY = 50
+RETRY_TIMES = 5
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
 AUTOTHROTTLE_ENABLED = True
 # The initial download delay
-AUTOTHROTTLE_START_DELAY = 1
+AUTOTHROTTLE_START_DELAY = 10
 # The maximum download delay to be set in case of high latencies
-AUTOTHROTTLE_MAX_DELAY = 5
+AUTOTHROTTLE_MAX_DELAY = 60
 # The average number of requests Scrapy should be sending in parallel to
 # each remote server
 AUTOTHROTTLE_TARGET_CONCURRENCY = 8
 # Enable showing throttling stats for every response received:
-AUTOTHROTTLE_DEBUG = True
-DOWNLOAD_TIMEOUT = 30
+AUTOTHROTTLE_DEBUG = False
+DOWNLOAD_TIMEOUT = 60
 # Enable and configure HTTP caching (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 # #httpcache-middleware-settings
-HTTPCACHE_ENABLED = True
-HTTPCACHE_EXPIRATION_SECS = 60 * 60 * 24 * 14  # 2 weeks
-HTTPCACHE_DIR = 'httpcache'
-HTTPCACHE_GZIP = True
-HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.DbmCacheStorage'
 # HTTPCACHE_IGNORE_HTTP_CODES = []
+
+# redis-scrapy
+DUPEFILTER_DEBUG = True
+DUPEFILTER_CLASS = 'scrapy_redis.dupefilter.RFPDupeFilter'
+DUPEFILTER_KEY = 'bgm_tv_spider:dupefilter'
+# import scrapy_redis.scheduler
+# scrapy_redis.scheduler.Scheduler
+SCHEDULER_PERSIST = False
+SCHEDULER = 'scrapy_redis.scheduler.Scheduler'
+SCHEDULER_QUEUE_KEY = 'bgm_tv_spider:scheduler'
+
 if 'windows' in platform.platform().lower():
+    HTTPCACHE_ENABLED = True
+    HTTPCACHE_EXPIRATION_SECS = 60 * 60 * 24 * 14  # 2 weeks
+    HTTPCACHE_DIR = 'httpcache'
+    HTTPCACHE_GZIP = True
+    HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.DbmCacheStorage'
+
     MYSQL_HOST = 'bgmi.acg.tools'
     MYSQL_DBNAME = 'bgm_ip_viewer'
     MYSQL_USER = 'root'
     MYSQL_PASSWORD = 'password'
+    REDIS_HOST = '192.168.1.4'
+
 else:
+    HTTPCACHE_ENABLED = False
+    REDIS_HOST = os.environ.get('REDIS_HOST')
     MYSQL_HOST = os.environ.get('MYSQL_HOST')
     MYSQL_DBNAME = os.environ.get('MYSQL_DBNAME')
     MYSQL_USER = os.environ.get('MYSQL_USER')
     MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD')
-    # import scrapy.extensions.httpcache
-    HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.LeveldbCacheStorage'

@@ -1,0 +1,14 @@
+FROM python:3.7
+LABEL MAINTAINER="Trim21 <Trim21me@gmail.com>"
+WORKDIR /
+
+COPY ./requirements/prod.txt /requirements.txt
+RUN pip install -r /requirements.txt -i https://mirrors.ustc.edu.cn/pypi/web/simple
+COPY scrapy.cfg /scrapy.cfg
+COPY bgm_tv_spider /bgm_tv_spider
+COPY app /app
+
+ARG DAO_COMMIT_SHA
+ENV COMMIT_SHA=$DAO_COMMIT_SHA
+
+CMD python -m scrapy crawl redis_bgm_tv

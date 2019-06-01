@@ -28,6 +28,7 @@ router = APIRouter()
 @router.get(
     '/auth',
     description='redirect user to bgm_tv_spider.tv OAuth page',
+    include_in_schema=False,
 )
 async def auth_redirect():
     return RedirectResponse(config.BgmTvAutoTracker.oauth_url)
@@ -134,6 +135,7 @@ class RefreshResponse(BaseModel):
     '/refresh',
     description='bgm_tv_spider.tv OAuth Callback',
     response_model=RefreshResponse,
+    include_in_schema=False,
 )
 async def auth_redirect(
     db: Manager = Depends(get_db),
@@ -180,7 +182,7 @@ async def auth_redirect(
         raise e
 
 
-@router.get('/me', response_model=AuthResponse)
+@router.get('/me', response_model=AuthResponse, include_in_schema=False)
 async def get_my_user_info(
     user: db_models.UserToken = Depends(get_current_user),
 ):

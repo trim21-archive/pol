@@ -19,7 +19,7 @@ class ReportMissingBangumiValidator(BaseModel):
     website: BangumiSourceEnum
 
 
-@router.post('/missing_bangumi')
+@router.post('/missing_bangumi', include_in_schema=False)
 async def report_missing_bangumi(
     data: ReportMissingBangumiValidator,
     user: db_models.UserToken = Depends(get_current_user),
