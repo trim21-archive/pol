@@ -38,11 +38,10 @@ app.include_router(
 )
 app.include_router(md2bbc_router)
 
-
-@app.middleware('http')
-async def db_session_middleware(request: Request, call_next):
-    request.state.db = objects
-    return await call_next(request)
+# @app.middleware('http')
+# async def db_session_middleware(request: Request, call_next):
+#     request.state.db = objects
+#     return await call_next(request)
 
 
 @app.middleware('http')
@@ -59,4 +58,5 @@ for router in app.routes:
 
 @app.on_event('startup')
 async def setup():
+    app.objects = objects
     app.redis_pool = await setup_redis_pool()

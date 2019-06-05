@@ -8,3 +8,4 @@ source.sh
 a.html
 *.py[cod]
 dags
+.mypy_cache

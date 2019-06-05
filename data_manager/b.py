@@ -50,17 +50,18 @@ for item in bilibili_collection.find({}):
     )
     if len(subject_json['eps']) == len(item['epList']):
         for i in range(len(subject_json['eps'])):
-            episode_map_collection.update_one({
-                '_id': subject_json['eps'][i]['id'],
-            }, {
-                '$set': {
-                    'media_id': item['mediaInfo']['media_id'],
-                    'ep_id': item['epList'][i]['ep_id'],
-                    'bgm_tv_ep_id': subject_json['eps'][i]['id'],
-                    'index': item['epList'][i]['index'],
-                }
-            },
-                                              upsert=True)
+            episode_map_collection.update_one(
+                {'_id': subject_json['eps'][i]['id']},
+                {
+                    '$set': {
+                        'media_id': item['mediaInfo']['media_id'],
+                        'ep_id': item['epList'][i]['ep_id'],
+                        'bgm_tv_ep_id': subject_json['eps'][i]['id'],
+                        'index': item['epList'][i]['index'],
+                    }
+                },
+                upsert=True,
+            )
     else:
         pass
         # print(i['title'], item['mediaInfo']['media_id'])

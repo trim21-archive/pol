@@ -70,7 +70,7 @@ class UserInfo(BaseModel):
     description='bgm_tv_spider.tv OAuth callback',
     include_in_schema=False,
 )
-async def auth_redirect(
+async def oauth_callback(
     code: str,
     request: Request,
     db: Manager = Depends(get_db),
@@ -137,7 +137,7 @@ class RefreshResponse(BaseModel):
     response_model=RefreshResponse,
     include_in_schema=False,
 )
-async def auth_redirect(
+async def refresh_token(
     db: Manager = Depends(get_db),
     current_user: db_models.UserToken = Depends(get_current_user),
 ):

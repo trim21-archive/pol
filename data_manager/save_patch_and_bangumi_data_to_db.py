@@ -21,7 +21,7 @@ else:
 
 
 def save_bangumi_data_to_db():
-    l = []
+    bangumi_data_item_list = []
     for item in data['items']:
         d = {'title': item['titleTranslate'].get('zh-Hans', None)}
         if not d['title']:
@@ -44,14 +44,11 @@ def save_bangumi_data_to_db():
             if site_bangumi.get('id', None):
                 d['subject_id'] = site_bangumi.get('id', None)
                 if d.get('bangumi_id'):
-                    l.append(
-                        dict(
-                            bangumi_id=d['bangumi_id'],
-                            source=d['website'],
-                            subject_id=d['subject_id'],
-                        )
-                    )
-    BangumiSource.insert_many(l).on_conflict(
+                    bangumi_data_item_list.append({
+                        'bangumi_id': d['bangumi_id'], 'source': d['website'],
+                        'subject_id': d['subject_id']
+                    })
+    BangumiSource.insert_many(bangumi_data_item_list).on_conflict(
         preserve=(BangumiSource.subject_id, )
     ).execute()
 
@@ -60,7 +57,7 @@ def save_patch_to_db():
 
     with open(base_dir / 'patch.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
-    l = []
+    patch_data_item_list = []
     for item in data:
         # for item in items:
         website = item['website']
@@ -76,18 +73,16 @@ def save_patch_to_db():
             bangumi_id = item['bangumiID']
         else:
             raise ValueError('item has no bangumi id')
-        l.append(
-            dict(
-                bangumi_id=bangumi_id,
-                source=website,
-                subject_id=subject_id,
-            )
-        )
+        patch_data_item_list.append({
+            'bangumi_id': bangumi_id,
+            'source': website,
+            'subject_id': subject_id,
+        })
         MissingBangumi.delete().where(
             MissingBangumi.source == website,
             MissingBangumi.bangumi_id == bangumi_id,
         ).execute()
-    BangumiSource.insert_many(l).on_conflict(
+    BangumiSource.insert_many(patch_data_item_list).on_conflict(
         preserve=(BangumiSource.subject_id, )
     ).execute()
 

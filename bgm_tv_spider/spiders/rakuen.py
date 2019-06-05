@@ -146,10 +146,10 @@ def parse_content(node: Selector):
                     s += alt
                     continue
             elif item.root.tag == 'div':
-                s += unicodedata.normalize('NFKD',
-                                           item.get().strip()).replace(
-                                               '<br>\r\n', '\n'
-                                           )
+                s += unicodedata.normalize(
+                    'NFKD',
+                    item.get().strip(),
+                ).replace('<br>\r\n', '\n')
             else:
                 s += item.get().strip()
             # continue

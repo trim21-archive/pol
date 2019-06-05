@@ -84,7 +84,7 @@ def get_translate_or_raw_title(b: dict):
 
 
 if __name__ == '__main__':
-    l = []
+    item_list = []
     for item in data:
         website = item['website']
         try:
@@ -104,10 +104,10 @@ if __name__ == '__main__':
                     )
                     f.write('\n')
             else:
-                l.append(item)
+                item_list.append(item)
         except FileNotFoundError as e:
-            l.append(item)
+            item_list.append(item)
             print(e)
     #
     with open(server_dir / 'patch.json', 'w', encoding='utf8') as f:
-        json.dump(l, f, ensure_ascii=False, indent=2)
+        json.dump(item_list, f, ensure_ascii=False, indent=2)

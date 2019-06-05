@@ -145,12 +145,15 @@ def pre_remove():
 
     for chunk in chunk_iter_list(list(range(SUBJECT_ID_START, SUBJECT_ID_END))):
         db_data = list(
-            Subject.select(Subject.id, Subject.subject_type,
-                           Subject.locked).where(
-                               Subject.id.in_(chunk)
-                               & (Subject.subject_type != 'Music')
-                               & (Subject.locked == 0)
-                           )
+            Subject.select(
+                Subject.id,
+                Subject.subject_type,
+                Subject.locked,
+            ).where(
+                Subject.id.in_(chunk)
+                & (Subject.subject_type != 'Music')
+                & (Subject.locked == 0)
+            )
         )
         for s in db_data:
             assert s.subject_type != 'Music'
@@ -167,8 +170,7 @@ def pre_remove():
         sources = Relation.select().where((
             ((Relation.source >= i) & (Relation.source < i + CHUNK_SIZE))
             | ((Relation.target >= i) & (Relation.target < i + CHUNK_SIZE))
-        )
-                                          & (Relation.removed == 0))
+        ) & (Relation.removed == 0))
 
         sources = list(sources)
 
@@ -179,9 +181,7 @@ def pre_remove():
             if not source_to_target[edge.target].get(edge.source):
                 relation_id_need_to_remove.add(edge.id)
 
-        for i, chunk in enumerate(
-            chunk_iter_list(list(relation_id_need_to_remove))
-        ):
+        for chunk in chunk_iter_list(list(relation_id_need_to_remove)):
             Relation.update(removed=1).where(Relation.id.in_(chunk)).execute()
     print('finish pre remove')
 
