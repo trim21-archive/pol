@@ -1,0 +1,44 @@
+language: generic
+
+os: linux
+
+# default mysql on xenial will by 5.7
+dist: xenial
+
+env:
+  global:
+    - MYSQL_HOST=127.0.0.1
+    - MYSQL_USER=root
+    - MYSQL_DB=bgm_ip_viewer
+    - REDIS_HOST=127.0.0.1
+
+cache:
+  pip: true
+  directories:
+    - $HOME/.cache/pip
+    - $HOME/.cache/pre-commit
+    - /opt/pyenv
+    - /opt/pyenv/versions/3.7.3
+
+services:
+  - mysql
+  - redis-server
+
+before_cache:
+  - rm -f $HOME/.cache/pip/log/debug.log
+
+before_install:
+  - mysql -e "CREATE DATABASE IF NOT EXISTS $MYSQL_DB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_general_ci;"
+  - mysql --database=$MYSQL_DB < ./tests_data/dump.sql
+  - bash scripts/install_python_with_pyenv.sh
+  - pip install -U pip
+
+install:
+  - pip install -q -r requirements/dev.txt
+  - pre-commit run --all-files
+
+script:
+  - PYTHONPATH=$PWD pytest
+
+after_success:
+  - codecov
