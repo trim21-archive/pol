@@ -26,7 +26,7 @@ class BgmTvSpider(RedisSpider):
     name = 'redis_bgm_tv'
     allowed_domains = ['mirror.bgm.rin.cat']
     redis_key = settings.REDIS_START_URL_KEY
-    redis_batch_size = 50
+    redis_batch_size = 10
 
     def parse(self, response: TypeResponse):
         subject_id = int(response.url.split('/')[-1])
@@ -39,10 +39,6 @@ class BgmTvSpider(RedisSpider):
                     response.url,
                 )
                 self.logger.info('Retry request in a few seconds...')
-            # d = defer.Deferred()
-            # reactor.callLater(
-            #     5,
-            #     d.callback,
             yield Request(
                 url=response.url,
                 meta={'dont_cache': True, 'delay_request': 5},
@@ -50,9 +46,6 @@ class BgmTvSpider(RedisSpider):
                 callback=self.parse
             )
             return
-            # )
-            # What? Are we returning a deferred? That's crazy!
-            # return d
 
         if '出错了' not in response.text:
             subject_item = SubjectItem()

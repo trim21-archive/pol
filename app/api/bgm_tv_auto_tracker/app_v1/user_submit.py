@@ -31,10 +31,7 @@ async def report_missing_bangumi(
             source=data.website,
             bangumi_id=data.bangumiID,
         )
-        return {
-            'status': 'error',
-            'detail': 'already has a bgm_tv_spider.tv subject id'
-        }
+        return {'status': 'error', 'detail': 'already has a bgm.tv subject id'}
     except pw.DoesNotExist:
         await db.execute(
             db_models.UserSubmitBangumi.replace(

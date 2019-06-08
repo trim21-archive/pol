@@ -33,8 +33,8 @@ bind_deprecated_path(app)
 app.include_router(api_router, prefix='/api.v1')
 app.include_router(
     bgm_tv_auto_tracker.router,
-    prefix='/bgm_tv_spider-tv-auto-tracker',
-    tags=['bgm_tv_spider-tv-auto-tracker'],
+    prefix='/bgm_r-tv-auto-tracker',
+    tags=['bgm-tv-auto-tracker'],
 )
 app.include_router(md2bbc_router)
 
