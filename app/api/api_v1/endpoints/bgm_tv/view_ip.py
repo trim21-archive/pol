@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from peewee import DoesNotExist
 from peewee_async import Manager
-from starlette.responses import Response
+from starlette.responses import JSONResponse
 
 from app import curd
 from app.db.depends import get_db
@@ -41,7 +41,7 @@ async def bgm_ip_map(
         return rd
 
     except DoesNotExist:
-        return Response('not found', 404)
+        return JSONResponse({'detail': 'subject not found'}, 404)
 
 
 def format_data(nodes, edges):

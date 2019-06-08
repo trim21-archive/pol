@@ -187,11 +187,9 @@ class UserSubmitBangumi(S.BgmIpViewer):
 
 
 if __name__ == '__main__':
-    print('main')
     with S.BgmIpViewer._meta.database.allow_sync():
         EpSource.create_table()
         UserToken.create_table()
-        BgmTvAutoTrackerAccessToken.create_table()
         BangumiSource.create_table()
         MissingBangumi.create_table()
         UserSubmitBangumi.create_table()
