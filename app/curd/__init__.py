@@ -1,3 +1,3 @@
-from . import map, subject, user_token
+from . import map, subject
 
-__all__ = ['subject', 'map', 'user_token']
+__all__ = ['subject', 'map']

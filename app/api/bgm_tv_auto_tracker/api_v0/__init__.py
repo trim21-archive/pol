@@ -14,7 +14,7 @@ from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.exceptions import HTTPException
 from starlette.templating import Jinja2Templates
 
-from app import curd, db_models
+from app import db_models
 from app.log import logger
 from app.core import config
 from app.db.redis import PickleRedis
@@ -97,7 +97,7 @@ async def oauth_callback(
         )
         user_info = UserInfo.parse_raw(user_info_resp.text)
         await db.execute(
-            curd.user_token.UserToken.replace(
+            db_models.UserToken.upsert(
                 user_id=r.user_id,
                 scope=r.scope or '',
                 token_type=r.token_type,
@@ -129,7 +129,7 @@ class RefreshResponse(BaseModel):
     access_token: str
     expires_in: int
     token_type: str
-    scope: Optional[str]
+    scope: Optional[str] = ''
     refresh_token: str
     auth_time: int
 
@@ -160,7 +160,7 @@ async def refresh_token(
         resp['auth_time'] = auth_time
         resp = RefreshResponse.parse_obj(resp)
         await db.execute(
-            db_models.UserToken.replace(
+            db_models.UserToken.upsert(
                 user_id=current_user.user_id,
                 token_type=resp.token_type,
                 scope=resp.scope or '',
@@ -186,7 +186,7 @@ async def refresh_token(
         )
         user_info = UserInfo.parse_raw(user_info_resp.text)
         await db.execute(
-            db_models.UserToken.replace(
+            db_models.UserToken.upsert(
                 user_id=current_user.user_id,
                 username=user_info.username,
                 nickname=user_info.nickname,

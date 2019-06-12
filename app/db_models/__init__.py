@@ -31,6 +31,15 @@ class S:
         def __iter__(self):
             yield from self.dict()
 
+        @classmethod
+        def upsert(cls, _data=None, **kwargs):
+            preserve = []
+            for key in _data or kwargs:
+                field: pw.Field = getattr(cls, key)
+                if not (field.primary_key or field.unique):
+                    preserve.append(field)
+            return cls.insert(_data, **kwargs).on_conflict(preserve=preserve)
+
 
 class Subject(S.BgmIpViewer):
     id = pw.IntegerField(primary_key=True, index=True)
@@ -106,13 +115,13 @@ class Info(S.BgmIpViewer):
 class UserToken(S.BgmIpViewer):
     user_id = pw.IntegerField(primary_key=True)
     scope = pw.CharField(default='')
-    token_type = pw.CharField()
-    expires_in = pw.IntegerField()
+    token_type = pw.CharField(default='')
+    expires_in = pw.IntegerField(default=0)
     auth_time = pw.IntegerField(
         default=lambda: datetime.datetime.now().timestamp()
     )
-    access_token = pw.FixedCharField(50)
-    refresh_token = pw.FixedCharField(50)
+    access_token = pw.FixedCharField(50, default='')
+    refresh_token = pw.FixedCharField(50, default='')
     username = pw.CharField(default='')
     nickname = pw.CharField(default='')
     usergroup = pw.IntegerField(default=0)
