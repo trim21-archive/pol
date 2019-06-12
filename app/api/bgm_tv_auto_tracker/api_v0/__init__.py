@@ -1,4 +1,5 @@
 import json.decoder
+from os import path
 from enum import IntEnum
 from typing import Dict, Optional
 from pathlib import Path
@@ -23,7 +24,9 @@ from app.api.bgm_tv_auto_tracker.auth import get_current_user
 from app.api.bgm_tv_auto_tracker.auth.scheme import cookie_scheme
 from app.api.bgm_tv_auto_tracker.auth.session import new_session
 
-templates = Jinja2Templates(str(Path(__file__) / '..' / 'templates'))
+templates = Jinja2Templates(
+    str(path.normpath(Path(__file__) / '..' / 'templates'))
+)
 
 router = APIRouter()
 
