@@ -28,7 +28,9 @@ before_cache:
   - rm -f $HOME/.cache/pip/log/debug.log
 
 before_install:
-  - mysql -e "CREATE DATABASE IF NOT EXISTS $MYSQL_DB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_general_ci;"
+  - >-
+    mysql -e "CREATE DATABASE IF NOT EXISTS $MYSQL_DB
+    DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_general_ci;"
   - mysql --database=$MYSQL_DB < ./tests_data/dump.sql
   - bash scripts/install_python_with_pyenv.sh
   - pip install -U pip

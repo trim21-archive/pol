@@ -118,11 +118,6 @@ class UserToken(S.BgmIpViewer):
     usergroup = pw.IntegerField(default=0)
 
 
-class BgmTvAutoTrackerAccessToken(S.BgmIpViewer):
-    user_id = pw.IntegerField(index=True)
-    access_token = pw.FixedCharField(index=True)
-
-
 class Ep(S.BgmIpViewer):
     subject_id = pw.IntegerField(index=True)
     ep_id = pw.IntegerField(primary_key=True)

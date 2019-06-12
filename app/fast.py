@@ -1,4 +1,5 @@
 import asyncio
+import time
 from warnings import warn
 
 import sentry_sdk
@@ -33,21 +34,25 @@ bind_deprecated_path(app)
 app.include_router(api_router, prefix='/api.v1')
 app.include_router(
     bgm_tv_auto_tracker.router,
-    prefix='/bgm_r-tv-auto-tracker',
+    prefix='/bgm-tv-auto-tracker',
     tags=['bgm-tv-auto-tracker'],
 )
 app.include_router(md2bbc_router)
-
-# @app.middleware('http')
-# async def db_session_middleware(request: Request, call_next):
-#     request.state.db = objects
-#     return await call_next(request)
 
 
 @app.middleware('http')
 async def server_version_middleware(request: Request, call_next):
     response: Response = await call_next(request)
     response.headers['x-server-version'] = config.COMMIT_SHA
+    return response
+
+
+@app.middleware('http')
+async def add_process_time_header(request: Request, call_next):
+    start_time = time.time()
+    response = await call_next(request)
+    process_time = time.time() - start_time
+    response.headers['X-Process-Time'] = str(int(process_time * 1000)) + 'ms'
     return response
 
 
@@ -60,3 +65,9 @@ for router in app.routes:
 async def setup():
     app.objects = objects
     app.redis_pool = await setup_redis_pool()
+
+
+@app.on_event('shutdown')
+async def shutdown():
+    await objects.close()
+    app.redis_pool.close()

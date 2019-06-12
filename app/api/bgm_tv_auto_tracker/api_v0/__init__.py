@@ -8,8 +8,10 @@ import requests_async as requests
 from fastapi import APIRouter, Depends
 from peewee_async import Manager
 from pydantic import BaseModel, ValidationError
+from starlette.exceptions import HTTPException
 from starlette.requests import Request
-from starlette.responses import RedirectResponse
+from starlette.responses import HTMLResponse, RedirectResponse
+from starlette.status import HTTP_502_BAD_GATEWAY
 from starlette.templating import Jinja2Templates
 
 from app import curd, db_models
@@ -19,6 +21,7 @@ from app.api.bgm_tv_auto_tracker.auth.session import new_session
 from app.core import config
 from app.db.depends import get_db, get_redis
 from app.db.redis import PickleRedis
+from app.log import logger
 
 templates = Jinja2Templates(str(Path(__file__) / '..' / 'templates'))
 
@@ -85,7 +88,7 @@ async def oauth_callback(
                 'grant_type': 'authorization_code',
                 'redirect_uri': config.BgmTvAutoTracker.callback_url,
                 'client_secret': config.BgmTvAutoTracker.APP_SECRET,
-            }
+            },
         )
         r = AuthResponse.parse_raw(resp.text)
         auth_time = dateutil.parser.parse(resp.headers['Date']).timestamp()
@@ -109,16 +112,16 @@ async def oauth_callback(
         )
 
         session = await new_session(user_id=r.user_id, redis=redis)
+
         response = templates.TemplateResponse(
             'callback.html', {'request': request, 'data': json.dumps(r.dict())}
         )
-        response.set_cookie(cookie_scheme.model.name, session.api_key)
-        return response
-    except json.decoder.JSONDecodeError as e:
-        print(e)
+        html_response = HTMLResponse(content=response.body)
+        html_response.set_cookie(cookie_scheme.model.name, session.api_key)
+        return html_response
+    except json.decoder.JSONDecodeError:
         return RedirectResponse('./auth')
-    except ValidationError as e:
-        print(e)
+    except ValidationError:
         return RedirectResponse('./auth')
 
 
@@ -156,11 +159,6 @@ async def refresh_token(
         resp = resp.json()
         resp['auth_time'] = auth_time
         resp = RefreshResponse.parse_obj(resp)
-
-        user_info_resp = await requests.get(
-            f'https://api.bgm.tv/user/{current_user.user_id}'
-        )
-        user_info = UserInfo.parse_raw(user_info_resp.text)
         await db.execute(
             db_models.UserToken.replace(
                 user_id=current_user.user_id,
@@ -170,16 +168,39 @@ async def refresh_token(
                 expires_in=resp.expires_in,
                 access_token=resp.access_token,
                 refresh_token=resp.refresh_token,
+            )
+        )
+    except (
+        requests.ConnectTimeout,
+        requests.ConnectionError,
+        json.decoder.JSONDecodeError,
+        ValidationError,
+    ):
+        raise HTTPException(
+            HTTP_502_BAD_GATEWAY, detail='refresh user token failure'
+        )
+
+    try:
+        user_info_resp = await requests.get(
+            f'https://api.bgm.tv/user/{current_user.user_id}'
+        )
+        user_info = UserInfo.parse_raw(user_info_resp.text)
+        await db.execute(
+            db_models.UserToken.replace(
+                user_id=current_user.user_id,
                 username=user_info.username,
                 nickname=user_info.nickname,
                 usergroup=user_info.usergroup
             )
         )
-        return resp
-    except json.decoder.JSONDecodeError as e:
-        raise e
-    except ValidationError as e:
-        raise e
+    except (
+        requests.ConnectTimeout,
+        requests.ConnectionError,
+        json.decoder.JSONDecodeError,
+        ValidationError,
+    ) as e:
+        logger.exception(e)
+    return resp
 
 
 @router.get('/me', response_model=AuthResponse, include_in_schema=False)

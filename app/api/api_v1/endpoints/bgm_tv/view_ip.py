@@ -32,7 +32,6 @@ async def bgm_ip_map(
         # if r:
         #     return r
         nodes, edges = await curd.map.get_by_subject_id(db, subject_id)
-        print(nodes, edges)
         rd = format_data(
             [x.dict() for x in nodes],
             [x.dict() for x in edges],
