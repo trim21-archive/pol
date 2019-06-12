@@ -1,7 +1,7 @@
 import urllib.parse
 
-import parsel
 import redis
+import parsel
 import requests
 
 from bgm_tv_spider import settings

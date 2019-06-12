@@ -37,9 +37,9 @@ before_install:
 
 install:
   - pip install -q -r requirements/dev.txt
-  - pre-commit run --all-files
 
 script:
+  - pre-commit run --all-files
   - PYTHONPATH=$PWD pytest
 
 after_success:

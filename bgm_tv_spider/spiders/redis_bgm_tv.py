@@ -1,11 +1,11 @@
-from collections import defaultdict
 from typing import List
+from collections import defaultdict
 
 from scrapy import Request
 from scrapy_redis.spiders import RedisSpider
 
 from bgm_tv_spider import settings
-from bgm_tv_spider.items import EpItem, RelationItem, SubjectItem, TagItem
+from bgm_tv_spider.items import EpItem, TagItem, SubjectItem, RelationItem
 from bgm_tv_spider.myTypes import TypeResponse, TypeSelectorList
 
 

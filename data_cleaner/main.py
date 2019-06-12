@@ -1,12 +1,12 @@
 import copy
 import types
-from collections import defaultdict
 from typing import Dict
+from collections import defaultdict
 
-import peewee as pw
 import tqdm
+import peewee as pw
 
-from bgm_tv_spider.models import Relation, Subject, db
+from bgm_tv_spider.models import Subject, Relation, db
 
 SUBJECT_ID_START = 1
 SUBJECT_ID_END = Subject.select(pw.fn.MAX(Subject.id)).scalar()

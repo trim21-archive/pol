@@ -4,9 +4,9 @@ from fastapi import Depends
 from pydantic import BaseModel
 from starlette.exceptions import HTTPException
 
-from app.api.bgm_tv_auto_tracker.auth.scheme import cookie_scheme
-from app.db.depends import get_redis
 from app.db.redis import PickleRedis
+from app.db.depends import get_redis
+from app.api.bgm_tv_auto_tracker.auth.scheme import cookie_scheme
 
 KEY_PREFIX = 'personal-website:bgm-tv-auto-tracker:session:'
 

@@ -1,6 +1,6 @@
 import os
 import sys
-from logging import DEBUG, INFO, Logger, StreamHandler, getLogger
+from logging import INFO, DEBUG, Logger, StreamHandler, getLogger
 
 
 def get_logger() -> Logger:

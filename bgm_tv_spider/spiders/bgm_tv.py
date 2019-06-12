@@ -1,12 +1,12 @@
 import os
-from collections import defaultdict
 from typing import List
+from collections import defaultdict
 
 import peewee as pw
 import scrapy.downloadermiddlewares.defaultheaders
 from scrapy import Request
 
-from bgm_tv_spider.items import EpItem, RelationItem, SubjectItem, TagItem
+from bgm_tv_spider.items import EpItem, TagItem, SubjectItem, RelationItem
 from bgm_tv_spider.models import Subject
 from bgm_tv_spider.myTypes import TypeResponse, TypeSelectorList
 

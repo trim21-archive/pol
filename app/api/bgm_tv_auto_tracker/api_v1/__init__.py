@@ -1,14 +1,14 @@
 import peewee as pw
-from fastapi import APIRouter, Depends
-from peewee_async import Manager
+from fastapi import Depends, APIRouter
 from pydantic import BaseModel
+from peewee_async import Manager
 from starlette.exceptions import HTTPException
 
 from app import db_models
-from app.api.bgm_tv_auto_tracker.models import BiliBiliSubmitInfo
-from app.db.depends import get_db
 from app.db_models import BangumiSource
+from app.db.depends import get_db
 from app.models.bangumi_source import BangumiSourceEnum
+from app.api.bgm_tv_auto_tracker.models import BiliBiliSubmitInfo
 
 from . import user_submit
 

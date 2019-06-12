@@ -1,7 +1,7 @@
+import sys
 import glob
 import json
 import pathlib
-import sys
 from os import path
 from typing import List
 

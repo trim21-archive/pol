@@ -1,19 +1,19 @@
-import datetime
 import json
+import datetime
 
 import mock
 import pytest
 import urllib3.response
 from asynctest import CoroutineMock
-from requests.structures import CaseInsensitiveDict
 from requests_async import Response
+from requests.structures import CaseInsensitiveDict
 from starlette.testclient import TestClient
 
 import app.fast
-from app.api.bgm_tv_auto_tracker.auth import get_current_user
 from app.core import config
-from app.db.database import objects
 from app.db_models import UserToken
+from app.db.database import objects
+from app.api.bgm_tv_auto_tracker.auth import get_current_user
 
 
 def mock_response(headers, body):

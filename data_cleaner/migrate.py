@@ -1,5 +1,5 @@
-from bgm_tv_spider.models import db
 from peewee_migrate import Router
+from bgm_tv_spider.models import db
 
 router = Router(db)
 

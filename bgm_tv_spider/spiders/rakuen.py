@@ -1,10 +1,10 @@
 import re
 import unicodedata
 
-import dateutil.parser
 import lxml
-import lxml.html
 import scrapy
+import lxml.html
+import dateutil.parser
 from parsel import Selector
 from scrapy import Request
 

@@ -3,8 +3,8 @@ from typing import Union
 from twisted.enterprise import adbapi
 
 from bgm_tv_spider import settings
-from bgm_tv_spider.items import EpItem, RelationItem, SubjectItem, TagItem
-from bgm_tv_spider.models import Ep, Relation, Subject, Tag
+from bgm_tv_spider.items import EpItem, TagItem, SubjectItem, RelationItem
+from bgm_tv_spider.models import Ep, Tag, Subject, Relation
 
 
 class MysqlPipeline:

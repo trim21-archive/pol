@@ -1,9 +1,9 @@
 from fastapi import Depends
 from peewee_async import Manager
 
-from app.api.bgm_tv_auto_tracker.auth.session import SessionValue, get_session
-from app.db.depends import get_db
 from app.db_models import UserToken
+from app.db.depends import get_db
+from app.api.bgm_tv_auto_tracker.auth.session import SessionValue, get_session
 
 
 async def get_current_user(

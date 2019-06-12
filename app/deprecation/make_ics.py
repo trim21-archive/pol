@@ -1,7 +1,7 @@
 from datetime import datetime
 
-import icalendar
 import pytz
+import icalendar
 from fastapi import APIRouter
 
 from app.responses import CalendarResponse

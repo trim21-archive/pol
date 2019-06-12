@@ -1,5 +1,5 @@
-import asyncio
 import time
+import asyncio
 from warnings import warn
 
 import sentry_sdk
@@ -9,12 +9,12 @@ from starlette.requests import Request
 from starlette.responses import Response
 
 from app.api import bgm_tv_auto_tracker
-from app.api.api_v1.api import api_router
 from app.core import config
-from app.db.database import objects
-from app.db.redis import setup_redis_pool
-from app.deprecation import bind_deprecated_path
 from app.md2bbc import router as md2bbc_router
+from app.db.redis import setup_redis_pool
+from app.db.database import objects
+from app.deprecation import bind_deprecated_path
+from app.api.api_v1.api import api_router
 
 app = FastAPI(
     title='personal website',

@@ -1,27 +1,27 @@
 import json.decoder
 from enum import IntEnum
-from pathlib import Path
 from typing import Dict, Optional
+from pathlib import Path
 
-import dateutil.parser
 import requests_async as requests
-from fastapi import APIRouter, Depends
-from peewee_async import Manager
+import dateutil.parser
+from fastapi import Depends, APIRouter
 from pydantic import BaseModel, ValidationError
-from starlette.exceptions import HTTPException
+from peewee_async import Manager
+from starlette.status import HTTP_502_BAD_GATEWAY
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, RedirectResponse
-from starlette.status import HTTP_502_BAD_GATEWAY
+from starlette.exceptions import HTTPException
 from starlette.templating import Jinja2Templates
 
 from app import curd, db_models
+from app.log import logger
+from app.core import config
+from app.db.redis import PickleRedis
+from app.db.depends import get_db, get_redis
 from app.api.bgm_tv_auto_tracker.auth import get_current_user
 from app.api.bgm_tv_auto_tracker.auth.scheme import cookie_scheme
 from app.api.bgm_tv_auto_tracker.auth.session import new_session
-from app.core import config
-from app.db.depends import get_db, get_redis
-from app.db.redis import PickleRedis
-from app.log import logger
 
 templates = Jinja2Templates(str(Path(__file__) / '..' / 'templates'))
 

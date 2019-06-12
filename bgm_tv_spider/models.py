@@ -2,8 +2,8 @@ import peewee as pw
 
 import bgm_tv_spider.settings
 from app.db_models import Ep as AsyncEp
-from app.db_models import Relation as AsyncRelation
 from app.db_models import Subject as AsyncSubject
+from app.db_models import Relation as AsyncRelation
 
 db = pw.MySQLDatabase(
     bgm_tv_spider.settings.MYSQL_DBNAME,

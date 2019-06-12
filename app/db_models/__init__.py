@@ -1,5 +1,5 @@
-import datetime
 import json
+import datetime
 
 import peewee as pw
 from playhouse.shortcuts import model_to_dict

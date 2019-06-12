@@ -1,12 +1,12 @@
 import peewee as pw
-from fastapi import APIRouter, Depends
+from fastapi import Depends, APIRouter
+from pydantic import UrlStr, BaseModel
 from peewee_async import Manager
-from pydantic import BaseModel, UrlStr
 
 from app import db_models
-from app.api.bgm_tv_auto_tracker.auth import get_current_user
 from app.db.depends import get_db
 from app.models.bangumi_source import BangumiSourceEnum
+from app.api.bgm_tv_auto_tracker.auth import get_current_user
 
 router = APIRouter()
 

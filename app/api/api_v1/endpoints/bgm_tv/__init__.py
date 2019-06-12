@@ -4,7 +4,7 @@ from collections import defaultdict
 
 import requests_async as requests
 from fastapi import APIRouter, HTTPException
-from icalendar import Calendar, Event
+from icalendar import Event, Calendar
 
 from app.responses import CalendarResponse
 

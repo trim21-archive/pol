@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends
 from peewee import DoesNotExist
+from fastapi import Depends, APIRouter
 from peewee_async import Manager
 from starlette.responses import JSONResponse
 
