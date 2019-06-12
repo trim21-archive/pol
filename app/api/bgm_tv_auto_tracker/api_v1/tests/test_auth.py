@@ -2,14 +2,12 @@ import json
 import datetime
 
 import mock
-import pytest
 import urllib3.response
 from asynctest import CoroutineMock
 from requests_async import Response
 from requests.structures import CaseInsensitiveDict
 from starlette.testclient import TestClient
 
-import app.fast
 from app.core import config
 from app.db_models import UserToken
 from app.db.database import objects
@@ -27,15 +25,9 @@ def mock_response(headers, body):
     return corofunc
 
 
-@pytest.fixture()
-def client():
-    with TestClient(app.fast.app) as client:
-        yield client
-
-
 def test_oauth_redirect(client: TestClient):
     response = client.get(
-        '/bgm-tv-auto-tracker/api.v0/auth', allow_redirects=False
+        '/bgm-tv-auto-tracker/api.v1/auth', allow_redirects=False
     )
     assert response.status_code == 302
     from app.core import config
@@ -78,12 +70,12 @@ def test_oauth_callback(client: TestClient):
     with mock.patch('requests_async.post',
                     mock_post), mock.patch('requests_async.get', mock_get):
         r = client.get(
-            '/bgm-tv-auto-tracker/api.v0/oauth_callback',
+            '/bgm-tv-auto-tracker/api.v1/oauth_callback',
             params={'code': '233'}
         )
         assert r.status_code == 200, 'response code not 200'
         assert 'bgm-tv-auto-tracker' in r.cookies
-        me_resp = client.get('/bgm-tv-auto-tracker/api.v0/me').json()
+        me_resp = client.get('/bgm-tv-auto-tracker/api.v1/me').json()
         mock_post.assert_awaited_once_with(
             'https://bgm.tv/oauth/access_token',
             data={
@@ -137,7 +129,7 @@ def test_refresh_token(client: TestClient):
     )
 
     with objects.allow_sync():
-        UserToken.update(
+        UserToken.replace(
             user_id=233,
             token_type='Bearer',
             expires_in=6400,
@@ -167,7 +159,7 @@ def test_refresh_token(client: TestClient):
 
     with mock.patch('requests_async.post',
                     mock_post), mock.patch('requests_async.get', mock_get):
-        r = client.post('/bgm-tv-auto-tracker/api.v0/refresh')
+        r = client.post('/bgm-tv-auto-tracker/api.v1/refresh')
         assert r.status_code == 200, r.text
         mock_post.assert_awaited_once_with(
             'https://bgm.tv/oauth/access_token',
