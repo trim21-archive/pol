@@ -4,6 +4,8 @@ from urllib.parse import urlencode
 
 import pytz
 
+DEBUG = bool(os.getenv('DEBUG'))
+
 DSN = os.getenv('DSN')
 
 COMMIT_SHA = (os.getenv('COMMIT_SHA') or 'None')[:8]
@@ -33,7 +35,7 @@ class BgmTvAutoTracker:
     APP_SECRET = os.environ.get('BGM_TV_AUTO_TRACKER_APP_SECRET')
     callback_url = (
         f'{PROTOCOL}://{HOST}/bgm-tv-auto-tracker'
-        f'/api.v0/oauth_callback'
+        f'/api.v1/oauth_callback'
     )
     oauth_url = 'https://bgm.tv/oauth/authorize?' + urlencode({
         'client_id': APP_ID,

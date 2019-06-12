@@ -33,8 +33,8 @@ router = APIRouter()
 
 @router.get(
     '/auth',
-    description='redirect user to bgm.tv OAuth page',
-    include_in_schema=False,
+    description='redirect user to bgm.tv OAuth page, for userscript',
+    include_in_schema=config.DEBUG,
 )
 async def auth_redirect():
     return RedirectResponse(config.BgmTvAutoTracker.oauth_url)
@@ -73,8 +73,8 @@ class UserInfo(BaseModel):
 
 @router.get(
     '/oauth_callback',
-    description='bgm.tv OAuth callback',
-    include_in_schema=False,
+    description='bgm.tv OAuth callback, this api is for userscript',
+    include_in_schema=config.DEBUG,
 )
 async def oauth_callback(
     code: str,
@@ -139,9 +139,9 @@ class RefreshResponse(BaseModel):
 
 @router.post(
     '/refresh',
-    description='bgm.tv OAuth Callback',
+    description='bgm.tv OAuth Callback, for userscript',
     response_model=RefreshResponse,
-    include_in_schema=False,
+    include_in_schema=config.DEBUG,
 )
 async def refresh_token(
     db: Manager = Depends(get_db),
@@ -206,7 +206,11 @@ async def refresh_token(
     return resp
 
 
-@router.get('/me', response_model=AuthResponse, include_in_schema=False)
+@router.get(
+    '/me',
+    response_model=AuthResponse,
+    include_in_schema=config.DEBUG,
+)
 async def get_my_user_info(
     user: db_models.UserToken = Depends(get_current_user),
 ):

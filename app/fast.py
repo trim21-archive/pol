@@ -35,7 +35,6 @@ app.include_router(api_router, prefix='/api.v1')
 app.include_router(
     bgm_tv_auto_tracker.router,
     prefix='/bgm-tv-auto-tracker',
-    tags=['bgm-tv-auto-tracker'],
 )
 app.include_router(md2bbc_router)
 
