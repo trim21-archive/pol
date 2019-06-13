@@ -21,8 +21,7 @@ def mock_response(headers, body):
     r._content = content
     r.headers = CaseInsensitiveDict(headers)
 
-    corofunc = CoroutineMock(return_value=r)
-    return corofunc
+    return CoroutineMock(return_value=r)
 
 
 def test_oauth_redirect(client: TestClient):

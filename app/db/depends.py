@@ -1,11 +1,9 @@
 # Dependency
 from starlette.requests import Request
 
-from app.db.database import objects
-
 
 async def get_db(request: Request):
-    return objects
+    return request.app.objects
 
 
 async def get_redis(request: Request):
