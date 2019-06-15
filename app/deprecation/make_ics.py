@@ -20,15 +20,26 @@ async def calendar():
     calc['prodid'] = 'Trim21'
     calc['version'] = '2.0'
     calc['X-WR-CALNAME'] = '课表'
-    event = icalendar.Event()
-    event['name'] = '课表日历停止维护提醒'
-    event['dtstart'] = icalendar.vDatetime(
-        datetime.today().replace(hour=0).astimezone(UTC_TZ)
-    ).to_ical()
-    event['dtend'] = icalendar.vDatetime(
-        datetime.today().replace(hour=23).astimezone(UTC_TZ)
-    ).to_ical()
-    event['description'] = '由于本人已经毕业，所以本项目不再维护，请取消订阅本日历，或从github获取代码自己部署'
-    calc.add_component(event)
-
+    today = datetime.today()
+    for i in range(-1, 3):
+        event = icalendar.Event()
+        event['name'] = '课表日历停止维护提醒'
+        event['dtstart'] = icalendar.vDatetime(
+            datetime(
+                year=today.year,
+                month=today.month,
+                day=today.day + i,
+                hour=0,
+            ).astimezone(UTC_TZ)
+        ).to_ical()
+        event['dtend'] = icalendar.vDatetime(
+            datetime(
+                year=today.year,
+                month=today.month,
+                day=today.day + i,
+                hour=23,
+            ).astimezone(UTC_TZ)
+        ).to_ical()
+        event['description'] = '本项目不再维护，请取消订阅本日历'
+        calc.add_component(event)
     return calc.to_ical()
