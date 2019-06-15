@@ -15,7 +15,7 @@ router = APIRouter()
     '/tags',
     description='and condition for many texts, '
     'ordered by subject id, maximum of limit is 50',
-    response_model=List[models.Subject]
+    response_model=List[models.Subject],
 )
 async def search_by_tag(
     text: List[str] = Query(..., min_length=1),

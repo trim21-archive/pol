@@ -201,7 +201,9 @@ class UserSubmitBangumi(S.BgmIpViewer):
 
 
 if __name__ == '__main__':
-    with S.BgmIpViewer._meta.database.allow_sync():
+    from app.db.database import objects
+
+    with objects.allow_sync():
         EpSource.create_table()
         UserToken.create_table()
         BangumiSource.create_table()
