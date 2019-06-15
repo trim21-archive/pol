@@ -1,4 +1,3 @@
-import os
 import platform
 
 BOT_NAME = 'bgm_tv_spider'
@@ -112,16 +111,17 @@ if 'windows' in platform.platform().lower():
     HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.DbmCacheStorage'
 
     MYSQL_HOST = 'bgmi.acg.tools'
-    MYSQL_DBNAME = 'bgm_ip_viewer'
+    MYSQL_DB = 'bgm_ip_viewer'
     MYSQL_USER = 'root'
     MYSQL_PASSWORD = 'password'
     REDIS_HOST = '192.168.1.4'
 
 else:
+    from app.core import config
     HTTPCACHE_ENABLED = False
-    REDIS_HOST = os.environ.get('REDIS_HOST')
-    MYSQL_HOST = os.environ.get('MYSQL_HOST')
-    MYSQL_DBNAME = os.environ.get('MYSQL_DBNAME')
-    MYSQL_USER = os.environ.get('MYSQL_USER')
-    MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD')
-    REDIS_PARAMS = {'password': os.environ.get('REDIS_PASSWORD')}
+    REDIS_HOST = config.REDIS_HOST
+    MYSQL_HOST = config.MYSQL_HOST
+    MYSQL_DB = config.MYSQL_DB
+    MYSQL_USER = config.MYSQL_USER
+    MYSQL_PASSWORD = config.MYSQL_PASSWORD
+    REDIS_PARAMS = {'password': config.REDIS_PASSWORD}

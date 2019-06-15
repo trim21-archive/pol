@@ -5,19 +5,19 @@ from os import path
 import requests
 
 from app.db import database
-from app.db_models import BangumiSource, MissingBangumi
+from app.db_models import BangumiSource
 
 base_dir = pathlib.Path(path.dirname(__file__))
 
 data_json = base_dir / '..' / 'bangumi-data' / 'dist' / 'data.json'
 
-if data_json.exists():
-    with data_json.open('r', encoding='utf-8') as f:
-        data = json.load(f)
-else:
-    data = requests.get(
-        'https://cdn.jsdelivr.net/gh/bangumi-data/bangumi-data/dist/data.json'
-    ).json()
+# if data_json.exists():
+#     with data_json.open('r', encoding='utf-8') as f:
+#         data = json.load(f)
+# else:
+data = requests.get(
+    'https://cdn.jsdelivr.net/gh/bangumi-data/bangumi-data/dist/data.json'
+).json()
 
 
 def save_bangumi_data_to_db():
@@ -45,9 +45,11 @@ def save_bangumi_data_to_db():
                 d['subject_id'] = site_bangumi.get('id', None)
                 if d.get('bangumi_id'):
                     bangumi_data_item_list.append({
-                        'bangumi_id': d['bangumi_id'], 'source': d['website'],
-                        'subject_id': d['subject_id']
+                        'bangumi_id': d['bangumi_id'],
+                        'source': d['website'],
+                        'subject_id': d['subject_id'],
                     })
+    print(len(bangumi_data_item_list))
     BangumiSource.insert_many(bangumi_data_item_list).on_conflict(
         preserve=(BangumiSource.subject_id, )
     ).execute()
@@ -78,10 +80,11 @@ def save_patch_to_db():
             'source': website,
             'subject_id': subject_id,
         })
-        MissingBangumi.delete().where(
-            MissingBangumi.source == website,
-            MissingBangumi.bangumi_id == bangumi_id,
-        ).execute()
+        # MissingBangumi.delete().where(
+        #     MissingBangumi.source == website,
+        #     MissingBangumi.bangumi_id == bangumi_id,
+        # ).execute()
+    print(len(patch_data_item_list))
     BangumiSource.insert_many(patch_data_item_list).on_conflict(
         preserve=(BangumiSource.subject_id, )
     ).execute()
@@ -89,7 +92,8 @@ def save_patch_to_db():
 
 if __name__ == '__main__':
     with database.db.allow_sync():
-        # BangumiSource.create_table()
+        BangumiSource.create_table()
         # MissingBangumi.create_table()
         save_bangumi_data_to_db()
         save_patch_to_db()
+    print('exit')

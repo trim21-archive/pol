@@ -23,7 +23,7 @@ REDIS_DB = os.getenv('REDIS_DB', 0)
 
 REDIS_URI = f'redis://{REDIS_HOST}/{REDIS_DB}'
 
-HOST = os.environ.get('HOST', 'localhost:6001')
+VIRTUAL_HOST = os.environ.get('VIRTUAL_HOST', 'localhost:6001')
 PROTOCOL = os.environ.get('PROTOCOL', 'http')
 
 SECRET_KEY = (os.getenv('SECRET_KEY') or secrets.token_hex(32))[:32]
@@ -34,7 +34,7 @@ class BgmTvAutoTracker:
     APP_ID = os.environ.get('BGM_TV_AUTO_TRACKER_APP_ID')
     APP_SECRET = os.environ.get('BGM_TV_AUTO_TRACKER_APP_SECRET')
     callback_url = (
-        f'{PROTOCOL}://{HOST}/bgm-tv-auto-tracker'
+        f'{PROTOCOL}://{VIRTUAL_HOST}/bgm-tv-auto-tracker'
         f'/api.v1/oauth_callback'
     )
     oauth_url = 'https://bgm.tv/oauth/authorize?' + urlencode({

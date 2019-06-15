@@ -8,7 +8,7 @@ from sentry_asgi import SentryMiddleware
 from starlette.requests import Request
 from starlette.responses import Response
 
-from app.api import bgm_tv_auto_tracker
+from app.api import bgm_tv, bgm_tv_auto_tracker
 from app.core import config
 from app.md2bbc import router as md2bbc_router
 from app.db.redis import setup_redis_pool
@@ -37,6 +37,7 @@ app.include_router(
     prefix='/bgm-tv-auto-tracker',
 )
 app.include_router(md2bbc_router)
+app.include_router(bgm_tv.router, prefix='/bgm.tv', tags=['bgm.tv'])
 
 
 @app.middleware('http')

@@ -4,7 +4,7 @@ EXPOSE 8000
 WORKDIR /
 
 COPY ./requirements/prod.txt /requirements.txt
-RUN pip install -r /requirements.txt -i https://mirrors.ustc.edu.cn/pypi/web/simple
+RUN pip install -r /requirements.txt
 COPY app /app
 
 ARG DAO_COMMIT_SHA

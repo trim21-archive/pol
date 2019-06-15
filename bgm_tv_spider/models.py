@@ -2,11 +2,12 @@ import peewee as pw
 
 import bgm_tv_spider.settings
 from app.db_models import Ep as AsyncEp
+from app.db_models import Tag as AsyncTag
 from app.db_models import Subject as AsyncSubject
 from app.db_models import Relation as AsyncRelation
 
 db = pw.MySQLDatabase(
-    bgm_tv_spider.settings.MYSQL_DBNAME,
+    bgm_tv_spider.settings.MYSQL_DB,
     host=bgm_tv_spider.settings.MYSQL_HOST,
     charset='utf8mb4',
     user=bgm_tv_spider.settings.MYSQL_USER,
@@ -44,10 +45,9 @@ class Ep(AsyncEp):
         database = db
 
 
-class Tag(S.BgmIpViewer):
-    subject_id = pw.IntegerField(primary_key=True)
-    text = pw.FixedCharField(max_length=32)
-    count = pw.IntegerField()
+class Tag(AsyncTag):
+    class Meta(S.BaseMeta):
+        database = db
 
 
 class Map(S.BgmIpViewer):

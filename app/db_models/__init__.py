@@ -84,8 +84,11 @@ class Relation(S.BgmIpViewer):
 
 
 class Tag(S.BgmIpViewer):
-    subject_id = pw.IntegerField(primary_key=True)
-    text = pw.FixedCharField(max_length=32)
+    class Meta:
+        primary_key = pw.CompositeKey('subject_id', 'text')
+
+    subject_id = pw.IntegerField()
+    text = pw.FixedCharField(max_length=32, index=True)
     count = pw.IntegerField()
 
 
@@ -205,3 +208,4 @@ if __name__ == '__main__':
         MissingBangumi.create_table()
         UserSubmitBangumi.create_table()
         UserSubmitEpisode.create_table()
+        Tag.create_table()

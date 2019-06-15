@@ -4,8 +4,7 @@ WORKDIR /
 
 COPY ./requirements /requirements
 
-RUN pip install -i https://mirrors.ustc.edu.cn/pypi/web/simple \
-    -r /requirements/prod.txt
+RUN pip install -r /requirements/prod.txt
 
 COPY scrapy.cfg /scrapy.cfg
 COPY bgm_tv_spider /bgm_tv_spider

@@ -11,7 +11,7 @@ class MysqlPipeline:
     def open_spider(self, spider):
         self.dbpool = adbapi.ConnectionPool(
             'pymysql',
-            db=settings.MYSQL_DBNAME,
+            db=settings.MYSQL_DB,
             host=settings.MYSQL_HOST,
             user=settings.MYSQL_USER,
             password=settings.MYSQL_PASSWORD,
@@ -31,8 +31,7 @@ class MysqlPipeline:
 
     def handle_error(self, failure, item, spider):
         # 处理异步插入的异常
-        print(item)
-        print(failure)
+        print(failure, type(failure))
 
     def do_insert(self, cursor, item):
         # 会从dbpool取出cursor

@@ -31,6 +31,9 @@ class BgmTvSpider(RedisSpider):
     def parse(self, response: TypeResponse):
         subject_id = int(response.url.split('/')[-1])
         if '502 Bad Gateway' in response.text:
+            self.logger.warning(
+                f'Retry request {subject_id} in a few seconds...'
+            )
             if response.meta.get('delay_request'):
                 self.logger.error(
                     '502 content, status: %s %s %s',
@@ -38,7 +41,6 @@ class BgmTvSpider(RedisSpider):
                     response.meta,
                     response.url,
                 )
-                self.logger.info('Retry request in a few seconds...')
             yield Request(
                 url=response.url,
                 meta={'dont_cache': True, 'delay_request': 5},
@@ -138,8 +140,8 @@ def get_image(response: TypeResponse):
     not_nsfw_cover = response.xpath('//*[@id="bangumiInfo"]/div/div/a/img/@src')
     if not_nsfw_cover:
         return not_nsfw_cover.extract_first().replace(
-            '//lain.bgm_tv_spider.tv/pic/cover/c/',
-            'lain.bgm_tv_spider.tv/pic/cover/g/'
+            '//lain.bgm.tv/pic/cover/c/',
+            'lain.bgm.tv/pic/cover/g/',
         )
     else:
         return 'lain.bgm_tv_spider.tv/img/no_icon_subject.png'

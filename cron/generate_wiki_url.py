@@ -9,10 +9,11 @@ from bgm_tv_spider import settings
 
 def main():
     redis_client = redis.Redis(
-        host=settings.REDIS_HOST, db=0, **settings.REDIS_PARAMS
+        host=settings.REDIS_HOST,
+        **settings.REDIS_PARAMS,
     )
 
-    r = requests.get('http://mirror.bgm.rin.cat/wiki')
+    r = requests.get('https://mirror.bgm.rin.cat/wiki')
 
     response = parsel.Selector(r.text)
     redis_client.lpush(settings.REDIS_START_URL_KEY, *parse(response))
@@ -26,12 +27,13 @@ def parse(response: parsel.Selector):
     for link in response.xpath('//*[@id="latestEntryMainTab"]//li/a/@href'
                                ).extract():
         links.add(link)
-
+    print(len(links))
     for link in links:
         if '/subject/' in link:
-            url = urllib.parse.urljoin('http://mirror.bgm.rin.cat/wiki', link)
-            print(url)
-            yield
+            url = urllib.parse.urljoin('https://mirror.bgm.rin.cat/wiki', link)
+            if url:
+                print(url)
+                yield url
 
 
 if __name__ == '__main__':
