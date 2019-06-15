@@ -31,9 +31,12 @@ before_install:
   - >-
     mysql -e "CREATE DATABASE IF NOT EXISTS $MYSQL_DB
     DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_general_ci;"
-  - mysql --database=$MYSQL_DB < ./tests_data/subject.sql
-  - mysql --database=$MYSQL_DB < ./tests_data/relation.sql
-  - mysql --database=$MYSQL_DB < ./tests_data/tag.sql
+  - wget https://se4.trim21.cn/ci/data/personal-website/tests_data/relation.sql
+  - wget https://se4.trim21.cn/ci/data/personal-website/tests_data/subject.sql
+  - wget https://se4.trim21.cn/ci/data/personal-website/tests_data/tag.sql
+  - mysql --database=$MYSQL_DB < ./subject.sql
+  - mysql --database=$MYSQL_DB < ./relation.sql
+  - mysql --database=$MYSQL_DB < ./tag.sql
   - bash scripts/install_python_with_pyenv.sh
   - pip install -U pip
 
