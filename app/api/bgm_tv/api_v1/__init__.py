@@ -12,22 +12,23 @@ router = APIRouter()
 
 
 @router.get(
-    '/tags',
+    '/subjects',
     description='and condition for many texts, '
     'ordered by subject id, maximum of limit is 50',
     response_model=List[models.Subject],
 )
 async def search_by_tag(
-    text: List[str] = Query(..., min_length=1),
+    tag: List[str] = Query(..., min_length=1),
     db: Manager = Depends(get_db),
     limit: int = Query(20, le=50, ge=0),
     offset: int = Query(0, ge=0),
 ):
     q = Subject.select()
-    for tag in text:
+    for tag_text in tag:
         alias = Tag.alias()
         q = q.join(
-            alias, on=((alias.subject_id == Subject.id) & (alias.text == tag))
+            alias,
+            on=((alias.subject_id == Subject.id) & (alias.text == tag_text))
         )
     q = q.where(Subject.locked == 0).order_by(
         Subject.id
