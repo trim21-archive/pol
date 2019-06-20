@@ -29,7 +29,6 @@ def test_oauth_redirect(client: TestClient):
         '/bgm-tv-auto-tracker/api.v1/auth', allow_redirects=False
     )
     assert response.status_code == 302
-    from app.core import config
 
     assert response.headers['location'] == config.BgmTvAutoTracker.oauth_url
 

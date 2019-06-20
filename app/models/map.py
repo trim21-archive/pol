@@ -1,15 +1,8 @@
-from enum import Enum
 from typing import List
 
 from pydantic import BaseModel
 
-
-class SubjectTypeEnum(str, Enum):
-    anime = 'Anime'
-    book = 'Book'
-    music = 'Music'
-    game = 'Game'
-    real = 'Real'
+from app.models.subject_type import SubjectTypeEnum
 
 
 class Edges(BaseModel):

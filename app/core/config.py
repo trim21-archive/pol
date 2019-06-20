@@ -19,9 +19,8 @@ DATABASE_URI = f'mysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}/{MYSQL_DB}'
 
 REDIS_HOST = os.getenv('REDIS_HOST')
 REDIS_PASSWORD = os.getenv('REDIS_PASSWORD')
-REDIS_DB = os.getenv('REDIS_DB', 0)
 
-REDIS_URI = f'redis://{REDIS_HOST}/{REDIS_DB}'
+REDIS_URI = f'redis://{REDIS_HOST}/0'
 
 VIRTUAL_HOST = os.environ.get('VIRTUAL_HOST', 'localhost:6001')
 PROTOCOL = os.environ.get('PROTOCOL', 'http')

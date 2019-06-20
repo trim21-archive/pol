@@ -2,6 +2,7 @@ import json
 import datetime
 
 import peewee as pw
+from playhouse.mysql_ext import TextField
 from playhouse.shortcuts import model_to_dict
 
 from app.db.database import db
@@ -92,7 +93,7 @@ class Tag(S.BgmIpViewer):
     count = pw.IntegerField()
 
 
-class LongTextField(pw._StringField):
+class LongTextField(TextField):
     field_type = 'LONGTEXT'
 
 
