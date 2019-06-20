@@ -109,12 +109,6 @@ class Topic(S.BgmIpViewer):
     id = pw.IntegerField()
 
 
-class Info(S.BgmIpViewer):
-    subject_id = pw.IntegerField(primary_key=True)
-    key = pw.CharField()
-    value = pw.CharField()
-
-
 class UserToken(S.BgmIpViewer):
     user_id = pw.IntegerField(primary_key=True)
     scope = pw.CharField(default='')

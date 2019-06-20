@@ -16,6 +16,7 @@ class MysqlPipeline:
             user=settings.MYSQL_USER,
             password=settings.MYSQL_PASSWORD,
             charset='utf8mb4',
+            cp_reconnect=True,
         )
 
     # @inlineCallbacks
@@ -31,16 +32,16 @@ class MysqlPipeline:
 
     def handle_error(self, failure, item, spider):
         # 处理异步插入的异常
+        print(item)
         print(failure, type(failure))
 
-    def do_insert(self, cursor, item):
+    def do_insert(self, cursor: adbapi.Transaction, item):
         # 会从dbpool取出cursor
         # 执行具体的插入
+        cursor._connection.ping(reconnect=True)
         if isinstance(item, SubjectItem):
             if not item['name']:
                 item['name'] = item['name_cn']
-            # if not item['name_cn']:
-            #     item['name_cn'] = item['name']
             insert_sql = Subject.insert(**item).on_conflict(
                 preserve=(
                     Subject.name_cn,

@@ -48,6 +48,11 @@ class Ep(AsyncEp):
 class Tag(AsyncTag):
     class Meta(S.BaseMeta):
         database = db
+        primary_key = pw.CompositeKey('subject_id', 'text')
+
+    subject_id = pw.IntegerField()
+    text = pw.FixedCharField(max_length=32, index=True)
+    count = pw.IntegerField()
 
 
 class Map(S.BgmIpViewer):
@@ -62,6 +67,7 @@ class Topic(S.BgmIpViewer):
 # Relation.create_table()
 # SubjectJson.create_table()
 # Tag.create_table()
+# print('init table')
 # Map.create_table()
 # Ep.create_table()
 # if __name__ == '__main__':
