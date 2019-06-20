@@ -178,20 +178,13 @@ class UserSubmitEpisode(S.BgmIpViewer):
 class UserSubmitBangumi(S.BgmIpViewer):
     class Meta:
         table_name = 'user_submit_bangumi'
-        # index = (('subject_id', 'source', 'bangumi_id', 'user_id'), )
-        primary_key = pw.CompositeKey(
-            'subject_id', 'source', 'bangumi_id', 'user_id'
-        )
+        primary_key = pw.CompositeKey('source', 'bangumi_id', 'user_id')
 
     source = pw.FixedCharField(max_length=40)
     subject_id = pw.IntegerField()
     bangumi_id = pw.CharField()
     user_id = pw.IntegerField()
     modify_time = pw.DateTimeField(default=datetime.datetime.now)
-
-    @classmethod
-    def replace(cls, __data=None, **insert):
-        return cls.insert(__data, **insert).on_conflict('REPLACE')
 
 
 if __name__ == '__main__':

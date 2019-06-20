@@ -22,7 +22,7 @@ async def get_session(
 ) -> SessionValue:
     r = await redis.get(KEY_PREFIX + token)
     if not r:
-        raise HTTPException(401, 'you need to auth your bgm.tv account first')
+        raise HTTPException(403, 'you need to auth your bgm.tv account first')
     return r
 
 
