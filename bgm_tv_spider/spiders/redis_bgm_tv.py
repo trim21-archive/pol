@@ -90,10 +90,7 @@ class BgmTvSpider(RedisSpider):
             for edge in get_relation(response, source=subject_item['id']):
                 relation_item = RelationItem(**edge, )
                 yield relation_item
-                # yield Request(url_from_id(relation_item['target']))
             yield subject_item
-        # else:
-        #     self.logger.error('can\'t parse {}'.format(response.url))
 
 
 def get_score_details(response: TypeResponse):

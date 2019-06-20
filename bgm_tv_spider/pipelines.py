@@ -1,5 +1,7 @@
 from typing import Union
+from collections import defaultdict
 
+import twisted.python.failure
 from twisted.enterprise import adbapi
 
 from bgm_tv_spider import settings
@@ -18,6 +20,7 @@ class MysqlPipeline:
             charset='utf8mb4',
             cp_reconnect=True,
         )
+        self.container = defaultdict(list)
 
     # @inlineCallbacks
     def process_item(
@@ -25,52 +28,66 @@ class MysqlPipeline:
         item: Union[SubjectItem, RelationItem, TagItem, EpItem],
         spider,
     ):
-        query = self.dbpool.runInteraction(self.do_insert, item)
-        # 处理异常
-        query.addErrback(self.handle_error, item, spider)
+        item_type = get_item_type(item)
+        self.container[item_type].append(dict(**item))
+        if isinstance(item, SubjectItem):
+            # insert all items to db
+            self.dbpool.runInteraction(
+                self.do_insert,
+                self.container,
+            ).addErrback(self.handle_error, self.container)
+            self.container = defaultdict(list)
+
         return item
 
-    def handle_error(self, failure, item, spider):
+    def handle_error(self, failure: twisted.python.failure.Failure, container):
         # 处理异步插入的异常
-        print(item)
+        print(container)
         print(failure, type(failure))
+        print(failure.value)
 
-    def do_insert(self, cursor: adbapi.Transaction, item):
+    def do_insert(self, cursor: adbapi.Transaction, container):
         # 会从dbpool取出cursor
         # 执行具体的插入
         cursor._connection.ping(reconnect=True)
-        if isinstance(item, SubjectItem):
-            if not item['name']:
-                item['name'] = item['name_cn']
-            insert_sql = Subject.insert(**item).on_conflict(
-                preserve=(
-                    Subject.name_cn,
-                    Subject.name,
-                    Subject.image,
-                    Subject.tags,
-                    Subject.locked,
-                    Subject.info,
-                    Subject.score_details,
-                    Subject.score,
-                    Subject.wishes,
-                    Subject.done,
-                    Subject.doings,
-                    Subject.on_hold,
-                    Subject.dropped,
-                ),
-            ).sql()
-        elif isinstance(item, RelationItem):
-            insert_sql = Relation.insert(
-                id=f'{item["source"]}-{item["target"]}', **item
-            ).on_conflict(preserve=(Relation.relation, ), ).sql()
-        elif isinstance(item, TagItem):
-            insert_sql = Tag.insert(
-                **item
-            ).on_conflict(preserve=(Tag.count, ), ).sql()
-        elif isinstance(item, EpItem):
-            insert_sql = Ep.insert(**item).on_conflict(
-                preserve=(Ep.subject_id, Ep.name, Ep.episode)
-            ).sql()
-        else:
-            return
-        cursor.execute(*insert_sql)
+        for key, value in container.items():
+            sql = get_insert_sql(key, value)
+            cursor.execute(*sql)
+
+
+def get_item_type(item):
+    return type(item).__name__
+
+
+def get_insert_sql(type_name, items):
+    if type_name == 'SubjectItem':
+        return Subject.insert_many(items).on_conflict(
+            preserve=(
+                Subject.name_cn,
+                Subject.name,
+                Subject.image,
+                Subject.tags,
+                Subject.locked,
+                Subject.info,
+                Subject.score_details,
+                Subject.score,
+                Subject.wishes,
+                Subject.done,
+                Subject.doings,
+                Subject.on_hold,
+                Subject.dropped,
+            ),
+        ).sql()
+    elif type_name == 'TagItem':
+        return Tag.insert_many(items).on_conflict(preserve=(Tag.count, )).sql()
+    elif type_name == 'RelationItem':
+        return Relation.insert_many([
+            dict(id=f'{item["source"]}-{item["target"]}', **item)
+            for item in items
+        ]).on_conflict(preserve=(Relation.relation, )).sql()
+    elif type_name == 'EpItem':
+        return Ep.insert_many(items).on_conflict(
+            preserve=(Ep.subject_id, Ep.name, Ep.episode)
+        ).sql()
+    else:
+        raise ValueError(f'can\'t get sql from {type_name}')
