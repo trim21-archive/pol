@@ -175,7 +175,7 @@ def get_relation(response: TypeResponse, source):
         '/div[@class="content_inner"]/ul/li'
     )
     relation = []
-    chunk_list = []  # type:List[TypeSelectorList]
+    chunk_list = []  # type:List[List[TypeSelectorList]]
 
     for li in section:
         if 'sep' in li.attrib.get('class', ''):

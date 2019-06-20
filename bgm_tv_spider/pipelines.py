@@ -9,6 +9,22 @@ from bgm_tv_spider.items import EpItem, TagItem, SubjectItem, RelationItem
 from bgm_tv_spider.models import Ep, Tag, Subject, Relation
 
 
+def do_insert(cursor: adbapi.Transaction, container):
+    # 会从dbpool取出cursor
+    # 执行具体的插入
+    cursor._connection.ping(reconnect=True)
+    for key, value in container.items():
+        sql = get_insert_sql(key, value)
+        cursor.execute(*sql)
+
+
+def handle_error(failure: twisted.python.failure.Failure, container):
+    # 处理异步插入的异常
+    print(container)
+    print(failure, type(failure))
+    print(failure.value)
+
+
 class MysqlPipeline:
     def open_spider(self, spider):
         self.dbpool = adbapi.ConnectionPool(
@@ -22,7 +38,6 @@ class MysqlPipeline:
         )
         self.container = defaultdict(list)
 
-    # @inlineCallbacks
     def process_item(
         self,
         item: Union[SubjectItem, RelationItem, TagItem, EpItem],
@@ -33,26 +48,12 @@ class MysqlPipeline:
         if isinstance(item, SubjectItem):
             # insert all items to db
             self.dbpool.runInteraction(
-                self.do_insert,
+                do_insert,
                 self.container,
-            ).addErrback(self.handle_error, self.container)
+            ).addErrback(handle_error, self.container)
             self.container = defaultdict(list)
 
         return item
-
-    def handle_error(self, failure: twisted.python.failure.Failure, container):
-        # 处理异步插入的异常
-        print(container)
-        print(failure, type(failure))
-        print(failure.value)
-
-    def do_insert(self, cursor: adbapi.Transaction, container):
-        # 会从dbpool取出cursor
-        # 执行具体的插入
-        cursor._connection.ping(reconnect=True)
-        for key, value in container.items():
-            sql = get_insert_sql(key, value)
-            cursor.execute(*sql)
 
 
 def get_item_type(item):

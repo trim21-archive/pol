@@ -6,5 +6,5 @@ import app.fast
 
 @pytest.fixture(autouse=True)
 def client():
-    with TestClient(app.fast.app) as client:
-        yield client
+    with TestClient(app.fast.app) as test_client:
+        yield test_client
