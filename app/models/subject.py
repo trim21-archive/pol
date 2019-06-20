@@ -20,7 +20,7 @@ class Subject(BaseModel):
     id: int
     name: str
     name_cn: str
-    image: str = 'lain.bgm_tv_spider.tv/img/no_icon_subject.png'
+    image: str = 'lain.bgm.tv/img/no_icon_subject.png'
     subject_type: SubjectTypeEnum
     locked: bool
 

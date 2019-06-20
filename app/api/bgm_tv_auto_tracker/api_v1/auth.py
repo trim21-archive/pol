@@ -208,7 +208,7 @@ async def refresh_token(
 
 @router.get(
     '/me',
-    response_model=AuthResponse,
+    response_model=RefreshResponse,
     include_in_schema=config.DEBUG,
 )
 async def get_my_user_info(

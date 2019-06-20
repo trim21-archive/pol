@@ -49,7 +49,7 @@ def format_data(nodes, edges):
     for index, item in enumerate(nodes):
         item['subject_id'] = item['id']
         item['image'] = 'https://' + item.get(
-            'image', 'lain.bgm_tv_spider.tv/img/no_icon_subject.png'
+            'image', 'lain.bgm.tv/img/no_icon_subject.png'
         )
         r_nodes[item['id']] = index
     for edge in edges:

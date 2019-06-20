@@ -144,7 +144,7 @@ def get_image(response: TypeResponse):
             'lain.bgm.tv/pic/cover/g/',
         )
     else:
-        return 'lain.bgm_tv_spider.tv/img/no_icon_subject.png'
+        return 'lain.bgm.tv/img/no_icon_subject.png'
 
 
 def get_score(response: TypeResponse):
