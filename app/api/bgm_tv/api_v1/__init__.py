@@ -1,6 +1,7 @@
 from typing import List
 
 from fastapi import Query, Depends, APIRouter
+from pydantic import BaseModel
 from peewee_async import Manager
 from playhouse.shortcuts import model_to_dict
 
@@ -11,11 +12,18 @@ from app.db.depends import get_db
 router = APIRouter()
 
 
+class SubjectSearch(BaseModel):
+    count: int
+    limit: int
+    offset: int
+    subjects: List[models.Subject]
+
+
 @router.get(
     '/subjects',
     description='and condition for many texts, '
     'ordered by subject id, maximum of limit is 50',
-    response_model=List[models.Subject],
+    response_model=SubjectSearch,
 )
 async def search_by_tag(
     tag: List[str] = Query(..., min_length=1),
@@ -30,7 +38,13 @@ async def search_by_tag(
             alias,
             on=((alias.subject_id == Subject.id) & (alias.text == tag_text))
         )
+    count = await db.count(q.where(Subject.locked == 0))
     q = q.where(Subject.locked == 0).order_by(
         Subject.id
     ).limit(limit).offset(offset)
-    return [model_to_dict(x) for x in await db.execute(q)]
+    return SubjectSearch(
+        limit=limit,
+        offset=offset,
+        count=count,
+        subjects=[model_to_dict(x) for x in await db.execute(q)]
+    )
