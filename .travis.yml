@@ -39,17 +39,16 @@ before_install:
   - mysql --database=$MYSQL_DB < ./relation.sql
   - mysql --database=$MYSQL_DB < ./tag.sql
   - bash scripts/install_python_with_pyenv.sh
-  - pip install -U pip
-  - pip install -U pipenv
+  - pip install -U pip pipenv codecov
 
 install:
-  - docker build -t api-server -f Dockerfile .
-  - docker build -t spider -f Dockerfile.spider .
   - pipenv install --system --deploy --dev
 
 script:
   - pre-commit run --all-files
-  - PYTHONPATH=$PWD pytest
+  - PYTHONPATH=$PWD coverage run -m pytest
+  - docker build -t api-server -f Dockerfile .
+  - docker build -t spider -f Dockerfile.spider .
 
 after_success:
   - codecov
