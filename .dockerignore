@@ -9,3 +9,6 @@ bangumi-data
 a.html
 *.py[cod]
 cron
+.git
+.circleci
+__pycache__
