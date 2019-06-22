@@ -1,9 +1,58 @@
 version: 2.1
 
+workflows:
+  version: 2
+  main:
+    jobs:
+      - unittest
+
+      - build-docker:
+          requires:
+            - unittest
+
 jobs:
-  build:
+  build-docker:
     docker:
       - image: circleci/python:3.7
+
+    steps:
+      - checkout
+
+      - setup_remote_docker:
+          docker_layer_caching: true    # default - false
+
+      - run:
+          name: Try Build Docker
+          command: |
+            docker build -t api-server -f Dockerfile --build-arg DAO_COMMIT_SHA=$CIRCLE_SHA1 .
+            docker build -t spider -f Dockerfile.spider --build-arg DAO_COMMIT_SHA=$CIRCLE_SHA1 .
+
+  unittest:
+    docker:
+      - image: circleci/python:3.7
+
+      - image: redis:2.8
+        command: redis-server --requirepass "redis_password"
+
+      - image: mysql:5.7
+        command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+        environment:
+          MYSQL_USER: root
+          MYSQL_ROOT_PASSWORD: root_password
+          MYSQL_DATABASE: bgm_ip_viewer
+
+    environment:
+      MYSQL_HOST: 127.0.0.1
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root_password
+      MYSQL_DB: bgm_ip_viewer
+      REDIS_HOST: 127.0.0.1
+      REDIS_PASSWORD: redis_password
+      BGM_TV_AUTO_TRACKER_APP_SECRET: 3e452da34f146314694a0e1e7f23b722
+      BGM_TV_AUTO_TRACKER_APP_ID: bgm2955b3b3050e7bf2
+      VIRTUAL_HOST: 127.0.0.1:8000
+      PROTOCOL: http
+      COMMIT_SHA: 'dev'
 
     steps:
       - checkout # check out the code in the project directory
@@ -11,26 +60,72 @@ jobs:
       - restore_cache:
           keys:
             - pip-v2-{{ .Branch }}-{{ checksum "Pipfile.lock" }}-{{ checksum ".pre-commit-config.yaml" }}
-            - pip-v2-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+            - pip-v2-{{ .Branch }}-{{ checksum "Pipfile.lock" }}-
             - pip-v2-{{ .Branch }}-
             - pip-v2-
 
-      - run: pip install pipenv -U
-      - run: |
-          python --version
-          pip --version # run the `echo` command
-          pipenv --version
+      - restore_cache:
+          keys:
+            - test-data-mysql-v1-{{ .Branch }}-{{ checksum ".circleci/test_data_version" }}
+            - test-data-mysql-v1-{{ .Branch }}-
+            - test-data-mysql-v1-
+      - run: sudo pip install pipenv codecov -U
+      - run: sudo apt install mysql-client -y
+      - run:
+          name: Print Tools Version
+          command: |
+            python --version
+            pip --version
+            pipenv --version
+            codecov --version
+            mysql --version
 
       - run:
-          name: install dependencies
+          name: Install Dependencies
           command: sudo pipenv install --system --deploy --dev
-
-      - run:
-          name: code style
-          command: pre-commit run --all-files
 
       - save_cache:
           key: pip-v2-{{ .Branch }}-{{ checksum "Pipfile.lock" }}-{{ checksum ".pre-commit-config.yaml" }}
           paths:
             - /home/circleci/.cache/pip
             - /home/circleci/.cache/pre-commit
+
+      - save_cache:
+          key: test-data-mysql-v1-{{ .Branch }}-{{ checksum ".circleci/test_data_version" }}
+          paths:
+            - /home/circleci/project/tests_data
+
+      - run:
+          name: Code Style
+          command: pre-commit run --all-files
+      - run:
+          name: Wait for MySQL Ready
+          command: |
+            # wait for mysql start up
+            for i in `seq 1 100`;
+              do
+                nc -z 127.0.0.1 3306 && echo Success && exit 0
+                echo -n .
+                sleep 0.1
+              done
+            echo Failed waiting for MySQL && exit 1
+
+      - run:
+          name: Setup Test MySQL Database
+          command: |
+            if [[ ! -f ./tests_data/all.sql ]];then
+              mkdir -p ./tests_data
+              wget https://se4.trim21.cn/ci/data/personal-website/tests_data/all.sql -O ./tests_data/all.sql
+            fi
+
+            MYSQL_CLIENT_ARGS="--host $MYSQL_HOST --database=$MYSQL_DB -u root -p$MYSQL_PASSWORD"
+            mysql $MYSQL_CLIENT_ARGS < ./tests_data/all.sql
+
+      - run:
+          name: UnitTest
+          command: PYTHONPATH=. coverage run -m pytest
+
+      - run:
+          when: on_success
+          name: Upload Coverage Report
+          command: codecov
