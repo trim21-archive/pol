@@ -79,9 +79,9 @@ class Relation(S.BgmIpViewer):
 
     @classmethod
     def get_relation_of_subject(cls, subject_id):
-        return cls.select().where(((cls.source == subject_id)
-                                   | (cls.target == subject_id))
-                                  & (cls.removed == 0))
+        return cls.select().where(((cls.source == subject_id) |
+                                   (cls.target == subject_id)) &
+                                  (cls.removed == 0))
 
 
 class Tag(S.BgmIpViewer):

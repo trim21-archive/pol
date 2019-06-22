@@ -39,8 +39,8 @@ blank_list = ['角色出演', '片头曲', '片尾曲', '其他', '画集', '原
 def remove_relation(source, target, rebuild=True):
     source = int(source)
     target = int(target)
-    Relation.update(removed=True).where((Relation.id == f'{source}-{target}')
-                                        | (Relation.id == f'{target}-{source}'))
+    Relation.update(removed=True).where((Relation.id == f'{source}-{target}') |
+                                        (Relation.id == f'{target}-{source}'))
 
 
 def rebuild_map(map_id=None, item_id=None):
@@ -54,8 +54,8 @@ def rebuild_map(map_id=None, item_id=None):
 
 def remove_nodes(node_id, rebuild=True):
     Subject.delete_by_id(node_id)
-    Relation.delete().where((Relation.source == node_id)
-                            | (Relation.target == node_id)).execute()
+    Relation.delete().where((Relation.source == node_id) |
+                            (Relation.target == node_id)).execute()
 
 
 def nodes_need_to_remove(*node_ids):
@@ -64,17 +64,17 @@ def nodes_need_to_remove(*node_ids):
     Subject.update(locked=True).where(Subject.id.in_(node_ids)).execute()
     Relation.update(
         removed=True
-    ).where(Relation.source.in_(node_ids)
-            | Relation.target.in_(node_ids)).execute()
+    ).where(Relation.source.in_(node_ids) |
+            Relation.target.in_(node_ids)).execute()
 
 
 def relations_need_to_remove(kwargs):
     for id_1, id_2 in kwargs:
-        Relation.update(
-            removed=True
-        ).where(((Relation.source == id_1) & (Relation.target == id_2))
-                | ((Relation.source == id_2)
-                   & (Relation.target == id_1))).execute()
+        Relation.update(removed=True
+                        ).where(((Relation.source == id_1) &
+                                 (Relation.target == id_2)) |
+                                ((Relation.source == id_2) &
+                                 (Relation.target == id_1))).execute()
 
 
 done_id = set()
@@ -139,8 +139,7 @@ def pre_remove():
     for s in Subject.select(Subject.id).where(Subject.locked == 1):
         id_to_remove.append(s.id)
     Relation.update(removed=1).where(
-        Relation.source.in_(id_to_remove)
-        | Relation.target.in_(id_to_remove)
+        Relation.source.in_(id_to_remove) | Relation.target.in_(id_to_remove)
     ).execute()
 
     for chunk in chunk_iter_list(list(range(SUBJECT_ID_START, SUBJECT_ID_END))):
@@ -150,9 +149,8 @@ def pre_remove():
                 Subject.subject_type,
                 Subject.locked,
             ).where(
-                Subject.id.in_(chunk)
-                & (Subject.subject_type != 'Music')
-                & (Subject.locked == 0)
+                Subject.id.in_(chunk) & (Subject.subject_type != 'Music') &
+                (Subject.locked == 0)
             )
         )
         for s in db_data:
@@ -160,17 +158,18 @@ def pre_remove():
             assert s.locked == 0
         non_exists_ids = list(set(chunk) - {x.id for x in db_data})
         Relation.update(removed=1).where(
-            Relation.source.in_(non_exists_ids)
-            | Relation.target.in_(non_exists_ids)
+            Relation.source.in_(non_exists_ids) |
+            Relation.target.in_(non_exists_ids)
         ).execute()
 
     for i in tqdm.tqdm(range(SUBJECT_ID_START, SUBJECT_ID_END, CHUNK_SIZE)):
         relation_id_need_to_remove = set()
         source_to_target = defaultdict(dict)
-        sources = Relation.select().where((
-            ((Relation.source >= i) & (Relation.source < i + CHUNK_SIZE))
-            | ((Relation.target >= i) & (Relation.target < i + CHUNK_SIZE))
-        ) & (Relation.removed == 0))
+        sources = Relation.select(
+        ).where((((Relation.source >= i) & (Relation.source < i + CHUNK_SIZE)) |
+                 ((Relation.target >= i) &
+                  (Relation.target < i + CHUNK_SIZE))) &
+                (Relation.removed == 0))
 
         sources = list(sources)
 
@@ -189,10 +188,10 @@ def pre_remove():
 def first_run():
     subjects = {}  # type: Dict[int, Subject]
     for i in tqdm.tqdm(range(SUBJECT_ID_START, SUBJECT_ID_END, CHUNK_SIZE)):
-        for s in Subject.select().where((Subject.id >= i)
-                                        & (Subject.id < i + CHUNK_SIZE)
-                                        & (Subject.locked == 0)
-                                        & (Subject.subject_type != 'Music')):
+        for s in Subject.select().where((Subject.id >= i) &
+                                        (Subject.id < i + CHUNK_SIZE) &
+                                        (Subject.locked == 0) &
+                                        (Subject.subject_type != 'Music')):
             assert s.subject_type != 'Music'
             assert s.locked == 0
             s.map = 0
@@ -201,10 +200,9 @@ def first_run():
     relation_from_id = defaultdict(set)
     edge_count = 0
     for i in range(SUBJECT_ID_START, SUBJECT_ID_END, CHUNK_SIZE):
-        for edge in Relation.select().where((Relation.source >= i)
-                                            &
-                                            (Relation.source < i + CHUNK_SIZE)
-                                            & (Relation.removed == 0)):
+        for edge in Relation.select().where((Relation.source >= i) &
+                                            (Relation.source < i + CHUNK_SIZE) &
+                                            (Relation.removed == 0)):
             assert i <= edge.source < i + CHUNK_SIZE
             assert subjects[edge.target]
             assert subjects[edge.source]
