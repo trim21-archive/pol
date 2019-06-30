@@ -28,8 +28,12 @@ app = FastAPI(
     version='0.0.1',
 )
 if config.DSN:
-    sentry_sdk.init(dsn=config.DSN)
+    from sentry_sdk.integrations.logging import ignore_logger
+
+    ignore_logger('gunicorn.error')
+    sentry_sdk.init(dsn=config.DSN, release=config.COMMIT_SHA)
     app.add_middleware(SentryMiddleware)
+
 bind_deprecated_path(app)
 app.include_router(api_router, prefix='/api.v1')
 app.include_router(
