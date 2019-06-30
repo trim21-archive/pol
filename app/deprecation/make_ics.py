@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pytz
 import icalendar
@@ -28,17 +28,17 @@ async def calendar():
             datetime(
                 year=today.year,
                 month=today.month,
-                day=today.day + i,
+                day=today.day,
                 hour=0,
-            ).astimezone(UTC_TZ)
+            ).astimezone(UTC_TZ) + timedelta(days=i)
         ).to_ical()
         event['dtend'] = icalendar.vDatetime(
             datetime(
                 year=today.year,
                 month=today.month,
-                day=today.day + i,
+                day=today.day,
                 hour=23,
-            ).astimezone(UTC_TZ)
+            ).astimezone(UTC_TZ) + timedelta(days=i)
         ).to_ical()
         event['description'] = '本项目不再维护，请取消订阅本日历'
         calc.add_component(event)
