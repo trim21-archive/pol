@@ -115,14 +115,11 @@ jobs:
           command: |
             if [[ ! -f ./tests_data/all.sql ]];then
               mkdir -p ./tests_data
-              wget https://se4.trim21.cn/ci/data/personal-website/tests_data/all.sql -O ./tests_data/all.sql
+              wget https://github.com/Trim21/personal-website/releases/download/test_data/mysql-1.sql -O ./tests_data/all.sql
             fi
 
             MYSQL_CLIENT_ARGS="--host $MYSQL_HOST --database=$MYSQL_DB -u root -p$MYSQL_PASSWORD"
             mysql $MYSQL_CLIENT_ARGS < ./tests_data/all.sql
-
-      - store_artifacts:
-          path: /home/circleci/project/tests_data/all.sql
 
       - run:
           name: UnitTest
