@@ -121,6 +121,9 @@ jobs:
             MYSQL_CLIENT_ARGS="--host $MYSQL_HOST --database=$MYSQL_DB -u root -p$MYSQL_PASSWORD"
             mysql $MYSQL_CLIENT_ARGS < ./tests_data/all.sql
 
+      - store_artifacts:
+          path: /home/circleci/project/tests_data/all.sql
+
       - run:
           name: UnitTest
           command: PYTHONPATH=. coverage run -m pytest
