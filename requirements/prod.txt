@@ -11,7 +11,7 @@ pydantic==0.29
 mistune==0.8.4
 cython==0.29.11
 
-requests-async==0.5.0
+requests-async==0.6.2
 peewee-async==0.6.3a0
 peewee>=3.9.0,<4.0.0
 aiomysql==0.0.20
