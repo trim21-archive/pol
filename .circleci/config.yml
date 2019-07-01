@@ -69,6 +69,7 @@ jobs:
             - test-data-mysql-v1-{{ .Branch }}-{{ checksum ".circleci/test_data_version" }}
             - test-data-mysql-v1-{{ .Branch }}-
             - test-data-mysql-v1-
+
       - run: sudo pip install pipenv codecov -U
       - run: sudo apt install mysql-client -y
       - run:
