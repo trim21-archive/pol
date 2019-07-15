@@ -2,10 +2,12 @@ import json
 import pathlib
 from os import path
 
+import pydantic
 import requests
 
 from app.db import database
 from app.db_models import BangumiSource
+from data_manager.models.bangumi_data import Item
 
 base_dir = pathlib.Path(path.dirname(__file__))
 
@@ -15,40 +17,48 @@ data_json = base_dir / '..' / 'bangumi-data' / 'dist' / 'data.json'
 #     with data_json.open('r', encoding='utf-8') as f:
 #         data = json.load(f)
 # else:
-data = requests.get(
-    'https://cdn.jsdelivr.net/gh/bangumi-data/bangumi-data/dist/data.json'
-).json()
+data = []
+
+for item in requests.get(
+    'https://cdn.jsdelivr.net/npm/bangumi-data@0.3/dist/data.json'
+).json()['items']:
+    try:
+        data.append(Item.parse_obj(item))
+    except pydantic.ValidationError as e:
+        print(item)
+        print(e)
 
 
 def save_bangumi_data_to_db():
     bangumi_data_item_list = []
-    for item in data['items']:
-        d = {'title': item['titleTranslate'].get('zh-Hans', None)}
+    for item in data:
+        d = {'title': item.titleTranslate.get('zh-Hans', None)}
+
         if not d['title']:
-            d['title'] = item['title']
+            d['title'] = item.title
         else:
             d['title'] = d['title'][0]
-        for site in item['sites']:
-            if site['site'] in ['bilibili', 'iqiyi']:
-                d['bangumi_id'] = site.get('id', None)
-                d['website'] = site['site']
-            else:
+
+        site_bangumi = [site for site in item.sites if site.site == 'bangumi']
+
+        if site_bangumi:
+            site_bangumi = site_bangumi[0]
+        else:
+            continue
+
+        subject_id = site_bangumi.id
+
+        for site in item.sites:
+            if site.site not in ['bilibili', 'iqiyi']:
                 continue
-            site_bangumi = [
-                site for site in item['sites'] if site['site'] == 'bangumi'
-            ]
-            if site_bangumi:
-                site_bangumi = site_bangumi[0]
-            else:
+            if not site.id:
                 continue
-            if site_bangumi.get('id', None):
-                d['subject_id'] = site_bangumi.get('id', None)
-                if d.get('bangumi_id'):
-                    bangumi_data_item_list.append({
-                        'bangumi_id': d['bangumi_id'],
-                        'source': d['website'],
-                        'subject_id': d['subject_id'],
-                    })
+            bangumi_data_item_list.append({
+                'bangumi_id': site.id,
+                'source': site.site,
+                'subject_id': subject_id,
+            })
+
     print(len(bangumi_data_item_list))
     BangumiSource.insert_many(bangumi_data_item_list).on_conflict(
         preserve=(BangumiSource.subject_id, )
