@@ -71,7 +71,7 @@ jobs:
             - test-data-mysql-v1-
 
       - run: sudo pip install pipenv codecov -U
-      - run: sudo apt install mysql-client -y
+      - run: sudo apt-get install default-mysql-client -y
       - run:
           name: Print Tools Version
           command: |
