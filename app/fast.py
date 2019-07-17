@@ -2,9 +2,7 @@ import time
 import asyncio
 from warnings import warn
 
-import sentry_sdk
 from fastapi import FastAPI
-from sentry_asgi import SentryMiddleware
 from starlette.requests import Request
 from starlette.responses import Response
 
@@ -28,9 +26,12 @@ app = FastAPI(
     version='0.0.1',
 )
 if config.DSN:
+    from app.middlewares.sentry import SentryMiddleware
+    import sentry_sdk
     from sentry_sdk.integrations.logging import ignore_logger
 
     ignore_logger('gunicorn.error')
+    ignore_logger('asyncio')
     sentry_sdk.init(dsn=config.DSN, release=config.COMMIT_SHA)
     app.add_middleware(SentryMiddleware)
 

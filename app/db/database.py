@@ -12,7 +12,7 @@ class AsyncMySQLConnection(peewee_async.AsyncMySQLConnection):
         self.loop = loop
         self.database = database
         self.timeout = timeout
-        kwargs.setdefault('pool_recycle', 3600)
+        kwargs.setdefault('pool_recycle', 360)
         self.connect_params = kwargs
 
 
