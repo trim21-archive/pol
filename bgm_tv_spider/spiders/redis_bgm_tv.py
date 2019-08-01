@@ -1,4 +1,5 @@
 from typing import List
+from decimal import Decimal
 from collections import defaultdict
 
 from scrapy import Request
@@ -206,5 +207,17 @@ def get_ep_list(response: TypeResponse, subject_id: int):
             subject_id=subject_id,
             ep_id=ep_id,
             name=ep.attrib.get('title', ''),
-            episode=ep.xpath('./text()').extract_first() or '',
+            episode=format_ep(ep.xpath('./text()').extract_first() or ''),
         )
+
+
+def format_ep(s: str):
+    if s.isdigit():
+        return str(Decimal(s))
+
+    if s.replace('.', '', 1).isdigit():
+        """
+        s is a float
+        """
+        return str(Decimal(s))
+    return s
