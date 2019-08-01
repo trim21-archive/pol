@@ -26,7 +26,7 @@ gunicorn==19.9.0
 # spider
 scrapy-redis==0.6.8
 tqdm==4.32.2
-scrapy==1.6.0
+scrapy==1.7.3
 lxml==4.3.4
 
 # other
