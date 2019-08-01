@@ -10,6 +10,57 @@ workflows:
           requires:
             - unittest
 
+
+aliases:
+  hash_deps: &hash_deps
+    run:
+      name: Hash Requirement files
+      command: |
+        python .circleci/hash_requirement_files.py > .circleci/PIP_CACHE_KEY
+        cat .circleci/PIP_CACHE_KEY
+
+  restore_pip_cache: &restore_pip_pre_commit_cache
+    restore_cache:
+      keys:
+        - pip-v1-{{ .Branch }}-{{ checksum ".circleci/PIP_CACHE_KEY" }}
+
+  install_pip_deps: &install_pip_deps
+    run:
+      name: Install Dependencies
+      command: |
+        echo 'export PATH=/home/circleci/.local/bin:$PATH' >> $BASH_ENV
+        source $BASH_ENV
+        pip install --user pip -U
+        pip install --user codecov -r requirements/prod.txt -r requirements/dev.txt
+
+  save_pip_cache: &save_pip_pre_commit_cache
+    save_cache:
+      key: pip-v1-{{ .Branch }}-{{ checksum ".circleci/PIP_CACHE_KEY" }}
+      paths:
+        - /home/circleci/.cache/pip
+        - /home/circleci/.cache/pre-commit
+
+  upload_codecov_report: &upload_codecov_report
+    run:
+      when: on_success
+      name: Upload Coverage Report
+      command: codecov
+
+  restore_test_data_cache: &restore_test_data_cache
+    restore_cache:
+      keys:
+        - test-data-mysql-v1-{{ .Branch }}-{{ checksum ".circleci/test_data_version" }}
+        - test-data-mysql-v1-{{ .Branch }}-
+        - test-data-mysql-v1-
+
+  save_test_data_cache: &save_test_data_cache
+    save_cache:
+      key: test-data-mysql-v1-{{ .Branch }}-{{ checksum ".circleci/test_data_version" }}
+      paths:
+        - /home/circleci/project/tests_data
+
+
+
 jobs:
   build-docker:
     docker:
@@ -56,47 +107,17 @@ jobs:
 
     steps:
       - checkout # check out the code in the project directory
-
-      - restore_cache:
-          keys:
-            - pip-v2-{{ .Branch }}-{{ checksum "requirements/prod.txt" }}-{{ checksum ".pre-commit-config.yaml" }}
-            - pip-v2-{{ .Branch }}-
-            - pip-v2-
-
-      - restore_cache:
-          keys:
-            - test-data-mysql-v1-{{ .Branch }}-{{ checksum ".circleci/test_data_version" }}
-            - test-data-mysql-v1-{{ .Branch }}-
-            - test-data-mysql-v1-
-
-      - run: sudo pip install codecov -U
-      - run: sudo apt-get install default-mysql-client -y
-      - run:
-          name: Print Tools Version
-          command: |
-            python --version
-            pip --version
-            codecov --version
-            mysql --version
-
-      - run:
-          name: Install Dependencies
-          command: sudo pip install -r requirements/dev.txt -r requirements/prod.txt
-
-      - save_cache:
-          key: pip-v2-{{ .Branch }}-{{ checksum "requirements/prod.txt" }}-{{ checksum ".pre-commit-config.yaml" }}
-          paths:
-            - /home/circleci/.cache/pip
-            - /home/circleci/.cache/pre-commit
-
-      - save_cache:
-          key: test-data-mysql-v1-{{ .Branch }}-{{ checksum ".circleci/test_data_version" }}
-          paths:
-            - /home/circleci/project/tests_data
+      - *hash_deps
+      - *restore_pip_pre_commit_cache
+      - *install_pip_deps
 
       - run:
           name: Code Style
           command: pre-commit run --all-files
+
+      - *save_pip_pre_commit_cache
+      - *restore_test_data_cache
+      - run: sudo apt-get install default-mysql-client -y
       - run:
           name: Wait for MySQL Ready
           command: |
@@ -120,11 +141,10 @@ jobs:
             MYSQL_CLIENT_ARGS="--host $MYSQL_HOST --database=$MYSQL_DB -u root -p$MYSQL_PASSWORD"
             mysql $MYSQL_CLIENT_ARGS < ./tests_data/all.sql
 
+      - *save_test_data_cache
+
       - run:
           name: UnitTest
           command: PYTHONPATH=. coverage run -m pytest
 
-      - run:
-          when: on_success
-          name: Upload Coverage Report
-          command: codecov
+      - *upload_codecov_report

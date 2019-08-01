@@ -1,12 +1,9 @@
 pytz==2019.1
-fastapi==0.31.0
+fastapi==0.33.0
 python-multipart==0.0.5 # for request body form-data parser
 email-validator==1.0.4
 jinja2==2.10.1
 icalendar==4.0.3
-
-starlette
-pydantic
 
 # markdown render
 mistune==0.8.4
