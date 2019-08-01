@@ -59,8 +59,7 @@ jobs:
 
       - restore_cache:
           keys:
-            - pip-v2-{{ .Branch }}-{{ checksum "Pipfile.lock" }}-{{ checksum ".pre-commit-config.yaml" }}
-            - pip-v2-{{ .Branch }}-{{ checksum "Pipfile.lock" }}-
+            - pip-v2-{{ .Branch }}-{{ checksum "requirements/prod.txt" }}-{{ checksum ".pre-commit-config.yaml" }}
             - pip-v2-{{ .Branch }}-
             - pip-v2-
 
@@ -70,23 +69,22 @@ jobs:
             - test-data-mysql-v1-{{ .Branch }}-
             - test-data-mysql-v1-
 
-      - run: sudo pip install pipenv codecov -U
+      - run: sudo pip install codecov -U
       - run: sudo apt-get install default-mysql-client -y
       - run:
           name: Print Tools Version
           command: |
             python --version
             pip --version
-            pipenv --version
             codecov --version
             mysql --version
 
       - run:
           name: Install Dependencies
-          command: sudo pipenv install --system --deploy --dev
+          command: sudo pip install -r requirements/dev.txt -r requirements/prod.txt
 
       - save_cache:
-          key: pip-v2-{{ .Branch }}-{{ checksum "Pipfile.lock" }}-{{ checksum ".pre-commit-config.yaml" }}
+          key: pip-v2-{{ .Branch }}-{{ checksum "requirements/prod.txt" }}-{{ checksum ".pre-commit-config.yaml" }}
           paths:
             - /home/circleci/.cache/pip
             - /home/circleci/.cache/pre-commit

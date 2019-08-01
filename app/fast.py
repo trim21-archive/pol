@@ -30,7 +30,6 @@ if config.DSN:
     import sentry_sdk
     from sentry_sdk.integrations.logging import ignore_logger
 
-    ignore_logger('gunicorn.error')
     ignore_logger('asyncio')
     sentry_sdk.init(dsn=config.DSN, release=config.COMMIT_SHA)
     app.add_middleware(SentryMiddleware)

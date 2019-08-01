@@ -3,10 +3,9 @@ LABEL MAINTAINER="Trim21 <Trim21me@gmail.com>"
 WORKDIR /
 ENV PIPENV_SYSTEM=1
 
-RUN pip install pipenv -U
-COPY ./Pipfile /Pipfile
-COPY ./Pipfile.lock /Pipfile.lock
-RUN pipenv install --deploy
+COPY ./requirements/prod.txt /requirements.exe
+RUN pip install -r requirements.exe
+
 COPY app /app
 
 ARG DAO_COMMIT_SHA

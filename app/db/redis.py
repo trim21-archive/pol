@@ -10,11 +10,13 @@ class PickleRedis(Redis):
     async def get(self, key, *, encoding=_NOTSET):
         r = await self.execute(b'GET', key, encoding=encoding)
         if r:
-            return pickle.loads(r)
+            try:
+                return pickle.loads(r)
+            except (ImportError, pickle.UnpicklingError):
+                await self.delete(key=key)
 
     async def set(self, key, value, *, expire=0, pexpire=0, exist=None):
-        await Redis.set(
-            self,
+        await super().set(
             key,
             pickle.dumps(value),
             expire=expire,
