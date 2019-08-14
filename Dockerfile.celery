@@ -11,7 +11,6 @@ COPY video_website_spider /video_website_spider
 ARG DAO_COMMIT_SHA
 ENV COMMIT_SHA=$DAO_COMMIT_SHA
 
-COPY bgm_tv_spider /bgm_tv_spider
-COPY scrapy.cfg /scrapy.cfg
+EXPOSE 8000
 
-CMD python -m scrapy crawl redis_bgm_tv
+CMD python -m celery worker -A app.worker -Q celery-www-queue -l info -c 5

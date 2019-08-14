@@ -18,3 +18,7 @@ class Item(BaseModel):
     begin: str
     end: str
     sites: List[Site]
+
+
+class BangumiData(BaseModel):
+    items: List[Item]

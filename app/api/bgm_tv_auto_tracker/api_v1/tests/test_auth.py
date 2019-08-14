@@ -182,5 +182,3 @@ def test_refresh_token(client: TestClient):
         ), 'auth time mismatch'
         assert user.expires_in == 505, 'expires time mismatch'
         assert user.usergroup == 10, 'usergroup mismatch'
-
-    client.app.dependency_overrides = {}

@@ -1,12 +1,12 @@
 FROM python:3.7
 LABEL MAINTAINER="Trim21 <Trim21me@gmail.com>"
 WORKDIR /
-ENV PIPENV_SYSTEM=1
 
 COPY ./requirements/prod.txt /requirements.txt
 RUN pip install -r requirements.txt
 
 COPY app /app
+COPY video_website_spider /video_website_spider
 
 ARG DAO_COMMIT_SHA
 ENV COMMIT_SHA=$DAO_COMMIT_SHA

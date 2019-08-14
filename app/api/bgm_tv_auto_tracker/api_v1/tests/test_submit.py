@@ -40,8 +40,6 @@ def test_submit_subject_id(client: TestClient):
             user_id=233, bangumi_id='string', source='bilibili', subject_id=288
         )
 
-    client.app.dependency_overrides = {}
-
 
 def test_submit_subject_id_bad_input(client: TestClient):
     async def mock_get_current_user():
@@ -63,8 +61,6 @@ def test_submit_subject_id_bad_input(client: TestClient):
         UserSubmitBangumi.get(
             user_id=233, bangumi_id='string', source='bilibili', subject_id=288
         )
-
-    client.app.dependency_overrides = {}
 
 
 def test_submit_subject_id_exist(client: TestClient):
@@ -105,7 +101,6 @@ def test_submit_subject_id_exist(client: TestClient):
                 subject_id=subject_id,
             )
 
-    client.app.dependency_overrides = {}
     with objects.allow_sync():
         db_models.BangumiSource.delete().where(
             db_models.BangumiSource.source == source,

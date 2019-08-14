@@ -2,10 +2,10 @@ import json
 import datetime
 
 import peewee as pw
-from playhouse.mysql_ext import TextField
-from playhouse.shortcuts import model_to_dict
 
-from app.db.database import db
+from app.db_models.base import S
+from app.db_models.iqiyi import IqiyiBangumi, IqiyiEpisode
+from app.db_models.bilibili import BilibiliBangumi, BilibiliEpisode
 
 
 class MyJSONField(pw.TextField):
@@ -19,27 +19,6 @@ class MyJSONField(pw.TextField):
     def db_value(self, value):
         if value is not None:
             return json.dumps(value)
-
-
-class S:
-    class BgmIpViewer(pw.Model):
-        class Meta:
-            database = db
-
-        def dict(self):
-            return model_to_dict(self)
-
-        def __iter__(self):
-            yield from self.dict()
-
-        @classmethod
-        def upsert(cls, _data=None, **kwargs):
-            preserve = []
-            for key in _data or kwargs:
-                field: pw.Field = getattr(cls, key)
-                if not (field.primary_key or field.unique):
-                    preserve.append(field)
-            return cls.insert(_data, **kwargs).on_conflict(preserve=preserve)
 
 
 class Subject(S.BgmIpViewer):
@@ -93,15 +72,6 @@ class Tag(S.BgmIpViewer):
     count = pw.IntegerField()
 
 
-class LongTextField(TextField):
-    field_type = 'LONGTEXT'
-
-
-class SubjectJson(S.BgmIpViewer):
-    id = pw.IntegerField(primary_key=True, index=True)
-    info = LongTextField()
-
-
 class Map(S.BgmIpViewer):
     id = pw.AutoField(primary_key=True)
 
@@ -151,6 +121,9 @@ class BangumiSource(S.BgmIpViewer):
 
     source = pw.FixedCharField()
     bangumi_id = pw.CharField()
+    """
+    in bilibili, its __INITIAL_STATE__.mediaInfo.media_id
+    """
     subject_id = pw.IntegerField()
 
 
@@ -192,10 +165,7 @@ if __name__ == '__main__':
     from app.db.database import objects
 
     with objects.allow_sync():
-        EpSource.create_table()
-        UserToken.create_table()
-        BangumiSource.create_table()
-        MissingBangumi.create_table()
-        UserSubmitBangumi.create_table()
-        UserSubmitEpisode.create_table()
-        Tag.create_table()
+        for table in [
+            IqiyiEpisode, IqiyiBangumi, BilibiliBangumi, BilibiliEpisode
+        ]:
+            table.create_table()

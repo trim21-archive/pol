@@ -1,0 +1,29 @@
+pytz==2019.1
+fastapi==0.33.0
+python-multipart==0.0.5 # for request body form-data parser
+email-validator==1.0.4
+jinja2==2.10.1
+icalendar==4.0.3
+celery[redis]==4.3.0
+
+# markdown render
+mistune==0.8.4
+cython==0.29.11
+
+requests-async==0.6.2
+peewee-async==0.6.3a0
+peewee>=3.9.0,<4.0.0
+aiomysql==0.0.20
+aioredis==1.2.0
+python-dateutil==2.8.0
+
+# deployment
+sentry-sdk==0.10.2
+uvicorn==0.8.3
+uvloop==0.12.2; sys_platform == 'linux'
+httptools==0.0.13
+gunicorn==19.9.0
+gevent
+
+# other
+requests==2.22.0
