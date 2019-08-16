@@ -16,5 +16,6 @@ search: False
 
 requirements:
   - requirements/dev.in
+  - requirements/doc.in
   - requirements/prod.in
-  - requirements/spider.in
+  - docs/requirements.txt

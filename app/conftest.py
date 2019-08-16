@@ -9,7 +9,7 @@ from app.db.database import db
 def client():
     with TestClient(app.fast.app) as test_client:
         yield test_client
-    client.app.dependency_overrides = {}
+    app.fast.app.dependency_overrides = {}
 
 
 @pytest.fixture()

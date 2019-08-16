@@ -10,3 +10,4 @@ a.html
 dags
 .mypy_cache
 .pytest_cache
+docs/build

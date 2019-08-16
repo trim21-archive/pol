@@ -11,3 +11,4 @@ flake8-comprehensions==2.1.0
 flake8-bugbear==19.3.0
 flake8-commas==2.0.0
 flake8-mutable==1.2.0
+livereload==2.6.1

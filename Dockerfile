@@ -3,10 +3,9 @@ LABEL MAINTAINER="Trim21 <Trim21me@gmail.com>"
 WORKDIR /
 
 COPY ./requirements/prod.txt /requirements.txt
-RUN pip install -r requirements.txt
+RUN pip install -q -r requirements.txt
 
 COPY app /app
-COPY video_website_spider /video_website_spider
 
 ARG DAO_COMMIT_SHA
 ENV COMMIT_SHA=$DAO_COMMIT_SHA

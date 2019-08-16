@@ -4,6 +4,8 @@ from urllib.parse import urlencode
 
 import pytz
 
+APP_NAME = 'trim21-www-server'
+
 DEBUG = bool(os.getenv('DEBUG'))
 
 DSN = os.getenv('DSN')

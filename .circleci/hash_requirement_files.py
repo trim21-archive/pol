@@ -6,6 +6,7 @@ from pathlib import Path
 project_root = Path(__file__) / '..' / '..'
 additional_requirements_path = [
     '.pre-commit-config.yaml',
+    'docs/requirements.txt',
 ]
 
 for dir, _, files in os.walk(path.join(project_root, 'requirements')):

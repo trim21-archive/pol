@@ -10,4 +10,9 @@ COPY app /app
 ARG DAO_COMMIT_SHA
 ENV COMMIT_SHA=$DAO_COMMIT_SHA
 
-CMD python -m celery worker -A app.worker -Q celery-www-queue -l info -c 5
+COPY bgm_tv_spider /bgm_tv_spider
+COPY data_manager /data_manager
+COPY cron /cron
+
+ENV PYTHONPATH=/
+CMD python /cron/daemon.py

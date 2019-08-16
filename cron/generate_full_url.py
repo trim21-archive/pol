@@ -13,7 +13,7 @@ def chunk_iter_list(raw_list, chunk_size):
         ds = ds[chunk_size:]
 
 
-if __name__ == '__main__':
+def main():
     r = redis.Redis(
         host=settings.REDIS_HOST,
         **settings.REDIS_PARAMS,
@@ -28,5 +28,8 @@ if __name__ == '__main__':
         ),
         500,
     ):
-        print(chunk[0])
         r.lpush(settings.REDIS_START_URL_KEY, *chunk)
+
+
+if __name__ == '__main__':
+    main()

@@ -1,5 +1,0 @@
-# spider
-scrapy-redis==0.6.8
-tqdm==4.32.2
-scrapy==1.6.0
-lxml==4.3.4

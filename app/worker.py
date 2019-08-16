@@ -4,19 +4,15 @@ from typing import List
 import peewee as pw
 import requests
 from pydantic import BaseModel
-from sentry_sdk import Client
 
-import video_website_spider
+import app.video_website_spider.iqiyi
 from app.log import logger
-from app.core import config
 from app.db_models import (
     Ep, IqiyiBangumi, IqiyiEpisode, BilibiliBangumi, BilibiliEpisode
 )
 from app.db.database import db
 from app.core.celery_app import celery
-from video_website_spider.bilibili import get_initial_state_from_html
-
-client_sentry = Client(config.DSN)
+from app.video_website_spider.bilibili import get_initial_state_from_html
 
 
 @celery.task(acks_late=True)
@@ -103,7 +99,7 @@ def submit_bilibili_ep(ep_id: int, url: str):
 
 @celery.task
 def submit_iqiyi_bangumi(subject_id: int, url: str):
-    bangumi_id = video_website_spider.iqiyi.get_bangumi_id_from_url(url)
+    bangumi_id = app.video_website_spider.iqiyi.get_bangumi_id_from_url(url)
 
     with db.allow_sync():
         IqiyiBangumi.upsert(
@@ -147,7 +143,7 @@ def submit_iqiyi_bangumi(subject_id: int, url: str):
 
 @celery.task
 def submit_iqiyi_ep(ep_id: int, url: str):
-    source_ep_id = video_website_spider.iqiyi.get_ep_id_from_url(url)
+    source_ep_id = app.video_website_spider.iqiyi.get_ep_id_from_url(url)
     with db.allow_sync():
         try:
             ep = Ep.get(ep_id=ep_id)
