@@ -8,7 +8,7 @@ celery[redis]==4.3.0
 
 # markdown render
 mistune==0.8.4
-cython==0.29.11
+cython==0.29.13
 
 requests-async==0.6.2
 peewee-async==0.6.3a0
