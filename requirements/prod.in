@@ -19,7 +19,7 @@ python-dateutil==2.8.0
 
 # deployment
 sentry-sdk==0.11.1
-uvicorn==0.8.3
+uvicorn==0.8.6
 uvloop==0.12.2; sys_platform == 'linux'
 httptools==0.0.13
 gunicorn==19.9.0
