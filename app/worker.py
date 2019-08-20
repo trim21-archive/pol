@@ -181,7 +181,6 @@ class PlayerPageMediaInfo(BaseModel):
     """
     ``mediaInfo.season_id``
     """
-
     @property
     def media_id(self):
         return self.id
@@ -200,7 +199,6 @@ class PlayerPageEpInfo(BaseModel):
     """
     ``epInfo.index``
     """
-
     @property
     def ep_id(self):
         return self.id

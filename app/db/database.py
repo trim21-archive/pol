@@ -6,7 +6,6 @@ from app.core import config
 class AsyncMySQLConnection(peewee_async.AsyncMySQLConnection):
     """Asynchronous database connection pool.
     """
-
     def __init__(self, *, database=None, loop=None, timeout=None, **kwargs):
         self.pool = None
         self.loop = loop

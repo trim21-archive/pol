@@ -7,6 +7,4 @@ pip-compile --no-index ./requirements/prod.in
 
 cat ./requirements/prod.in | grep linux >> ./requirements/prod.txt
 
-pip-compile --no-index ./requirements/doc.in -o docs/requirements.txt
-
 pip-sync requirements/*.txt docs/requirements.txt
