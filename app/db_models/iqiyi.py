@@ -12,9 +12,9 @@ class IqiyiBangumi(S.BgmIpViewer):
     class Meta:
         table_name = 'bangumi_iqiyi'
 
-    subject_id = pw.IntegerField(index=True)
+    subject_id = pw.IntegerField(primary_key=True)
 
-    bangumi_id = pw.CharField(primary_key=True)
+    bangumi_id = pw.CharField(index=True)
 
     @property
     def url(self):

@@ -1,5 +1,7 @@
 pytest==5.1.0
 pytest-mock==1.10.4
+pytest-xdist
+
 mock==3.0.5
 asynctest==0.13.0
 pre-commit==1.18.2

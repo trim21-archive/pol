@@ -12,3 +12,10 @@ https://www.trim21.cn/md2bbc
 
 根据`https://api.bgm.tv/user/{user_id}/collection?cat=watching`生成，
 所以不会排除已完结的番剧和未开播的番剧
+
+
+todo:
+- [ ] patch保存到对应的数据库中
+- [ ] qq
+- [ ] youku
+- [ ] acfun

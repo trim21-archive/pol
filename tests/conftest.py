@@ -1,5 +1,5 @@
 from app.db_models import Ep, UserToken, BangumiSource, UserSubmitBangumi
-from app.db.database import objects
+from app.db.database import db
 from app.db_models.iqiyi import IqiyiBangumi, IqiyiEpisode
 from app.db_models.bilibili import BilibiliBangumi, BilibiliEpisode
 
@@ -10,12 +10,12 @@ def pytest_sessionstart(session):
     before performing collection and entering the run test loop.
     """
     'session start'
-    with objects.allow_sync():
-        UserToken.create_table()
-        BangumiSource.create_table()
-        UserSubmitBangumi.create_table()
-        IqiyiEpisode.create_table()
-        IqiyiBangumi.create_table()
-        BilibiliEpisode.create_table()
-        BilibiliBangumi.create_table()
-        Ep.create_table()
+    db.set_allow_sync(True)
+    UserToken.create_table()
+    BangumiSource.create_table()
+    UserSubmitBangumi.create_table()
+    IqiyiEpisode.create_table()
+    IqiyiBangumi.create_table()
+    BilibiliEpisode.create_table()
+    BilibiliBangumi.create_table()
+    Ep.create_table()

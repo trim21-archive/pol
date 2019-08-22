@@ -27,6 +27,7 @@ gevent==1.4.0
 
 # other
 requests==2.22.0
+
 aiologger==0.4.0
 aiofiles==0.4.0
 msgpack==0.6.1
@@ -40,3 +41,4 @@ scrapy-redis==0.6.8
 tqdm==4.34.0
 scrapy==1.7.3
 lxml==4.4.1
+loguru==0.3.2

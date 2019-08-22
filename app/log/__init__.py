@@ -1,26 +1,18 @@
-import sys
-import asyncio
+import logging
 import platform
-from logging import INFO, StreamHandler, getLogger
 
-import aioredis
+import redis
+from loguru import logger
 
 from app.core import config
+from app.log.sink import Sink
 
-from .handler import LogstashHandler
 
-
-async def setup_async_handler(lo):
-    redis_client = await aioredis.create_redis_pool(
-        config.REDIS_URI,
-        password=config.REDIS_PASSWORD,
-        db=0,
-        timeout=1,
-    )
-    aio_log_handler = LogstashHandler(
-        client=redis_client,
+def setup_logger():
+    sink = Sink(
+        client=redis.StrictRedis.from_url(config.REDIS_URI),
         key=f'{config.APP_NAME}-log',
-        level=INFO,
+        level=logging.INFO,
         extra={
             '@metadata': {'beat': 'py_logging'},
             'version': config.COMMIT_SHA,
@@ -28,17 +20,11 @@ async def setup_async_handler(lo):
         },
         tz=config.TIMEZONE,
     )
-    aio_log_handler.start(lo)
-    getLogger('app').addHandler(aio_log_handler)
+    logger.add(
+        sink,
+        enqueue=True,
+        level=logging.INFO,
+    )
 
 
-loop = asyncio.get_event_loop()
-
-logger = getLogger('app')
-if not loop.is_running():
-    # in web server, loop is running, so set async handler
-    loop.run_until_complete(setup_async_handler(loop))
-
-log_level = 'INFO'
-logger.setLevel(log_level)
-logger.addHandler(StreamHandler(sys.stdout))
+setup_logger()

@@ -1,4 +1,3 @@
-import re
 import enum
 from typing import List, Union
 
@@ -9,14 +8,12 @@ from pydantic.types import UrlStr
 from starlette.exceptions import HTTPException
 
 from app.core import config
-from app.worker import (
-    submit_iqiyi_ep, submit_bilibili_ep, submit_iqiyi_bangumi,
-    submit_bilibili_bangumi
-)
+from app.worker import submit_ep, dispatcher, submit_bangumi
 from app.db_models import (
     IqiyiBangumi, IqiyiEpisode, BilibiliBangumi, BilibiliEpisode
 )
 from app.db.depends import get_db
+from app.video_website_spider.base import UrlNotValidError
 
 router = APIRouter()
 
@@ -81,16 +78,6 @@ async def get_player_url_of_episode(
     } for x in await get_all_episode_player(db, ep_id)]
 
 
-bilibili_bangumi = re.compile(
-    r'https?://www\.bilibili\.com/bangumi/media/md\d+/\??.*'
-)
-bilibili_episode = re.compile(
-    r'https?://www\.bilibili\.com/bangumi/play/ep\d+\??.*'
-)
-iqiyi_bangumi = re.compile(r'https?://www\.iqiyi\.com/a_(.*)\.html\??.*')
-iqiyi_episode = re.compile(r'https?://www\.iqiyi\.com/v_(.*)\.html\??.*')
-
-
 @router.post(
     '/player/subject/{subject_id}',
     description='**unstable** \n\n '
@@ -103,24 +90,13 @@ async def submit_player_url_of_subject(
     subject_id: int,
     submit: SubmitBody,
 ):
-    if submit.website == SupportWebsite.bilibili:
-        if not bilibili_bangumi.match(submit.url):
-            raise HTTPException(
-                422, 'url not correct, should match ' + bilibili_bangumi.pattern
-            )
-        submit_bilibili_bangumi.delay(
-            subject_id=subject_id,
-            url=submit.url,
-        )
-    elif submit.website == SupportWebsite.iqiyi:
-        if not iqiyi_bangumi.match(submit.url):
-            raise HTTPException(
-                422, 'url not correct, should match ' + iqiyi_bangumi.pattern
-            )
-        submit_iqiyi_bangumi.delay(
-            subject_id=subject_id,
-            url=submit.url,
-        )
+    handler = dispatcher.get_handler(submit.website)
+    try:
+        handler.valid_subject_url(subject_id, submit.url)
+        submit_bangumi.delay(subject_id, submit.url)
+        return {}
+    except UrlNotValidError as e:
+        raise HTTPException(422, 'url not correct, should match ' + e.pattern)
 
 
 @router.post(
@@ -134,27 +110,13 @@ async def submit_player_url_for_episode(
     ep_id: int,
     submit: SubmitBody,
 ):
-    if submit.website not in submit.url:
-        raise HTTPException(422, detail='url mismatch with website')
-    if submit.website == SupportWebsite.bilibili:
-        if not bilibili_episode.match(submit.url):
-            raise HTTPException(
-                422, 'url not correct, should match ' + str(bilibili_episode)
-            )
-        submit_bilibili_ep.delay(
-            ep_id=ep_id,
-            url=submit.url,
-        )
-    elif submit.website == SupportWebsite.iqiyi:
-        if not iqiyi_episode.match(submit.url):
-            raise HTTPException(
-                422, 'url not correct, should match ' + iqiyi_episode.pattern
-            )
-
-        submit_iqiyi_ep.delay(
-            ep_id=ep_id,
-            url=submit.url,
-        )
+    handler = dispatcher.get_handler(submit.website)
+    try:
+        handler.valid_ep_url(submit.url)
+        submit_ep.delay(ep_id, submit.url)
+        return {}
+    except UrlNotValidError as e:
+        raise HTTPException(422, 'url not correct, should match ' + e.pattern)
 
 
 async def get_all_bangumi_of_subject(

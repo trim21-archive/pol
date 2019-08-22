@@ -44,7 +44,7 @@ if __name__ == '__main__':
         executor='process-pool',
         max_instances=1,
     )
-
+    scheduler.print_jobs()
     try:
         scheduler.start()
     except (KeyboardInterrupt, SystemExit):

@@ -7,19 +7,26 @@ from starlette.responses import JSONResponse
 from app import db_models
 from app.core import config
 from app.db.depends import get_db
-from app.models.bangumi_source import BangumiSourceEnum
+from app.video_website_spider import SupportWebsite
 from app.api.bgm_tv_auto_tracker.auth import get_current_user
 
 router = APIRouter()
 
 
 class ReportSubjectID(BaseModel):
+    source: SupportWebsite
     bangumi_id: str
-    source: BangumiSourceEnum
     subject_id: int
 
 
-@router.post('/submit/subject_id', include_in_schema=config.DEBUG)
+@router.post(
+    '/submit/subject_id',
+    include_in_schema=config.DEBUG,
+    # responses={
+    # '200': JSONResponse,
+    # 400: {'content': JSONResponse},
+    # }
+)
 async def submit_subject_id(
     data: ReportSubjectID,
     current_user: db_models.UserToken = Depends(get_current_user),

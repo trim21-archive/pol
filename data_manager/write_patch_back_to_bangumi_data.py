@@ -5,6 +5,8 @@ import pathlib
 from os import path
 from typing import List
 
+import requests
+
 project_dir = pathlib.Path(path.dirname(__file__)).parent
 server_dir = project_dir / 'server'
 data_dir = project_dir / 'bangumi-data'
@@ -84,30 +86,22 @@ def get_translate_or_raw_title(b: dict):
 
 
 if __name__ == '__main__':
-    item_list = []
+    # l = []
+    data = sorted(data, key=lambda x: int(x['subject_id']))
+
     for item in data:
         website = item['website']
-        try:
-            with MatchedSubjectFile(item['subject_id'], 'r') as f:
-                j = json.load(f)
-            b = match_item_by_subject(j, item['subject_id'])
-            item['title'] = get_translate_or_raw_title(b)
-            c = add_website(b, website, item['bangumi_id'])
-            if c:
-                with MatchedSubjectFile(item['subject_id'], 'w') as f:
-                    f.write(
-                        json.dumps(
-                            j,
-                            ensure_ascii=False,
-                            indent=2,
-                        ).replace('\r\n', '\n')
-                    )
-                    f.write('\n')
-            else:
-                item_list.append(item)
-        except FileNotFoundError as e:
-            item_list.append(item)
-            print(e)
+        if not item.get('title'):
+            print(item)
+            r = requests.get(
+                'https://api.bgm.tv/subject/{}'.format(item['subject_id'])
+            )
+            j = r.json()
+            item['title'] = j.get('name_cn', j['name']) or j['name']
+        # try:
+        #     item['title'] = get_translate_or_raw_title(b)
+        # except FileNotFoundError as e:
+        # l.append(item)
     #
     with open(server_dir / 'patch.json', 'w', encoding='utf8') as f:
-        json.dump(item_list, f, ensure_ascii=False, indent=2)
+        json.dump(data, f, ensure_ascii=False, indent=2)

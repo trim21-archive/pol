@@ -7,7 +7,7 @@ from starlette.exceptions import HTTPException
 from app import db_models
 from app.db_models import BangumiSource
 from app.db.depends import get_db
-from app.models.bangumi_source import BangumiSourceEnum
+from app.video_website_spider import SupportWebsite
 
 router = APIRouter()
 
@@ -24,7 +24,7 @@ class SubjectIdResponse(BaseModel):
 )
 async def get_subject_id(
     bangumi_id: str,
-    source: BangumiSourceEnum,
+    source: SupportWebsite,
     db: Manager = Depends(get_db),
 ):
     try:
@@ -54,7 +54,7 @@ class EpIdResponse(BaseModel):
 )
 async def get_bgm_tv_ep_id(
     source_ep_id: str,
-    source: BangumiSourceEnum,
+    source: SupportWebsite,
     db: Manager = Depends(get_db),
 ):
     try:

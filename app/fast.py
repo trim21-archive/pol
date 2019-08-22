@@ -1,7 +1,7 @@
 import os
 import time
 import asyncio
-from logging import getLogger
+import threading
 from warnings import warn
 
 from fastapi import FastAPI
@@ -9,7 +9,7 @@ from starlette.requests import Request
 from starlette.responses import Response
 
 from app.api import bgm_tv, bgm_tv_auto_tracker
-from app.log import setup_async_handler
+from app.log import logger
 from app.core import config
 from app.md2bbc import router as md2bbc_router
 from app.db.redis import setup_redis_pool
@@ -71,15 +71,19 @@ for router in app.routes:
 
 @app.on_event('startup')
 async def startup():
-    loop = asyncio.get_running_loop()
-    await setup_async_handler(loop)
-
     app.objects = objects
     app.redis_pool = await setup_redis_pool()
-    app.logger = getLogger('app')
+    app.logger = logger
     app.logger.info(
-        f'server start at pid {os.getpid()}',
-        extra={'event': 'startup', 'kwargs': {'pid': os.getpid()}}
+        'server start at pid {pid}, tid {tid}',
+        pid=os.getpid(),
+        tid=threading.get_ident(),
+        extra={
+            'event': 'startup', 'kwargs': {
+                'pid': os.getpid(),
+                'thread': threading.get_ident(),
+            }
+        }
     )
 
 

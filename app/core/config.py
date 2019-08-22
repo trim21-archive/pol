@@ -24,6 +24,9 @@ REDIS_PASSWORD = os.getenv('REDIS_PASSWORD')
 
 REDIS_URI = f'redis://{REDIS_HOST}/0'
 
+if REDIS_PASSWORD:
+    REDIS_URI = f'redis://:{REDIS_PASSWORD}@{REDIS_HOST}/0'
+
 VIRTUAL_HOST = os.environ.get('VIRTUAL_HOST', 'localhost:6001')
 PROTOCOL = os.environ.get('PROTOCOL', 'http')
 

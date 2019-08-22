@@ -1,44 +1,36 @@
 import json
 import pathlib
 from os import path
+from collections import defaultdict
 
 import pydantic
 import requests
 
 from app.db import database
-from app.db_models import BangumiSource
+from app.db_models.iqiyi import IqiyiBangumi
+from app.db_models.bilibili import BilibiliBangumi
+from app.video_website_spider import SupportWebsite
 from data_manager.models.bangumi_data import Item
+from app.video_website_spider.bilibili import (
+    PlayerPageInitialState, get_initial_state_from_html
+)
 
 base_dir = pathlib.Path(path.dirname(__file__))
 
-data_json = base_dir / '..' / 'bangumi-data' / 'dist' / 'data.json'
-
-# if data_json.exists():
-#     with data_json.open('r', encoding='utf-8') as f:
-#         data = json.load(f)
-# else:
-data = []
-
-for item in requests.get(
-    'https://cdn.jsdelivr.net/npm/bangumi-data@0.3/dist/data.json'
-).json()['items']:
-    try:
-        data.append(Item.parse_obj(item))
-    except pydantic.ValidationError as e:
-        print(item)
-        print(e)
-
 
 def save_bangumi_data_to_db():
-    bangumi_data_item_list = []
+    container = defaultdict(list)
+    data = []
+    for item in requests.get(
+        'https://cdn.jsdelivr.net/npm/bangumi-data@0.3.x/dist/data.json'
+    ).json()['items']:
+        try:
+            data.append(Item.parse_obj(item))
+        except pydantic.ValidationError as e:
+            print(item)
+            print(e)
+
     for item in data:
-        d = {'title': item.titleTranslate.get('zh-Hans', None)}
-
-        if not d['title']:
-            d['title'] = item.title
-        else:
-            d['title'] = d['title'][0]
-
         site_bangumi = [site for site in item.sites if site.site == 'bangumi']
 
         if site_bangumi:
@@ -46,64 +38,76 @@ def save_bangumi_data_to_db():
         else:
             continue
 
-        subject_id = site_bangumi.id
+        subject_id = int(site_bangumi.id)
 
         for site in item.sites:
-            if site.site not in ['bilibili', 'iqiyi']:
-                continue
             if not site.id:
                 continue
-            bangumi_data_item_list.append({
-                'bangumi_id': site.id,
-                'source': site.site,
-                'subject_id': subject_id,
-            })
+            if site.site == SupportWebsite.bilibili:
+                container[SupportWebsite.bilibili].append({
+                    'subject_id': subject_id,
+                    'media_id': int(site.id),
+                })
+            elif site.site == SupportWebsite.iqiyi:
+                container[SupportWebsite.iqiyi].append({
+                    'subject_id': subject_id,
+                    'bangumi_id': site.id,
+                })
+    # print(l[SupportWebsite.iqiyi])
+    for key, value in container.items():
+        print(key, len(value))
+    # print(len(set([x['subject_id'] for x in l[SupportWebsite.iqiyi]])))
+    # print(len(set([x['bangumi_id'] for x in l[SupportWebsite.iqiyi]])))
+    # print(l[SupportWebsite.bilibili])
+    BilibiliBangumi.insert_many(
+        container[SupportWebsite.bilibili]
+    ).on_conflict(preserve=[BilibiliBangumi.media_id]).execute()
 
-    print(len(bangumi_data_item_list))
-    BangumiSource.insert_many(bangumi_data_item_list).on_conflict(
-        preserve=(BangumiSource.subject_id, )
-    ).execute()
+    IqiyiBangumi.insert_many(
+        container[SupportWebsite.iqiyi]
+    ).on_conflict(preserve=(IqiyiBangumi.bangumi_id, )).execute()
 
 
 def save_patch_to_db():
-
     with open(base_dir / 'patch.json', 'r', encoding='utf-8') as f:
-        data = json.load(f)
-    patch_data_item_list = []
-    for item in data:
-        # for item in items:
-        website = item['website']
-        if item.get('subject_id'):
-            subject_id = item['subject_id']
-        elif item.get('subjectID'):
-            subject_id = item['subjectID']
-        else:
-            subject_id = item['subject'].split('/')[-1]
-        if item.get('bangumi_id'):
-            bangumi_id = item['bangumi_id']
-        elif item.get('bangumiID'):
-            bangumi_id = item['bangumiID']
-        else:
-            raise ValueError('item has no bangumi id')
-        patch_data_item_list.append({
-            'bangumi_id': bangumi_id,
-            'source': website,
-            'subject_id': subject_id,
-        })
-        # MissingBangumi.delete().where(
-        #     MissingBangumi.source == website,
-        #     MissingBangumi.bangumi_id == bangumi_id,
-        # ).execute()
-    print(len(patch_data_item_list))
-    BangumiSource.insert_many(patch_data_item_list).on_conflict(
-        preserve=(BangumiSource.subject_id, )
-    ).execute()
+        d = json.load(f)
+    IqiyiBangumi.insert_many(
+        [{
+            'subject_id': int(x['subject_id']),
+            'bangumi_id': x['bangumi_id'],
+        } for x in d[SupportWebsite.iqiyi]]
+    ).on_conflict(preserve=(IqiyiBangumi.bangumi_id, )).execute()
+    # for item in d[SupportWebsite.bilibili]:
+    #     if 'media_id' in item and item['media_id'] != 1:
+    #         continue
+    #     item['season_id'] = item['bangumi_id']
+    #     item['media_id'] = get_media_id(item['season_id'])
+    #     with open(base_dir / 'patch.json', 'w', encoding='utf-8') as f:
+    #         json.dump(d, f, ensure_ascii=False, indent=2)
+    BilibiliBangumi.insert_many(
+        [{
+            'subject_id': x['subject_id'],
+            'media_id': x['media_id'],
+            'season_id': x['season_id'],
+        } for x in d[SupportWebsite.bilibili] if x['media_id'] != 1]
+    ).on_conflict(preserve=(BilibiliBangumi.season_id, )).execute()
+
+
+def get_media_id(season_id):
+    r = requests.get(f'https://www.bilibili.com/bangumi/play/ss{season_id}/')
+    state = get_initial_state_from_html(r.text)
+    if not state:
+        print(r.url)
+        return 1
+    state = PlayerPageInitialState.parse_obj(state)
+    return state.mediaInfo.media_id
 
 
 if __name__ == '__main__':
     with database.db.allow_sync():
-        BangumiSource.create_table()
+        # BangumiSource.create_table()
         # MissingBangumi.create_table()
         save_bangumi_data_to_db()
         save_patch_to_db()
+        # db.commit()
     print('exit')

@@ -12,10 +12,10 @@ class BilibiliBangumi(S.BgmIpViewer):
     class Meta:
         table_name = 'bangumi_bilibili'
 
-    subject_id = pw.IntegerField(index=True)
+    subject_id = pw.IntegerField(primary_key=True)
 
-    media_id = pw.IntegerField()
-    season_id = pw.IntegerField(primary_key=True)
+    media_id = pw.IntegerField(index=True)
+    season_id = pw.IntegerField(default=0)
 
     @property
     def bangumi_id(self):
