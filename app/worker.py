@@ -1,12 +1,6 @@
 from app.core.celery_app import celery
 from app.video_website_spider import Dispatcher
 
-
-@celery.task(acks_late=True)
-def test_celery(word: str):
-    return f'test task return {word}'
-
-
 dispatcher = Dispatcher()
 
 
