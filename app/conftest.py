@@ -12,12 +12,6 @@ def client():
     app.fast.app.dependency_overrides = {}
 
 
-@pytest.fixture()
-def mysql():
-    with db.allow_sync():
-        yield db
-
-
 def pytest_sessionstart(session):
     """
     Called after the Session object has been created and

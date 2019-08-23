@@ -10,12 +10,14 @@ class LogExceptionMiddleware(Middleware):
         try:
             await self.app(scope, receive, send)
         except Exception as exc:
+            event = self.event_processor({}, None, scope)
             logger.exception(
                 exc,
                 extra={
                     'url': self.get_url(scope),
                     'query': self.get_query(scope),
                     'headers': self.get_headers(scope),
+                    'event': event,
                 }
             )
             raise exc from None

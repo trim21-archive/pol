@@ -1,5 +1,6 @@
 import abc
 import urllib.parse
+from typing import Any, Dict
 
 
 class Middleware(metaclass=abc.ABCMeta):
@@ -10,7 +11,23 @@ class Middleware(metaclass=abc.ABCMeta):
     async def __call__(self, scope, receive, send):
         raise NotImplementedError()
 
-    def get_url(self, scope):
+    @classmethod
+    def event_processor(cls, event, hint, asgi_scope) -> Dict[str, Any]:
+        if asgi_scope['type'] in ('http', 'websocket'):
+            event['request'] = {
+                'url': cls.get_url(asgi_scope),
+                'method': asgi_scope['method'],
+                'headers': cls.get_headers(asgi_scope),
+                'query_string': cls.get_query(asgi_scope),
+            }
+        if asgi_scope.get('client'):
+            event['request']['env'] = {'REMOTE_ADDR': asgi_scope['client'][0]}
+        if asgi_scope.get('endpoint'):
+            event['transaction'] = cls.get_transaction(asgi_scope)
+        return event
+
+    @classmethod
+    def get_url(cls, scope):
         """
         Extract URL from the ASGI scope, without also including the querystring.
         """
@@ -25,8 +42,12 @@ class Middleware(metaclass=abc.ABCMeta):
 
         if server is not None:
             host, port = server
-            default_port = {'http': 80, 'https': 443, 'ws': 80,
-                            'wss': 443}[scheme]
+            default_port = {
+                'http': 80,
+                'https': 443,
+                'ws': 80,
+                'wss': 443,
+            }[scheme]
             if port != default_port:
                 return f'{scheme}://{host}:{port}{path}'
             return f'{scheme}://{host}{path}'
