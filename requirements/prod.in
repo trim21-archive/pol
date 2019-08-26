@@ -38,7 +38,7 @@ SQLAlchemy==1.3.7
 
 # spider
 scrapy-redis==0.6.8
-tqdm==4.34.0
+tqdm==4.35.0
 scrapy==1.7.3
 lxml==4.4.1
 loguru==0.3.2
