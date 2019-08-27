@@ -12,7 +12,6 @@ def setup_logger():
     sink = Sink(
         client=redis.StrictRedis.from_url(config.REDIS_URI),
         key=f'{config.APP_NAME}-log',
-        level=logging.INFO,
         extra={
             '@metadata': {'beat': 'py_logging'},
             'version': config.COMMIT_SHA,

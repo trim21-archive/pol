@@ -3,7 +3,6 @@ from copy import deepcopy
 import pytz
 import redis
 import msgpack
-from aiologger.levels import LogLevel, check_level
 
 
 class Sink:
@@ -14,7 +13,6 @@ class Sink:
         self,
         client,
         *,
-        level: LogLevel = LogLevel.NOTSET,
         key='python-log',
         extra: dict = None,
         tz=pytz.utc,
@@ -24,7 +22,6 @@ class Sink:
         and the filter list to empty.
         """
         super().__init__()
-        self._level = check_level(level)
         self.key = key
         self.client: redis.StrictRedis = client
         self.packer = msgpack.Packer()

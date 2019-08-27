@@ -1,10 +1,14 @@
 pytz==2019.2
+
+# worker
+celery[redis]==4.3.0
+
+# web
 fastapi==0.36.0
 python-multipart==0.0.5 # for request body form-data parser
 email-validator==1.0.4
 jinja2==2.10.1
 icalendar==4.0.3
-celery[redis]==4.3.0
 
 # markdown render
 mistune==0.8.4
@@ -21,18 +25,13 @@ python-dateutil==2.8.0
 sentry-sdk==0.11.1
 uvicorn==0.8.6
 gunicorn==19.9.0
-gevent==1.4.0
 
 # other
 requests==2.22.0
-
-aiologger==0.4.0
-aiofiles==0.4.0
 msgpack==0.6.1
 
 # cron
 apscheduler==3.6.1
-SQLAlchemy==1.3.7
 
 # spider
 scrapy-redis==0.6.8
