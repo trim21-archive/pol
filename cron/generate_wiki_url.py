@@ -7,7 +7,7 @@ import requests
 from bgm_tv_spider import settings
 
 
-def main():
+def generate_wiki_url():
     redis_client = redis.Redis(
         host=settings.REDIS_HOST,
         **settings.REDIS_PARAMS,
@@ -37,4 +37,4 @@ def parse(response: parsel.Selector):
 
 
 if __name__ == '__main__':
-    main()
+    generate_wiki_url()

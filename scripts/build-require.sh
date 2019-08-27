@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+set -ex
 
 pip-compile --no-index ./requirements/dev.in
 

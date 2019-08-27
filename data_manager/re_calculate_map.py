@@ -261,7 +261,7 @@ def first_run(subject_start, subject_end):
     print('finish save to db')
 
 
-def main():
+def re_calculate_map():
     logger = logging.getLogger(__file__)
     subject_id_min = 1
     subject_id_max = Subject.select(pw.fn.MAX(Subject.id)).scalar()
@@ -281,4 +281,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    re_calculate_map()

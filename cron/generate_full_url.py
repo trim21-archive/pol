@@ -13,7 +13,7 @@ def chunk_iter_list(raw_list, chunk_size):
         ds = ds[chunk_size:]
 
 
-def main():
+def generate_full_url():
     r = redis.Redis(
         host=settings.REDIS_HOST,
         **settings.REDIS_PARAMS,
@@ -32,4 +32,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    generate_full_url()

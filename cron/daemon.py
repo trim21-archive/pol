@@ -20,7 +20,7 @@ if __name__ == '__main__':
     )
 
     scheduler.add_job(
-        generate_full_url.main,
+        generate_full_url.generate_full_url,
         'cron',
         day=1,
         hour=3,
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     )
 
     scheduler.add_job(
-        generate_wiki_url.main,
+        generate_wiki_url.generate_wiki_url,
         'cron',
         hour=3,
         # executor='process-pool',
@@ -37,7 +37,7 @@ if __name__ == '__main__':
     )
 
     scheduler.add_job(
-        re_calculate_map.main,
+        re_calculate_map.re_calculate_map,
         'cron',
         day=3,
         hour=3,
