@@ -62,8 +62,7 @@ def test_oauth_callback(client: TestClient):
         }),
     )
 
-    with objects.allow_sync():
-        UserToken.delete().execute()
+    UserToken.delete().execute()
 
     with mock.patch('requests_async.post',
                     mock_post), mock.patch('requests_async.get', mock_get):

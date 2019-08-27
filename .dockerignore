@@ -11,3 +11,4 @@ a.html
 .git
 .circleci
 __pycache__
+Dockerfile*

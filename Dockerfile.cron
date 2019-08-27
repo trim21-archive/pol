@@ -1,18 +1,14 @@
 FROM python:3.7
 LABEL MAINTAINER="Trim21 <Trim21me@gmail.com>"
+ENV PYTHONPATH=/
 WORKDIR /
 
 COPY ./requirements/prod.txt /requirements.txt
 RUN pip install -q -r requirements.txt
 
-COPY app /app
+COPY / /
 
 ARG DAO_COMMIT_SHA
 ENV COMMIT_SHA=$DAO_COMMIT_SHA
 
-COPY bgm_tv_spider /bgm_tv_spider
-COPY data_manager /data_manager
-COPY cron /cron
-
-ENV PYTHONPATH=/
 CMD python /cron/daemon.py

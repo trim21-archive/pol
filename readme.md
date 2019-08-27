@@ -15,7 +15,8 @@ https://www.trim21.cn/md2bbc
 
 
 todo:
-- [ ] patch保存到对应的数据库中
+<!-- - [ ] 上log几个api脚本 -->
 - [ ] qq
 - [ ] youku
 - [ ] acfun
+- [x] patch保存到对应的数据库中
