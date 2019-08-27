@@ -1,8 +1,11 @@
 import os
 import secrets
+from pathlib import Path
 from urllib.parse import urlencode
 
 import pytz
+
+PROJ_ROOT = Path(os.path.join(os.path.dirname(__file__), '..'))
 
 APP_NAME = 'trim21-www-server'
 
@@ -10,7 +13,11 @@ DEBUG = bool(os.getenv('DEBUG'))
 
 DSN = os.getenv('DSN')
 
+COMMIT_TAG = os.getenv('COMMIT_TAG')
 COMMIT_SHA = (os.getenv('COMMIT_SHA') or 'None')[:8]
+
+COMMIT_REV = COMMIT_TAG or COMMIT_SHA
+
 TIMEZONE = pytz.timezone('Etc/GMT-8')
 
 MYSQL_HOST = os.getenv('MYSQL_HOST')

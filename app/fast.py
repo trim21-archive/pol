@@ -23,10 +23,12 @@ app = FastAPI(
     docs_url='/',
     redoc_url=None,
     openapi_url='/openapi.json',
-    description='出于兴趣写的一些api，源码见'
-    '[GitHub](https://github.com/Trim21/personal-website)\n'
-    f'当前版本[{config.COMMIT_SHA}]'
-    f'(https://github.com/Trim21/personal-website/tree/{config.COMMIT_SHA})',
+    description=(
+        '出于兴趣写的一些api，源码见'
+        '[GitHub](https://github.com/Trim21/personal-website)\n'
+        f'当前版本[{config.COMMIT_REV}]'
+        f'(https://github.com/Trim21/personal-website/tree/{config.COMMIT_REV})'
+    ),
     version='0.0.1',
 )
 if config.DSN:
@@ -75,9 +77,9 @@ async def startup():
     app.redis_pool = await setup_redis_pool()
     app.logger = logger
     app.logger.info(
-        'server start at pid {pid}, tid {tid}',
-        pid=os.getpid(),
-        tid=threading.get_ident(),
+        'server start at pid {}, tid {}',
+        os.getpid(),
+        threading.get_ident(),
         extra={
             'event': 'startup', 'kwargs': {
                 'pid': os.getpid(),

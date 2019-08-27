@@ -5,6 +5,7 @@ import peewee as pw
 import requests
 from pydantic import BaseModel
 
+from app.log import logger
 from app.service import bgm_tv
 from app.db_models import Ep, IqiyiBangumi, IqiyiEpisode
 from app.video_website_spider.base import sync_db
@@ -63,6 +64,7 @@ class Iqiyi(BaseWebsite):
             }
         ).json()
         if list_info['data'] == '参数错误':
+            logger.error('参数错误 with album id {}', album_id)
             return
         else:
             eps = [

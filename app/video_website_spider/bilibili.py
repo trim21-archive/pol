@@ -7,8 +7,6 @@ import requests
 from pydantic import BaseModel
 
 from app.log import logger
-# class PlayerPageInitialState(BaseModel):
-#     mediaInfo: MediaInfo
 from app.service import bgm_tv
 from app.db_models import Ep, BilibiliBangumi, BilibiliEpisode
 from app.video_website_spider.base import sync_db
@@ -77,7 +75,7 @@ class Bilibili(BaseWebsite):
         if initial_state:
             initial_state = PlayerPageInitialState.parse_obj(initial_state)
         else:
-            logger.error("can't get initial state from url %s", url)
+            logger.error("can't get initial state from url {}", url)
             return
         BilibiliBangumi.upsert(
             subject_id=subject_id,
@@ -108,7 +106,7 @@ class Bilibili(BaseWebsite):
         if initial_state:
             initial_state = PlayerPageInitialState.parse_obj(initial_state)
         else:
-            logger.error("can't get initial state from url %s", url)
+            logger.error("can't get initial state from url {}", url)
             return
         # source_ep_id = video_website_spider.bilibili.get_ep_id_from_url(url)
 

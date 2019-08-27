@@ -71,11 +71,15 @@ jobs:
 
       - setup_remote_docker:
           docker_layer_caching: true    # default - false
+      - run:
+          name: Setup Base Env
+          command: |
+            echo "export BUILD_ARGS=\"--build-arg DAO_COMMIT_SHA=$CIRCLE_SHA1 --build-arg DAO_COMMIT_TAG=$CIRCLE_TAG\"" >> $BASH_ENV
 
-      - run: docker build -t api-server -f Dockerfile --build-arg DAO_COMMIT_SHA=$CIRCLE_SHA1 .
-      - run: docker build -t spider -f Dockerfile.spider --build-arg DAO_COMMIT_SHA=$CIRCLE_SHA1 .
-      - run: docker build -t worker -f Dockerfile.celery --build-arg DAO_COMMIT_SHA=$CIRCLE_SHA1 .
-      - run: docker build -t cron -f Dockerfile.cron --build-arg DAO_COMMIT_SHA=$CIRCLE_SHA1 .
+      - run: docker build $BUILD_ARGS -t api-server -f Dockerfile .
+      - run: docker build $BUILD_ARGS -t spider -f Dockerfile.spider .
+      - run: docker build $BUILD_ARGS -t worker -f Dockerfile.celery .
+      - run: docker build $BUILD_ARGS -t cron -f Dockerfile.cron .
 
   unittest:
     docker:
