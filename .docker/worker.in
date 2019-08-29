@@ -1,0 +1,3 @@
+# include "./.docker/Dockerfile"
+
+CMD python -m celery worker -A app.worker -Q celery-www-queue -l info -c 5

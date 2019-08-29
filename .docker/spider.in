@@ -1,0 +1,3 @@
+# include "./.docker/Dockerfile"
+
+CMD python -m scrapy crawl redis_bgm_tv

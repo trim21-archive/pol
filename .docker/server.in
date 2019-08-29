@@ -1,0 +1,5 @@
+# include "./.docker/Dockerfile"
+
+EXPOSE 8000
+
+CMD gunicorn -c /etc/gunicorn.py app.fast:app

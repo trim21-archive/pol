@@ -3,7 +3,7 @@ import pytest_mock
 from starlette.testclient import TestClient
 
 import app.worker
-from app.db_models import UserToken, UserSubmitBangumi
+from app.db_models import UserToken
 from app.api.bgm_tv_auto_tracker.auth import get_current_user
 
 
@@ -42,10 +42,6 @@ def test_submit_subject_url(
         app.worker.submit_bangumi.delay.assert_called_once_with(subject_id, url)
     assert r.status_code == 200, r.text
 
-    UserSubmitBangumi.get(
-        user_id=233, bangumi_id='string', source='bilibili', subject_id=288
-    )
-
 
 def test_submit_ep_url(
     client: TestClient,
@@ -62,7 +58,3 @@ def test_submit_ep_url(
         app.worker.submit_ep.delay.assert_called_once_with(ep_id, url)
 
     assert r.status_code == 200, r.text
-
-    UserSubmitBangumi.get(
-        user_id=233, bangumi_id='string', source='bilibili', subject_id=288
-    )
