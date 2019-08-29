@@ -10,19 +10,11 @@ workflows:
           requires:
             - unittest
 
-
 aliases:
-  hash_deps: &hash_deps
-    run:
-      name: Hash Requirement files
-      command: |
-        python .circleci/hash_requirement_files.py > .circleci/PIP_CACHE_KEY
-        cat .circleci/PIP_CACHE_KEY
-
   restore_pip_cache: &restore_pip_pre_commit_cache
     restore_cache:
       keys:
-        - pip-v1-{{ .Branch }}-{{ checksum ".circleci/PIP_CACHE_KEY" }}
+        - pip-v1-{{ .Branch }}-{{ checksum "poetry.lock" }}
 
   install_pip_deps: &install_pip_deps
     run:
@@ -31,13 +23,11 @@ aliases:
         echo 'export PATH=/home/circleci/.local/bin:$PATH' >> $BASH_ENV
         source $BASH_ENV
         pip install --user pip -U
-        pip install --user -q codecov -r requirements/prod.txt \
-                -r requirements/dev.txt \
-                -r docs/requirements.txt
+        poetry install -E docs
 
   save_pip_cache: &save_pip_pre_commit_cache
     save_cache:
-      key: pip-v1-{{ .Branch }}-{{ checksum ".circleci/PIP_CACHE_KEY" }}
+      key: pip-v1-{{ .Branch }}-{{ checksum "poetry.lock" }}
       paths:
         - /home/circleci/.cache/pip
         - /home/circleci/.cache/pre-commit
@@ -58,8 +48,6 @@ aliases:
       key: test-data-mysql-v1-{{ checksum ".circleci/test_data_version" }}
       paths:
         - /home/circleci/project/tests_data
-
-
 
 jobs:
   build-docker:
@@ -110,13 +98,12 @@ jobs:
 
     steps:
       - checkout # check out the code in the project directory
-      - *hash_deps
       - *restore_pip_pre_commit_cache
       - *install_pip_deps
 
       - run:
           name: Code Style
-          command: pre-commit run --all-files
+          command: poetry run pre-commit run --all-files
 
       - *save_pip_pre_commit_cache
       - *restore_test_data_cache
@@ -148,12 +135,12 @@ jobs:
 
       - run:
           name: UnitTest
-          command: PYTHONPATH=. coverage run -m pytest
+          command: PYTHONPATH=. poetry run coverage run -m pytest
 
       - run:
           name: Build Docs
           command: |
             cd docs
-            make html
+            poetry run sphinx-build source build
 
       - *upload_codecov_report

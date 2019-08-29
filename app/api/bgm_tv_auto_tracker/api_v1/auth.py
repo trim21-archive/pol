@@ -37,7 +37,7 @@ router = APIRouter()
     include_in_schema=config.DEBUG,
 )
 async def auth_redirect():
-    return RedirectResponse(config.BgmTvAutoTracker.oauth_url)
+    return RedirectResponse(config.BgmTvAutoTracker.oauth_url, status_code=302)
 
 
 class AuthResponse(BaseModel):

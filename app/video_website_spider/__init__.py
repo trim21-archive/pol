@@ -30,14 +30,19 @@ class Dispatcher:
             SupportWebsite.iqiyi: iqiyi.Iqiyi,
         }
 
-    def dispatch(self, url) -> Type[BaseWebsite]:
+    def get_website(self, url):
         u: ParseResult = urlparse(url)
         if u.hostname == 'www.bilibili.com':
-            return self.get_handler(SupportWebsite.bilibili)
+            return SupportWebsite.bilibili
             # return self.d[SupportWebsite.bilibili]
         elif u.hostname == 'www.iqiyi.com':
-            return self.get_handler(SupportWebsite.iqiyi)
+            return SupportWebsite.iqiyi
             # return self.d[SupportWebsite.iqiyi]
+
+    def dispatch(self, url) -> Type[BaseWebsite]:
+        website = self.get_website(url)
+        if website:
+            return self.get_handler(website)
 
     def get_handler(self, website):
         return self.d.get(website)

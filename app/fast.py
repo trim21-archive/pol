@@ -76,16 +76,16 @@ async def startup():
     app.objects = objects
     app.redis_pool = await setup_redis_pool()
     app.logger = logger
-    app.logger.info(
+    app.logger.bind(
+        event='startup',
+        kwargs={
+            'pid': os.getpid(),
+            'thread': threading.get_ident(),
+        },
+    ).info(
         'server start at pid {}, tid {}',
         os.getpid(),
         threading.get_ident(),
-        extra={
-            'event': 'startup', 'kwargs': {
-                'pid': os.getpid(),
-                'thread': threading.get_ident(),
-            }
-        }
     )
 
 

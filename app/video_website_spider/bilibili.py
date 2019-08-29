@@ -118,15 +118,15 @@ class Bilibili(BaseWebsite):
                 subject_id=ep.subject_id,
             ).execute()
             logger.info(
-                'upsert BilibiliEpisode with kwargs %r' % {
-                    'source_ep_id': ep_id,
-                    'ep_id': initial_state.epInfo.ep_id,
-                    'subject_id': ep.subject_id,
-                }
+                'upsert BilibiliEpisode with kwargs {{!r}}'.format(
+                    source_ep_id=ep_id,
+                    ep_id=initial_state.epInfo.ep_id,
+                    subject_id=ep.subject_id,
+                )
             )
         except Ep.DoesNotExist:
             logger.warning(
-                'not fount episode %s with submit url %s', ep_id, url
+                'not fount episode {} with submit url {}', ep_id, url
             )
             return
         try:
@@ -138,7 +138,7 @@ class Bilibili(BaseWebsite):
             print('no exception')
         except BilibiliBangumi.DoesNotExist:
             logger.info(
-                'upsert BilibiliBangumi<%r>' % {
+                'upsert BilibiliBangumi<{!r}>', {
                     'media_id': initial_state.mediaInfo.media_id,
                     'season_id': initial_state.mediaInfo.season_id,
                     'subject_id': ep.subject_id

@@ -3,8 +3,12 @@ LABEL MAINTAINER="Trim21 <Trim21me@gmail.com>"
 ENV PYTHONPATH=/
 WORKDIR /
 
-COPY ./requirements/prod.txt /requirements.txt
-RUN pip install -q -r requirements.txt
+RUN pip install -q poetry
+
+COPY ./poetry.lock /poetry.lock
+COPY ./pyproject.toml /pyproject.toml
+
+RUN poetry install --no-dev
 
 COPY / /
 
