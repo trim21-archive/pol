@@ -8,6 +8,7 @@ from bgm_tv_spider import settings
 
 
 def generate_wiki_url():
+    print(generate_wiki_url.__qualname__, flush=True)
     redis_client = redis.Redis(
         host=settings.REDIS_HOST,
         **settings.REDIS_PARAMS,

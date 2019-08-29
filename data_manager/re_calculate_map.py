@@ -262,6 +262,7 @@ def first_run(subject_start, subject_end):
 
 
 def re_calculate_map():
+    print(re_calculate_map.__qualname__, flush=True)
     logger = logging.getLogger(__file__)
     subject_id_min = 1
     subject_id_max = Subject.select(pw.fn.MAX(Subject.id)).scalar()

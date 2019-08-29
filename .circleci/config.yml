@@ -76,7 +76,7 @@ jobs:
           command: |
             RemoteBaseTagPrefix="docker.pkg.github.com/trim21/personal-website"
             for baseTag in 'server' 'spider' 'worker' 'cron'; do
-              for version in "$CIRCLE_BRANCH-latest" "$CIRCLE_BRANCH-${CIRCLE_SHA1:0:6}";do
+              for version in "$CIRCLE_BRANCH-latest" "$CIRCLE_BRANCH-${CIRCLE_SHA1:0:8}";do
                 finalTag=$RemoteBaseTagPrefix/$baseTag:$version
                 docker tag $baseTag "$finalTag"
                 docker push "$finalTag"

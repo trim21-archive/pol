@@ -45,6 +45,7 @@ if __name__ == '__main__':
         max_instances=1,
     )
     scheduler.print_jobs()
+    print(flush=True)
     try:
         scheduler.start()
     except (KeyboardInterrupt, SystemExit):

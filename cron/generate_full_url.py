@@ -14,6 +14,7 @@ def chunk_iter_list(raw_list, chunk_size):
 
 
 def generate_full_url():
+    print(generate_full_url.__qualname__, flush=True)
     r = redis.Redis(
         host=settings.REDIS_HOST,
         **settings.REDIS_PARAMS,
