@@ -1,8 +1,8 @@
 import urllib.parse
 
+import httpx
 import redis
 import parsel
-import requests
 
 from bgm_tv_spider import settings
 
@@ -14,7 +14,7 @@ def generate_wiki_url():
         **settings.REDIS_PARAMS,
     )
 
-    r = requests.get('https://mirror.bgm.rin.cat/wiki')
+    r = httpx.get('https://mirror.bgm.rin.cat/wiki')
 
     response = parsel.Selector(r.text)
     redis_client.lpush(settings.REDIS_START_URL_KEY, *parse(response))

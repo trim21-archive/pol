@@ -5,43 +5,40 @@ description = ""
 authors = ["Trim21 <i@trim21.me>"]
 
 [tool.poetry.dependencies]
-python = "^3.7"
-requests = "^2.22.0"
-requests-async = "^0.6.2"
-peewee = "^3.10"
-msgpack = "^0.6.1"
-apscheduler = "^3.6.1"
-scrapy-redis = "^0.6.8"
-tqdm = "^4.35"
-scrapy = "^1.7"
-lxml = "^4.4"
-loguru = "^0.3.2"
-pytz = "^2019.2"
-better_exceptions = "^0.2.2"
-email-validator = "^1.0.4"
-jinja2 = "^2.10.1"
-icalendar = "^4.0.3"
-mistune = "^0.8.4"
-peewee-async = "^0.6.3a0"
-aioredis = "^1.2.0"
-python-dateutil = "^2.8.0"
-sentry-sdk = "^0.11.1"
-uvicorn = "^0.8.6"
-gunicorn = "^19.9.0"
-fastapi = "^0.36.0"
-python-multipart = "^0.0.5"
-cython = "^0.29.13"
 aiomysql = "^0.0.20"
-celery = {version = "^4.3", extras = ["redis"]}
-sphinx-rtd-theme = {version = "^0.4.3", optional = true}
-sphinx = {version = "^2.2", optional = true}
+aioredis = "^1.2.0"
+apscheduler = "^3.6.1"
+better_exceptions = "^0.2.2"
+celery = "^4.3"
+cython = "^0.29.13"
+email-validator = "^1.0.4"
+fastapi = "^0.36.0"
 gitpython = {version = "^3.0.2", optional = true}
-sphinxcontrib-openapi = {version = "^0.4.0", optional = true}
-sphinxcontrib-httpexample = {version = "^0.10.3", optional = true}
+gunicorn = "^19.9.0"
+httpx = "^0.7.2"
+icalendar = "^4.0.3"
+jinja2 = "^2.10.1"
+loguru = "^0.3.2"
+lxml = "^4.4"
+mistune = "^0.8.4"
+msgpack = "^0.6.1"
+peewee = "^3.10"
+peewee-async = "^0.6.3a0"
+python = "^3.7"
+python-dateutil = "^2.8.0"
+python-multipart = "^0.0.5"
+pytz = "^2019.2"
+scrapy = "^1.7"
+scrapy-redis = "^0.6.8"
+sentry-sdk = "^0.11.1"
+sphinx = {version = "^2.2", optional = true}
 sphinxcontrib-httpdomain = {version = "^1.7", optional = true}
+sphinxcontrib-httpexample = {version = "^0.10.3", optional = true}
+sphinxcontrib-openapi = {version = "^0.4.0", optional = true}
 sphinx-issues = {version = "^1.2", optional = true}
-
-
+sphinx-rtd-theme = {version = "^0.4.3", optional = true}
+tqdm = "^4.35"
+uvicorn = "^0.8.6"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.1.1"

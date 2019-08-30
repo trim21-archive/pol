@@ -1,11 +1,11 @@
-import requests
+import httpx
 
 from app.service.bgm_tv.model import ApiSubject
 
 
 class BgmApi:
     def __init__(self, mirror=False):
-        self.session = requests.Session()
+        self.session = httpx.Client()
         if mirror:
             self.host = 'mirror.api.bgm.rin.cat'
         else:

@@ -2,10 +2,11 @@
 import datetime
 from collections import defaultdict
 
-import requests_async as requests
-from fastapi import APIRouter, HTTPException
+import httpx
+from fastapi import Depends, APIRouter, HTTPException
 from icalendar import Event, Calendar
 
+from app.depends import aio_http_client
 from app.responses import CalendarResponse
 
 from .view_ip import router as view_ip_router
@@ -19,11 +20,13 @@ router.include_router(view_ip_router, prefix='/view_ip')
     summary='iCalendar for watching bangumi',
     response_class=CalendarResponse
 )
-async def bgm_calendar(user_id: str):
-    r = await requests.get(
-        f'https://mirror.api.bgm.rin.cat/user/{user_id}/collection', {
-            'cat': 'watching',
-        }
+async def bgm_calendar(
+    user_id: str,
+    aio_client: httpx.AsyncClient = Depends(aio_http_client),
+):
+    r = await aio_client.get(
+        f'https://mirror.api.bgm.rin.cat/user/{user_id}/collection',
+        params={'cat': 'watching'}
     )
     res = r.json()
     if 'code' in res:

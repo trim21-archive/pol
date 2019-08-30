@@ -2,7 +2,7 @@ import re
 import json
 from urllib import parse
 
-import requests
+import httpx
 from pydantic import ValidationError
 
 from app.log import logger
@@ -73,7 +73,7 @@ class Bilibili(BaseWebsite):
     @classmethod
     @sync_db
     def subject(cls, subject_id: int, url: str):
-        r = requests.get(url)
+        r = httpx.get(url)
         initial_state = get_initial_state_from_html(r.text)
         if initial_state:
             if 'ep' in url:
@@ -117,7 +117,7 @@ class Bilibili(BaseWebsite):
     @classmethod
     @sync_db
     def ep(cls, ep_id: int, url: str):
-        r = requests.get(url)
+        r = httpx.get(url)
         initial_state = get_initial_state_from_html(r.text)
         if initial_state:
             initial_state = PlayerPageInitialState.parse_obj(initial_state)

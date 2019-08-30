@@ -2,9 +2,9 @@ import json
 import datetime
 
 import mock
+import httpx
 import urllib3.response
 from asynctest import CoroutineMock
-from requests_async import Response
 from requests.structures import CaseInsensitiveDict
 from starlette.testclient import TestClient
 
@@ -16,7 +16,7 @@ from app.api.bgm_tv_auto_tracker.auth import get_current_user
 
 def mock_response(headers, body):
     content = body.encode()
-    r = Response()
+    r = httpx.Response(200)
     r.raw = urllib3.response.HTTPResponse(body=content)
     r._content = content
     r.headers = CaseInsensitiveDict(headers)
@@ -64,8 +64,8 @@ def test_oauth_callback(client: TestClient):
 
     UserToken.delete().execute()
 
-    with mock.patch('requests_async.post',
-                    mock_post), mock.patch('requests_async.get', mock_get):
+    with mock.patch('app.depends.client.post',
+                    mock_post), mock.patch('app.depends.client.get', mock_get):
         r = client.get(
             '/bgm-tv-auto-tracker/api.v1/oauth_callback',
             params={'code': '233'}
@@ -154,8 +154,8 @@ def test_refresh_token(client: TestClient):
         }),
     )
 
-    with mock.patch('requests_async.post',
-                    mock_post), mock.patch('requests_async.get', mock_get):
+    with mock.patch('app.depends.client.post',
+                    mock_post), mock.patch('app.depends.client.get', mock_get):
         r = client.post('/bgm-tv-auto-tracker/api.v1/refresh')
         assert r.status_code == 200, r.text
         mock_post.assert_awaited_once_with(

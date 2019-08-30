@@ -3,16 +3,17 @@ import pathlib
 from os import path
 from collections import defaultdict
 
+import httpx
 import pydantic
-import requests
 
 from app.db import database
 from app.db_models.iqiyi import IqiyiBangumi
 from app.db_models.bilibili import BilibiliBangumi
 from app.video_website_spider import SupportWebsite
 from data_manager.models.bangumi_data import Item
-from app.video_website_spider.bilibili import (
-    PlayerPageInitialState, get_initial_state_from_html
+from app.video_website_spider.bilibili.model import PlayerPageInitialState
+from app.video_website_spider.bilibili.bilibili import (
+    get_initial_state_from_html
 )
 
 base_dir = pathlib.Path(path.dirname(__file__))
@@ -21,7 +22,7 @@ base_dir = pathlib.Path(path.dirname(__file__))
 def save_bangumi_data_to_db():
     container = defaultdict(list)
     data = []
-    for item in requests.get(
+    for item in httpx.get(
         'https://cdn.jsdelivr.net/npm/bangumi-data@0.3.x/dist/data.json'
     ).json()['items']:
         try:
@@ -94,7 +95,7 @@ def save_patch_to_db():
 
 
 def get_media_id(season_id):
-    r = requests.get(f'https://www.bilibili.com/bangumi/play/ss{season_id}/')
+    r = httpx.get(f'https://www.bilibili.com/bangumi/play/ss{season_id}/')
     state = get_initial_state_from_html(r.text)
     if not state:
         print(r.url)

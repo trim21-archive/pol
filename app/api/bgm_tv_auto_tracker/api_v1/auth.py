@@ -4,7 +4,7 @@ from enum import IntEnum
 from typing import Dict, Optional
 from pathlib import Path
 
-import requests_async as requests
+import httpx
 import dateutil.parser
 from fastapi import Depends, APIRouter
 from pydantic import BaseModel, ValidationError
@@ -18,6 +18,7 @@ from starlette.templating import Jinja2Templates
 from app import db_models
 from app.log import logger
 from app.core import config
+from app.depends import aio_http_client
 from app.db.redis import PickleRedis
 from app.db.depends import get_db, get_redis
 from app.api.bgm_tv_auto_tracker.auth import get_current_user
@@ -81,9 +82,10 @@ async def oauth_callback(
     request: Request,
     db: Manager = Depends(get_db),
     redis: PickleRedis = Depends(get_redis),
+    aio_client: httpx.AsyncClient = Depends(aio_http_client),
 ):
     try:
-        resp = await requests.post(
+        resp = await aio_client.post(
             'https://bgm.tv/oauth/access_token',
             data={
                 'code': code,
@@ -95,7 +97,7 @@ async def oauth_callback(
         )
         r = AuthResponse.parse_raw(resp.text)
         auth_time = dateutil.parser.parse(resp.headers['Date']).timestamp()
-        user_info_resp = await requests.get(
+        user_info_resp = await aio_client.get(
             f'https://api.bgm.tv/user/{r.user_id}'
         )
         user_info = UserInfo.parse_raw(user_info_resp.text)
@@ -146,9 +148,10 @@ class RefreshResponse(BaseModel):
 async def refresh_token(
     db: Manager = Depends(get_db),
     current_user: db_models.UserToken = Depends(get_current_user),
+    aio_client: httpx.AsyncClient = Depends(aio_http_client),
 ):
     try:
-        resp = await requests.post(
+        resp = await aio_client.post(
             'https://bgm.tv/oauth/access_token',
             data={
                 'grant_type': 'refresh_token',
@@ -174,8 +177,7 @@ async def refresh_token(
             )
         )
     except (
-        requests.ConnectTimeout,
-        requests.ConnectionError,
+        httpx.ConnectTimeout,
         json.decoder.JSONDecodeError,
         ValidationError,
     ):
@@ -184,7 +186,7 @@ async def refresh_token(
         )
 
     try:
-        user_info_resp = await requests.get(
+        user_info_resp = await aio_client.get(
             f'https://api.bgm.tv/user/{current_user.user_id}'
         )
         user_info = UserInfo.parse_raw(user_info_resp.text)
@@ -197,8 +199,8 @@ async def refresh_token(
             )
         )
     except (
-        requests.ConnectTimeout,
-        requests.ConnectionError,
+        aio_client.ConnectTimeout,
+        aio_client.ConnectionError,
         json.decoder.JSONDecodeError,
         ValidationError,
     ) as e:

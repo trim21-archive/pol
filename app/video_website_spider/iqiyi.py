@@ -1,8 +1,8 @@
 import re
 from urllib import parse
 
+import httpx
 import peewee as pw
-import requests
 from pydantic import BaseModel
 
 from app.log import logger
@@ -49,13 +49,13 @@ class Iqiyi(BaseWebsite):
             bangumi_id=bangumi_id,
         ).execute()
 
-        album_id = requests.get(url).text
+        album_id = httpx.get(url).text
         s = alb_regex.search(album_id)
         if not s or not s.groups():
             return
 
         album_id = s.groups()[0]
-        list_info = requests.get(
+        list_info = httpx.get(
             'https://pcw-api.iqiyi.com/albums/album/avlistinfo',
             params={
                 'aid': album_id,
