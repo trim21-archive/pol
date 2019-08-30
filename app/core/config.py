@@ -34,6 +34,10 @@ REDIS_URI = f'redis://{REDIS_HOST}/0'
 if REDIS_PASSWORD:
     REDIS_URI = f'redis://:{REDIS_PASSWORD}@{REDIS_HOST}/0'
 
+RABBITMQ_ADDR = os.getenv('RABBITMQ_ADDR')
+RABBITMQ_USER = os.getenv('RABBITMQ_USER')
+RABBITMQ_PASS = os.getenv('RABBITMQ_PASS')
+
 VIRTUAL_HOST = os.environ.get('VIRTUAL_HOST', 'localhost:6001')
 PROTOCOL = os.environ.get('PROTOCOL', 'http')
 

@@ -77,7 +77,7 @@ class Iqiyi(BaseWebsite):
             eps = [
                 ApiResult.parse_obj(x) for x in list_info['data']['epsodelist']
             ]
-        bgm_eps = bgm_tv.server.subject_eps(subject_id).eps
+        bgm_eps = bgm_tv.mirror.subject_eps(subject_id).eps
         bgm_ep_start = min(x.sort for x in bgm_eps)
         ep_start = min(x.order for x in eps)
         for ep in eps:

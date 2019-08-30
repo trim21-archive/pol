@@ -1,17 +1,17 @@
 import re
 import json
-from typing import List
 from urllib import parse
 
 import requests
-from pydantic import BaseModel
+from pydantic import ValidationError
 
 from app.log import logger
 from app.service import bgm_tv
 from app.db_models import Ep, BilibiliBangumi, BilibiliEpisode
-from app.video_website_spider.base import sync_db
-
-from .base import BaseWebsite, UrlNotValidError
+from app.video_website_spider.base import BaseWebsite, UrlNotValidError, sync_db
+from app.video_website_spider.bilibili.model import (
+    PlayerPageInitialState, BangumiPageInitialState
+)
 
 
 def get_ep_id_from_url(url: str):
@@ -47,25 +47,28 @@ def get_initial_state_from_html(html: str) -> dict:
 
 class Bilibili(BaseWebsite):
     bangumi_regex = re.compile(
-        r'https?://www\.bilibili\.com/bangumi/media/md\d+/\??.*'
+        r'https?://www\.bilibili\.com/bangumi/media/md\d+/?.*'
     )
     episode_regex = re.compile(
-        r'https?://www\.bilibili\.com/bangumi/play/ep\d+\??.*'
+        r'https?://www\.bilibili\.com/bangumi/play/ep\d+/?.*'
     )
 
     @classmethod
     def valid_ep_url(cls, url: str):
         if not cls.episode_regex.match(url):
             raise UrlNotValidError(
-                'https://www.bilibili.com/bangumi/play/ep{episode_id}'
+                'https://www.bilibili.com/bangumi/media/md{media_id} '
+                'or https://www.bilibili.com/bangumi/play/ep{episode_id}'
             )
 
     @classmethod
     def valid_subject_url(cls, url):
-        if not cls.episode_regex.match(url):
-            raise UrlNotValidError(
-                'https://www.bilibili.com/bangumi/media/md{media_id}'
-            )
+        if not cls.bangumi_regex.match(url):
+            if not cls.episode_regex.match(url):
+                raise UrlNotValidError(
+                    'https://www.bilibili.com/bangumi/media/md{media_id} '
+                    'or https://www.bilibili.com/bangumi/play/ep{episode_id}'
+                )
 
     @classmethod
     @sync_db
@@ -73,23 +76,36 @@ class Bilibili(BaseWebsite):
         r = requests.get(url)
         initial_state = get_initial_state_from_html(r.text)
         if initial_state:
-            initial_state = PlayerPageInitialState.parse_obj(initial_state)
+            if 'ep' in url:
+                model = PlayerPageInitialState
+            else:
+                model = BangumiPageInitialState
+            try:
+                initial_state = model.parse_obj(initial_state)
+            except ValidationError as e:
+                logger.error(model.__name__)
+                logger.error(str(e))
+                logger.error(repr(initial_state))
+                return
         else:
             logger.error("can't get initial state from url {}", url)
             return
         BilibiliBangumi.upsert(
             subject_id=subject_id,
             media_id=initial_state.mediaInfo.media_id,
-            season_id=initial_state.mediaInfo.season_id,
+            season_id=initial_state.mediaInfo.season_id
+            or BilibiliBangumi.season_id.default,
         ).execute()
-        bgm_eps = bgm_tv.server.subject_eps(subject_id).eps
+        bgm_eps = bgm_tv.mirror.subject_eps(subject_id).eps
 
         bgm_ep_start = min(x.sort for x in bgm_eps)
-        ep_start = min(x.index for x in initial_state.epList)
+        ep_start = int(min(x.index for x in initial_state.epList))
 
-        for ep in initial_state.epList:
-            for bgm_ep in bgm_eps:
-                if (bgm_ep.sort - bgm_ep_start) == (ep.index - ep_start):
+        for bgm_ep in bgm_eps:
+            for ep in initial_state.epList:
+                if not ep.index.isdecimal():
+                    continue
+                if (bgm_ep.sort - bgm_ep_start) == (int(ep.index) - ep_start):
 
                     BilibiliEpisode.upsert(
                         ep_id=bgm_ep.id,
@@ -151,63 +167,7 @@ class Bilibili(BaseWebsite):
             ).execute()
 
 
-class Param(BaseModel):
-    season_id: str
-
-
-class Result(BaseModel):
-    param: Param
-    media_id: int
-
-
-class BiliBiliApiResult(BaseModel):
-    code: int
-    message: str
-    result: Result
-
-
-class PlayerPageMediaInfo(BaseModel):
-    id: int
-    """
-    ``mediaInfo.media_id``
-    """
-
-    ssId: int
-    """
-    ``mediaInfo.season_id``
-    """
-    @property
-    def media_id(self):
-        return self.id
-
-    @property
-    def season_id(self):
-        return self.ssId
-
-
-class PlayerPageEpInfo(BaseModel):
-    """
-    schema of new player page
-    don't have enough time to implement
-    """
-    id: int
-    """
-    ``epInfo.ep_id``
-    """
-    i: int
-    """
-    ``epInfo.index``
-    """
-    @property
-    def ep_id(self):
-        return self.id
-
-    @property
-    def index(self):
-        return self.i + 1
-
-
-class PlayerPageInitialState(BaseModel):
-    mediaInfo: PlayerPageMediaInfo
-    epInfo: PlayerPageEpInfo
-    epList: List[PlayerPageEpInfo]
+if __name__ == '__main__':
+    Bilibili.subject(
+        271724, 'https://www.bilibili.com/bangumi/media/md28221412'
+    )

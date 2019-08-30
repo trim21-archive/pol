@@ -98,17 +98,28 @@ jobs:
           MYSQL_ROOT_PASSWORD: root_password
           MYSQL_DATABASE: bgm_ip_viewer
 
+      - image: rabbitmq:3
+        environment:
+          RABBITMQ_DEFAULT_USER: rabbit_user
+          RABBITMQ_DEFAULT_PASS: rabbit_pass
+
     environment:
       MYSQL_HOST: 127.0.0.1
       MYSQL_USER: root
       MYSQL_PASSWORD: root_password
       MYSQL_DB: bgm_ip_viewer
+
       REDIS_HOST: 127.0.0.1
       REDIS_PASSWORD: redis_password
-      BGM_TV_AUTO_TRACKER_APP_SECRET: 3e452da34f146314694a0e1e7f23b722
-      BGM_TV_AUTO_TRACKER_APP_ID: bgm2955b3b3050e7bf2
+
+      RABBITMQ_ADDR: 127.0.0.1:5672
+      RABBITMQ_USER: rabbit_user
+      RABBITMQ_PASS: rabbit_pass
+
       VIRTUAL_HOST: 127.0.0.1:8000
       PROTOCOL: http
+      BGM_TV_AUTO_TRACKER_APP_SECRET: 3e452da34f146314694a0e1e7f23b722
+      BGM_TV_AUTO_TRACKER_APP_ID: bgm2955b3b3050e7bf2
       COMMIT_SHA: 'dev'
 
     steps:
