@@ -12,6 +12,7 @@ class BgmApi:
             self.host = 'api.bgm.tv'
 
     def subject_eps(self, subject_id: int) -> ApiSubject:
+
         return ApiSubject.parse_raw(
             self.session.get(
                 f'https://{self.host}/subject/{subject_id}/ep',

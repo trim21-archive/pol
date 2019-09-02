@@ -1,11 +1,11 @@
 import re
 from urllib import parse
 
-import httpx
 import peewee as pw
 from pydantic import BaseModel
 
 from app.log import logger
+from app.client import http_client
 from app.service import bgm_tv
 from app.db_models import Ep, IqiyiBangumi, IqiyiEpisode
 from app.video_website_spider.base import sync_db
@@ -49,13 +49,13 @@ class Iqiyi(BaseWebsite):
             bangumi_id=bangumi_id,
         ).execute()
 
-        album_id = httpx.get(url).text
+        album_id = http_client.get(url).text
         s = alb_regex.search(album_id)
         if not s or not s.groups():
             return
 
         album_id = s.groups()[0]
-        list_info = httpx.get(
+        list_info = http_client.get(
             'https://pcw-api.iqiyi.com/albums/album/avlistinfo',
             params={
                 'aid': album_id,

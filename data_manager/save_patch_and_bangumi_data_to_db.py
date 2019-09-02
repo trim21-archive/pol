@@ -3,10 +3,10 @@ import pathlib
 from os import path
 from collections import defaultdict
 
-import httpx
 import pydantic
 
 from app.db import database
+from app.client import http_client
 from app.db_models.iqiyi import IqiyiBangumi
 from app.db_models.bilibili import BilibiliBangumi
 from app.video_website_spider import SupportWebsite
@@ -22,7 +22,7 @@ base_dir = pathlib.Path(path.dirname(__file__))
 def save_bangumi_data_to_db():
     container = defaultdict(list)
     data = []
-    for item in httpx.get(
+    for item in http_client.get(
         'https://cdn.jsdelivr.net/npm/bangumi-data@0.3.x/dist/data.json'
     ).json()['items']:
         try:
@@ -95,7 +95,7 @@ def save_patch_to_db():
 
 
 def get_media_id(season_id):
-    r = httpx.get(f'https://www.bilibili.com/bangumi/play/ss{season_id}/')
+    r = http_client.get(f'https://www.bilibili.com/bangumi/play/ss{season_id}/')
     state = get_initial_state_from_html(r.text)
     if not state:
         print(r.url)

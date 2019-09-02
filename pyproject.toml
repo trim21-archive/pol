@@ -39,6 +39,7 @@ sphinx-issues = {version = "^1.2", optional = true}
 sphinx-rtd-theme = {version = "^0.4.3", optional = true}
 tqdm = "^4.35"
 uvicorn = "^0.8.6"
+brotlipy = "^0.7.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.1.2"

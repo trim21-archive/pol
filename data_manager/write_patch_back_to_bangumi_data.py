@@ -5,7 +5,7 @@ import pathlib
 from os import path
 from typing import List
 
-import httpx
+from app.client import http_client
 
 project_dir = pathlib.Path(path.dirname(__file__)).parent
 server_dir = project_dir / 'server'
@@ -93,7 +93,7 @@ if __name__ == '__main__':
         website = item['website']
         if not item.get('title'):
             print(item)
-            r = httpx.get(
+            r = http_client.get(
                 'https://api.bgm.tv/subject/{}'.format(item['subject_id'])
             )
             j = r.json()

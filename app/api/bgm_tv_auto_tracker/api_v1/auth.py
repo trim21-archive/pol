@@ -199,8 +199,7 @@ async def refresh_token(
             )
         )
     except (
-        aio_client.ConnectTimeout,
-        aio_client.ConnectionError,
+        httpx.ConnectTimeout,
         json.decoder.JSONDecodeError,
         ValidationError,
     ) as e:
