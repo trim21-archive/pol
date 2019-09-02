@@ -24,7 +24,7 @@ def test_submit_bangumi():
 
     Iqiyi.subject(
         subject_id=219200,
-        url='http://www.iqiyi.com/a_19rrh1ss1p.html',
+        url='https://www.iqiyi.com/a_19rrh1ss1p.html',
     )
     IqiyiBangumi.get(
         subject_id=219200,
