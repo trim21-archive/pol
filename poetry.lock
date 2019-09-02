@@ -1122,7 +1122,7 @@ description = "Python client for Sentry (https://getsentry.com)"
 name = "sentry-sdk"
 optional = false
 python-versions = "*"
-version = "0.11.1"
+version = "0.11.2"
 
 [package.dependencies]
 certifi = "*"
@@ -1498,7 +1498,7 @@ setuptools = "*"
 docs = ["sphinx", "sphinx-rtd-theme", "sphinxcontrib-httpdomain", "sphinxcontrib-httpexample", "sphinxcontrib-openapi", "sphinx-issues", "gitpython"]
 
 [metadata]
-content-hash = "7434fe4106443f8dea3adb8932c98b78160fbe591fd2ce84a548c115dba8b86c"
+content-hash = "375ce5a1a2848c740bf1a8ce310175e2bb777f9be64b37dee7801a5b07828b94"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -1610,7 +1610,7 @@ requests = ["11e007a8a2aa0323f5a921e9e6a2d7e4e67d9877e85773fba9ba6419025cbeb4", 
 rfc3986 = ["0344d0bd428126ce554e7ca2b61787b6a28d2bbd19fc70ed2dd85efe31176405", "df4eba676077cefb86450c8f60121b9ae04b94f65f85b69f3f731af0516b7b18"]
 scrapy = ["1d2b2672049c3e7ebcab9736bbf759ec32d4cbf598292067737806453c208f95", "fe5a40177960e97d42d1c752a73edb40f76a85a24076dec8535cffa499eb08c8"]
 scrapy-redis = ["1508dfb29141a7eb562e303a12d2733fd490dee866f7fabe3bee3e5c5bef6df8", "b6991f2c0b2a72cd211296756acd03b9a7695fc437f5adbc3770d2e035979707"]
-sentry-sdk = ["79e8352b5097aa06014871c6daad0933f59d1fcccc586339464ea86e4877b2ab", "aeaaf6ae7cc4030d390e5c95797ac1a2a79ac2c8b687709293975ee808c68784"]
+sentry-sdk = ["528f936118679e9a52dacb96bfefe20acb5d63e0797856c64a582cc3c2bc1f9e", "b4edcb1296fee107439345d0f8b23432b8732b7e28407f928367d0a4a36301a9"]
 service-identity = ["001c0707759cb3de7e49c078a7c0c9cd12594161d3bf06b9c254fdcb1a60dc36", "0858a54aabc5b459d1aafa8a518ed2081a285087f349fe3e55197989232e2e2d"]
 six = ["3350809f0555b11f552448330d0b52d5f24c91a322ea4a15ef22629740f3761c", "d16a0141ec1a18405cd4ce8b4613101da75da0e9a7aec5bdd4fa804d0e0eba73"]
 smmap2 = ["0555a7bf4df71d1ef4218e4807bbf9b201f910174e6e08af2e138d4e517b4dde", "29a9ffa0497e7f2be94ca0ed1ca1aa3cd4cf25a1f6b4f5f87f74b46ed91d609a"]

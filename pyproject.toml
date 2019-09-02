@@ -30,7 +30,7 @@ python-multipart = "^0.0.5"
 pytz = "^2019.2"
 scrapy = "^1.7"
 scrapy-redis = "^0.6.8"
-sentry-sdk = "^0.11.1"
+sentry-sdk = "^0.11.2"
 sphinx = {version = "^2.2", optional = true}
 sphinxcontrib-httpdomain = {version = "^1.7", optional = true}
 sphinxcontrib-httpexample = {version = "^0.10.3", optional = true}
