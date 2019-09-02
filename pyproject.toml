@@ -12,7 +12,7 @@ better_exceptions = "^0.2.2"
 celery = "^4.3"
 cython = "^0.29.13"
 email-validator = "^1.0.4"
-fastapi = "^0.36.0"
+fastapi = "^0.38.1"
 gitpython = {version = "^3.0.2", optional = true}
 gunicorn = "^19.9.0"
 httpx = "^0.7.2"
