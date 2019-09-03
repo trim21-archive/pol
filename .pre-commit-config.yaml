@@ -34,10 +34,23 @@ repos:
 
   - repo: local
     hooks:
+      - id: isort
+        name: isort
+        entry: isort
+        require_serial: true
+        language: python
+        types: [python]
+
+      - id: yapf
+        name: yapf
+        entry: yapf -i
+        require_serial: true
+        language: python
+        types: [python]
+
       - id: flake8
         name: flake8
         entry: flake8
-        require_serial: false
         language: python
         types: [python]
         args: ['--config=setup.cfg']
@@ -60,16 +73,9 @@ repos:
                '--remove-unused-variables',
                '--remove-all-unused-imports']
 
-      - id: isort
-        name: isort
-        entry: isort
-        require_serial: true
+      - id: poetry
+        name: Check Poetry Config
         language: python
-        types: [python]
-
-      - id: yapf
-        name: yapf
-        entry: yapf -i
-        require_serial: true
-        language: python
-        types: [python]
+        entry: poetry check
+        pass_filenames: false
+        files: 'pyproject.toml'

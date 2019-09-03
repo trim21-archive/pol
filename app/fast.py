@@ -22,6 +22,7 @@ app = FastAPI(
     title='personal website',
     docs_url='/',
     redoc_url=None,
+    swagger_ui_oauth2_redirect_url=None,
     openapi_url='/openapi.json',
     description=(
         '出于兴趣写的一些api，源码见'
@@ -35,6 +36,7 @@ if config.DSN:
     from app.middlewares.sentry import SentryMiddleware
     import sentry_sdk
     from sentry_sdk.integrations.logging import ignore_logger
+
     ignore_logger('asyncio')
     sentry_sdk.init(dsn=config.DSN, release=config.COMMIT_SHA)
     app.add_middleware(SentryMiddleware)

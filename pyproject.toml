@@ -1,3 +1,7 @@
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
+
 [tool.poetry]
 name = "personal-website"
 version = "0.1.0"
@@ -40,7 +44,6 @@ sphinx-rtd-theme = {version = "^0.4.3", optional = true}
 tqdm = "^4.35"
 uvicorn = "^0.8.6"
 brotlipy = "^0.7.0"
-
 [tool.poetry.dev-dependencies]
 pytest = "^5.1.2"
 pytest-mock = "^1.10.4"
@@ -59,7 +62,6 @@ livereload = "^2.6.1"
 gevent = "^1.4"
 asynctest = "^0.13.0"
 codecov = "^2.0"
-
 [tool.poetry.extras]
 docs = [
 "sphinx",
@@ -72,6 +74,10 @@ docs = [
 ]
 
 
-[build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
+[tool.isort]
+length_sort = true
+multi_line_output = 5
+line_length = 88
+indent = '    '
+default_section = 'FIRSTPARTY'
+known_first_party = ['app','bgm_tv_spider','data_manager','data_cleaner','cron']
