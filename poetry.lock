@@ -1279,7 +1279,7 @@ description = "OpenAPI (fka Swagger) spec renderer for Sphinx"
 name = "sphinxcontrib-openapi"
 optional = true
 python-versions = "*"
-version = "0.4.0"
+version = "0.5.0"
 
 [package.dependencies]
 PyYAML = ">=3.12"
@@ -1498,7 +1498,7 @@ setuptools = "*"
 docs = ["sphinx", "sphinx-rtd-theme", "sphinxcontrib-httpdomain", "sphinxcontrib-httpexample", "sphinxcontrib-openapi", "sphinx-issues", "gitpython"]
 
 [metadata]
-content-hash = "1f122817d6cb8876940108944596a6b7f36d15b48c4ca34e7f1cc537289ad56c"
+content-hash = "25bcadd557f4ce2cbe5107ba18a645e471e741d1b74ab7ccbfb58032202cb681"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -1624,7 +1624,7 @@ sphinxcontrib-htmlhelp = ["4670f99f8951bd78cd4ad2ab962f798f5618b17675c35c5ac3b21
 sphinxcontrib-httpdomain = ["1fb5375007d70bf180cdd1c79e741082be7aa2d37ba99efe561e1c2e3f38191e", "ac40b4fba58c76b073b03931c7b8ead611066a6aebccafb34dc19694f4eb6335"]
 sphinxcontrib-httpexample = ["2e7705aeaece2c3f4de22500e32fa52d25347c3d4f9026e790633c9c2ba35e57", "77ed3599a1a8e3eff414548066c8b9b7d4ca43694626c33c16a7a443d0d66512"]
 sphinxcontrib-jsmath = ["2ec2eaebfb78f3f2078e73666b1415417a116cc848b72e5172e596c871103178", "a9925e4a4587247ed2191a22df5f6970656cb8ca2bd6284309578f2153e0c4b8"]
-sphinxcontrib-openapi = ["9d64c8a119bfc592e6316af3e5475ce2d4d8ed6e013dc016a3f2e7971e50d7f3"]
+sphinxcontrib-openapi = ["2a5883456c0caba0dad90f07968c75a50d5fc425a3aa06d1c538472ddf8c7e22"]
 sphinxcontrib-qthelp = ["513049b93031beb1f57d4daea74068a4feb77aa5630f856fcff2e50de14e9a20", "79465ce11ae5694ff165becda529a600c754f4bc459778778c7017374d4d406f"]
 sphinxcontrib-serializinghtml = ["c0efb33f8052c04fd7a26c0a07f1678e8512e0faec19f4aa8f2473a8b81d5227", "db6615af393650bf1151a6cd39120c29abaf93cc60db8c48eb2dddbfdc3a9768"]
 starlette = ["849553e6dc8dd4faac5d4383219bdf49b199f3f09d60ce374c2a00a42ab7c77d"]

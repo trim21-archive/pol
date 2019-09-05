@@ -34,7 +34,7 @@ sentry-sdk = "^0.11.2"
 sphinx = {version = "^2.2", optional = true}
 sphinxcontrib-httpdomain = {version = "^1.7", optional = true}
 sphinxcontrib-httpexample = {version = "^0.10.3", optional = true}
-sphinxcontrib-openapi = {version = "^0.4.0", optional = true}
+sphinxcontrib-openapi = {version = "^0.5.0", optional = true}
 sphinx-issues = {version = "^1.2", optional = true}
 sphinx-rtd-theme = {version = "^0.4.3", optional = true}
 tqdm = "^4.35"
