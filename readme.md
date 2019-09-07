@@ -1,5 +1,7 @@
 # side project
 
+[![Join the chat at https://gitter.im/pol-chat/community](https://badges.gitter.im/pol-chat/community.svg)](https://gitter.im/pol-chat/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ## convert markdown to bbcode
 
 https://www.trim21.cn/md2bbc
