@@ -59,8 +59,7 @@ class Relation(S.BgmIpViewer):
     @classmethod
     def get_relation_of_subject(cls, subject_id):
         return cls.select().where(((cls.source == subject_id) |
-                                   (cls.target == subject_id)) &
-                                  (cls.removed == 0))
+                                   (cls.target == subject_id)) & (cls.removed == 0))
 
 
 class Tag(S.BgmIpViewer):
@@ -85,9 +84,7 @@ class UserToken(S.BgmIpViewer):
     scope = pw.CharField(default='')
     token_type = pw.CharField(default='')
     expires_in = pw.IntegerField(default=0)
-    auth_time = pw.IntegerField(
-        default=lambda: datetime.datetime.now().timestamp()
-    )
+    auth_time = pw.IntegerField(default=lambda: datetime.datetime.now().timestamp())
     access_token = pw.FixedCharField(50, default='')
     refresh_token = pw.FixedCharField(50, default='')
     username = pw.CharField(default='')
@@ -165,7 +162,5 @@ if __name__ == '__main__':
     from app.db.database import objects
 
     with objects.allow_sync():
-        for table in [
-            IqiyiEpisode, IqiyiBangumi, BilibiliBangumi, BilibiliEpisode
-        ]:
+        for table in [IqiyiEpisode, IqiyiBangumi, BilibiliBangumi, BilibiliEpisode]:
             table.create_table()

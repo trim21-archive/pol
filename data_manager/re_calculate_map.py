@@ -62,17 +62,15 @@ def nodes_need_to_remove(*node_ids):
     Subject.update(locked=True).where(Subject.id.in_(node_ids)).execute()
     Relation.update(
         removed=True
-    ).where(Relation.source.in_(node_ids) |
-            Relation.target.in_(node_ids)).execute()
+    ).where(Relation.source.in_(node_ids) | Relation.target.in_(node_ids)).execute()
 
 
 def relations_need_to_remove(kwargs):
     for id_1, id_2 in kwargs:
-        Relation.update(removed=True
-                        ).where(((Relation.source == id_1) &
-                                 (Relation.target == id_2)) |
-                                ((Relation.source == id_2) &
-                                 (Relation.target == id_1))).execute()
+        Relation.update(removed=True).where(((Relation.source == id_1) &
+                                             (Relation.target == id_2)) |
+                                            ((Relation.source == id_2) &
+                                             (Relation.target == id_1))).execute()
 
 
 done_id = set()
@@ -93,8 +91,7 @@ def worker(start_job=None, work_fun=None):
     yield_job = []
     if start_job is None:
         start_job = [
-            x.id
-            for x in Subject.select(Subject.id).where(Subject.map.is_null())
+            x.id for x in Subject.select(Subject.id).where(Subject.map.is_null())
         ]
 
     def do(j):
@@ -136,9 +133,10 @@ def pre_remove(subject_start, subject_end):
     Subject.update(locked=1).where(Subject.subject_type == 'Music').execute()
     for s in Subject.select(Subject.id).where(Subject.locked == 1):
         id_to_remove.append(s.id)
-    Relation.update(removed=1).where(
-        Relation.source.in_(id_to_remove) | Relation.target.in_(id_to_remove)
-    ).execute()
+    Relation.update(
+        removed=1
+    ).where(Relation.source.in_(id_to_remove) |
+            Relation.target.in_(id_to_remove)).execute()
 
     for chunk in chunk_iter_list(list(range(subject_start, subject_end))):
         db_data = list(
@@ -156,18 +154,17 @@ def pre_remove(subject_start, subject_end):
             assert s.locked == 0
         non_exists_ids = list(set(chunk) - {x.id for x in db_data})
         Relation.update(removed=1).where(
-            Relation.source.in_(non_exists_ids) |
-            Relation.target.in_(non_exists_ids)
+            Relation.source.in_(non_exists_ids) | Relation.target.in_(non_exists_ids)
         ).execute()
 
     for i in tqdm.tqdm(range(subject_start, subject_end, CHUNK_SIZE)):
         relation_id_need_to_remove = set()
         source_to_target: Dict[int, Dict] = defaultdict(dict)
-        sources = Relation.select(
-        ).where((((Relation.source >= i) & (Relation.source < i + CHUNK_SIZE)) |
-                 ((Relation.target >= i) &
-                  (Relation.target < i + CHUNK_SIZE))) &
-                (Relation.removed == 0))
+        sources = Relation.select().where((((Relation.source >= i) &
+                                            (Relation.source < i + CHUNK_SIZE)) |
+                                           ((Relation.target >= i) &
+                                            (Relation.target < i + CHUNK_SIZE))) &
+                                          (Relation.removed == 0))
 
         sources = list(sources)
 
@@ -199,8 +196,7 @@ def first_run(subject_start, subject_end):
     edge_count = 0
     for i in range(subject_start, subject_end, CHUNK_SIZE):
         for edge_ in Relation.select().where((Relation.source >= i) &
-                                             (Relation.source < i +
-                                              CHUNK_SIZE) &
+                                             (Relation.source < i + CHUNK_SIZE) &
                                              (Relation.removed == 0)):
             assert i <= edge_.source < i + CHUNK_SIZE
             assert subjects[edge_.target]
@@ -251,9 +247,7 @@ def first_run(subject_start, subject_end):
                 [maps[sub.map].add(x.id) for x in edges]
             for map_id, ids in tqdm.tqdm(maps.items(), total=len(maps.keys())):
                 for chunk in chunk_iter_list(list(ids)):
-                    Relation.update(map=map_id).where(
-                        Relation.id.in_(chunk)
-                    ).execute()
+                    Relation.update(map=map_id).where(Relation.id.in_(chunk)).execute()
         except Exception as e:
             txn.rollback()
             raise e

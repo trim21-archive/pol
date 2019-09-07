@@ -15,8 +15,7 @@ from app.api.bgm_tv_auto_tracker.auth import get_current_user
 )
 def test_submit_subject_id_require_auth(client: TestClient, url):
     r = client.post(
-        url,
-        json={
+        url, json={
             'bangumi_id': 'string',
             'source': 'bilibili',
             'subject_id': 288,

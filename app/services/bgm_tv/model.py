@@ -1,5 +1,5 @@
-from enum import Enum
-from typing import List
+from enum import Enum, IntEnum
+from typing import Dict, List, Optional
 
 from pydantic import BaseModel
 
@@ -62,3 +62,42 @@ class ApiSubject(BaseModel):
     air_weekday: int
     images: SubjectImage
     eps: List[Episode]
+
+
+class AuthResponse(BaseModel):
+    access_token: str
+    expires_in: int
+    token_type: str
+    scope: Optional[str]
+    user_id: int
+    refresh_token: str
+
+
+class UserGroupEnum(IntEnum):
+    admin = 1
+    bangumi_admin = 2
+    window_admin = 3
+    quite_user = 4
+    banned_user = 5
+    character_admin = 8
+    wiki_admin = 9
+    normal_user = 10
+    wiki = 11
+
+
+class UserInfo(BaseModel):
+    id: int
+    url: str
+    username: str
+    nickname: str
+    avatar: Dict[str, str]
+    sign: str
+    usergroup: UserGroupEnum
+
+
+class RefreshResponse(BaseModel):
+    access_token: str
+    expires_in: int
+    token_type: str
+    scope: Optional[str] = ''
+    refresh_token: str

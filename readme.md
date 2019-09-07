@@ -1,4 +1,12 @@
-# side project
+# Pol
+
+[![Join the chat at https://gitter.im/pol-chat/community](https://badges.gitter.im/pol-chat/community.svg)](https://gitter.im/pol-chat/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+基于[fastapi](https://github.com/tiangolo/fastapi)的API server
+
+后端使用mysql和redis
+
+文档详情见[Openapi](https://www.trim21.cn)
 
 ## convert markdown to bbcode
 

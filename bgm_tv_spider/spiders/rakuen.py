@@ -25,18 +25,16 @@ class RakuenSpider(scrapy.Spider):
 
     def parse(self, response: TypeResponse):
         yield Request(
-            'https://mirror.bgm.rin.cat/group/topic/350626',
-            callback=self.parse_topic,
+            'https://mirror.bgm.rin.cat/group/topic/350626', callback=self.parse_topic
         )
         return
         for item in response.xpath('//*[@id="eden_tpc_list"]/ul/li'):
-            url = item.xpath('./a/@href').extract_first().replace(
-                '/rakuen/topic/group/', '/group/topic/'
+            url = (
+                item.xpath('./a/@href').extract_first().replace(
+                    '/rakuen/topic/group/', '/group/topic/'
+                )
             )
-            yield Request(
-                response.urljoin(url),
-                callback=self.parse_topic,
-            )
+            yield Request(response.urljoin(url), callback=self.parse_topic)
 
     def parse_topic(self, response: TypeResponse):
         topic = TopicItem()
@@ -49,14 +47,14 @@ class RakuenSpider(scrapy.Spider):
         post_topic = response.xpath('//*[contains(@class, "postTopic")]')
         topic['id'] = response.url.split('/')[-1]
         topic['content'] = parse_content(e)
-        topic['group'] = response.xpath(
-            '//*[@id="pageHeader"]/h1/span/a[1]/@href'
-        ).extract_first().split('/')[-1]
+        topic['group'] = (
+            response.xpath('//*[@id="pageHeader"]/h1/span/a[1]/@href'
+                           ).extract_first().split('/')[-1]
+        )
         topic['title'] = response.xpath('//*[@id="pageHeader"]/h1/text()'
                                         ).extract_first()
-        topic['author'] = post_topic.xpath(
-            './div[contains(@class, "inner")]//a/@href'
-        ).extract_first()
+        topic['author'] = post_topic.xpath('./div[contains(@class, "inner")]//a/@href'
+                                           ).extract_first()
         if not topic['author']:
             raise KeyError('no author')
         else:
@@ -82,8 +80,10 @@ def parse_row_reply(response: TypeResponse, row, topic_id):
     main_reply = ReplyItem()
     main_reply['reply_to'] = topic_id
     main_reply['id'] = row.xpath('./@id').extract_first().split('_')[-1]
-    main_reply['author'] = row.xpath('./a[contains(@class, "avatar")]/@href'
-                                     ).extract_first().split('/')[-1]
+    main_reply['author'] = (
+        row.xpath('./a[contains(@class, "avatar")]/@href').extract_first().split('/')
+        [-1]
+    )
     main_reply['create_time'] = parse_datetime(
         row.xpath('./div[@class="re_info"]/small/text()').extract_first()
     )
@@ -101,15 +101,14 @@ def parse_sub_reply(response: TypeResponse, row, reply_to):
     for sub_reply_row in row.xpath('.//div[contains(@class, "sub_reply_bg")]'):
         sub_reply = ReplyItem()
         sub_reply['reply_to'] = reply_to
-        sub_reply['id'] = sub_reply_row.xpath('./@id'
-                                              ).extract_first().split('_')[-1]
+        sub_reply['id'] = sub_reply_row.xpath('./@id').extract_first().split('_')[-1]
         sub_reply['topic_id'] = response.url.split('/')[-1]
-        sub_reply['author'] = sub_reply_row.xpath(
-            './a[contains(@class, "avatar")]/@href'
-        ).extract_first().split('/')[-1]
+        sub_reply['author'] = (
+            sub_reply_row.xpath('./a[contains(@class, "avatar")]/@href'
+                                ).extract_first().split('/')[-1]
+        )
         sub_reply['create_time'] = parse_datetime(
-            sub_reply_row.xpath('./div[@class="re_info"]/small/text()'
-                                ).extract_first()
+            sub_reply_row.xpath('./div[@class="re_info"]/small/text()').extract_first()
         )
         sub_reply['content'] = parse_content(
             sub_reply_row.xpath('.//div[contains(@class, "cmt_sub_content")]')
@@ -126,12 +125,7 @@ def parse_datetime(time_string):
 
 
 bgm_face = re.compile(r'\(bgm_tv_spider\d+\)')
-SPAN_BACK_MAP = {
-    'bold': 'b',
-    'italic': 'i',
-    'underline': 'u',
-    'through': 's',
-}
+SPAN_BACK_MAP = {'bold': 'b', 'italic': 'i', 'underline': 'u', 'through': 's'}
 
 
 def parse_content(node: Selector):

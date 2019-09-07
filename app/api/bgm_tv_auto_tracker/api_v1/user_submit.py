@@ -39,9 +39,7 @@ async def submit_subject_id(
             bangumi_id=data.bangumi_id,
             subject_id=data.subject_id,
         )
-        return JSONResponse({
-            'status': 'error', 'detail': 'object already exists'
-        }, 400)
+        return JSONResponse({'status': 'error', 'detail': 'object already exists'}, 400)
     except pw.DoesNotExist:
         result: db_models.UserSubmitBangumi = await db.execute(
             db_models.UserSubmitBangumi.replace(

@@ -7,8 +7,11 @@ from .base import BaseWebsite
 
 
 class SupportWebsite(str, Enum):
+    """support website now"""
     bilibili = 'bilibili'
+    """https://www.bilibili.com"""
     iqiyi = 'iqiyi'
+    """https://www.iqiyi.com"""
 
 
 class Dispatcher:

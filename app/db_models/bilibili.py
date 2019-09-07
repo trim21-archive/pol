@@ -16,6 +16,7 @@ class BilibiliBangumi(S.BgmIpViewer):
 
     media_id = pw.IntegerField(index=True)
     season_id = pw.IntegerField(default=0)
+    title = pw.CharField(default='')
 
     @property
     def bangumi_id(self):
@@ -35,6 +36,7 @@ class BilibiliEpisode(S.BgmIpViewer):
     source_ep_id = pw.IntegerField(primary_key=True)
     ep_id = pw.IntegerField()
     subject_id = pw.IntegerField()
+    title = pw.CharField(default='')
 
     @property
     def url(self):

@@ -23,6 +23,7 @@ def setup_logger():
         sink,
         enqueue=True,
         level=logging.INFO,
+        filter=lambda record: 'event' in record['extra']
     )
 
 

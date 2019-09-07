@@ -25,9 +25,7 @@ from app.api.bgm_tv_auto_tracker.auth import get_current_user
 from app.api.bgm_tv_auto_tracker.auth.scheme import cookie_scheme
 from app.api.bgm_tv_auto_tracker.auth.session import new_session
 
-templates = Jinja2Templates(
-    str(path.normpath(Path(__file__) / '..' / 'templates'))
-)
+templates = Jinja2Templates(str(path.normpath(Path(__file__) / '..' / 'templates')))
 
 router = APIRouter()
 
@@ -97,9 +95,7 @@ async def oauth_callback(
         )
         r = AuthResponse.parse_raw(resp.text)
         auth_time = dateutil.parser.parse(resp.headers['Date']).timestamp()
-        user_info_resp = await aio_client.get(
-            f'https://api.bgm.tv/user/{r.user_id}'
-        )
+        user_info_resp = await aio_client.get(f'https://api.bgm.tv/user/{r.user_id}')
         user_info = UserInfo.parse_raw(user_info_resp.text)
         await db.execute(
             db_models.UserToken.upsert(
@@ -181,9 +177,7 @@ async def refresh_token(
         json.decoder.JSONDecodeError,
         ValidationError,
     ):
-        raise HTTPException(
-            HTTP_502_BAD_GATEWAY, detail='refresh user token failure'
-        )
+        raise HTTPException(HTTP_502_BAD_GATEWAY, detail='refresh user token failure')
 
     try:
         user_info_resp = await aio_client.get(
@@ -216,7 +210,5 @@ class Me(AuthResponse, RefreshResponse):
     response_model=Me,
     include_in_schema=config.DEBUG,
 )
-async def get_my_user_info(
-    user: db_models.UserToken = Depends(get_current_user),
-):
+async def get_my_user_info(user: db_models.UserToken = Depends(get_current_user), ):
     return user.dict()

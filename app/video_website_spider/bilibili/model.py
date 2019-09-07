@@ -77,6 +77,7 @@ class BangumiPageSeason(BaseModel):
 
 class BangumiPageMediaInfo(BaseModel):
     media_id: int
+    title: str
     seasons: List[BangumiPageSeason]
     episodes: List[OldPlayerPageEpInfo]
 

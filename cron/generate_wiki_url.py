@@ -22,11 +22,9 @@ def generate_wiki_url():
 
 def parse(response: parsel.Selector):
     links = set()
-    for link in response.xpath('//*[@id="wikiEntryMainTab"]//li/a/@href'
-                               ).extract():
+    for link in response.xpath('//*[@id="wikiEntryMainTab"]//li/a/@href').extract():
         links.add(link)
-    for link in response.xpath('//*[@id="latestEntryMainTab"]//li/a/@href'
-                               ).extract():
+    for link in response.xpath('//*[@id="latestEntryMainTab"]//li/a/@href').extract():
         links.add(link)
     print(len(links))
     for link in links:

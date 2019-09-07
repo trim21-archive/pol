@@ -79,3 +79,9 @@ repos:
         entry: poetry check
         pass_filenames: false
         files: 'pyproject.toml'
+
+      - id: doc8
+        name: Check rst file
+        language: python
+        entry: doc8 --config setup.cfg
+        files: \.rst$

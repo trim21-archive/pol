@@ -12,9 +12,7 @@ from app.db_models.bilibili import BilibiliBangumi
 from app.video_website_spider import SupportWebsite
 from data_manager.models.bangumi_data import Item
 from app.video_website_spider.bilibili.model import PlayerPageInitialState
-from app.video_website_spider.bilibili.bilibili import (
-    get_initial_state_from_html
-)
+from app.video_website_spider.bilibili.bilibili import get_initial_state_from_html
 
 base_dir = pathlib.Path(path.dirname(__file__))
 

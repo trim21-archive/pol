@@ -5,14 +5,12 @@ import peewee as pw
 from pydantic import BaseModel
 
 from app.log import logger
-from app.client import http_client
-from app.service import bgm_tv
+from app.client import h11_client, http_client
+from app.services import bgm_tv
 from app.db_models import Ep, IqiyiBangumi, IqiyiEpisode
 from app.video_website_spider.base import sync_db
 
 from .base import BaseWebsite, UrlNotValidError
-
-alb_regex = re.compile(r'albumId: "([0-9]*)"')
 
 
 def get_ep_id_from_url(url: str):
@@ -30,6 +28,14 @@ class Iqiyi(BaseWebsite):
     bangumi_regex = re.compile(r'https?://www\.iqiyi\.com/(.*)\.html\??.*')
     episode_regex = re.compile(r'https?://www\.iqiyi\.com/(.*)\.html\??.*')
 
+    alb_regex = re.compile(r'albumId: "([0-9]*)"')
+    """only exists on album page"""
+
+    album_name_regex = re.compile(r'albumName":"(.*?)","albumUrl')
+    """exists on video page"""
+
+    video_name_regex = re.compile(r',"shortTitle":"(.*?)","editorInfo')
+    """exists on video page"""
     @classmethod
     def valid_ep_url(cls, url: str):
         if not cls.episode_regex.match(url):
@@ -50,12 +56,13 @@ class Iqiyi(BaseWebsite):
         ).execute()
 
         album_id = http_client.get(url).text
-        s = alb_regex.search(album_id)
+        s = cls.alb_regex.search(album_id)
         if not s or not s.groups():
+            logger.info("can't find albumId in {}", url)
             return
 
         album_id = s.groups()[0]
-        list_info = http_client.get(
+        r = h11_client.get(
             'https://pcw-api.iqiyi.com/albums/album/avlistinfo',
             params={
                 'aid': album_id,
@@ -69,14 +76,13 @@ class Iqiyi(BaseWebsite):
                     'Chrome/74.0.3729.169 Safari/537.36'
                 )
             }
-        ).json()
+        )
+        list_info = r.json()
         if list_info['data'] == '参数错误':
             logger.error('参数错误 with album id {}', album_id)
             return
         else:
-            eps = [
-                ApiResult.parse_obj(x) for x in list_info['data']['epsodelist']
-            ]
+            eps = [ApiResult.parse_obj(x) for x in list_info['data']['epsodelist']]
         bgm_eps = bgm_tv.mirror.subject_eps(subject_id).eps
         bgm_ep_start = min(x.sort for x in bgm_eps)
         ep_start = min(x.order for x in eps)
@@ -87,6 +93,7 @@ class Iqiyi(BaseWebsite):
                         ep_id=bgm_ep.id,
                         source_ep_id=ep.ep_id,
                         subject_id=subject_id,
+                        title=ep.title,
                     ).execute()
                     break
 
@@ -108,7 +115,12 @@ class Iqiyi(BaseWebsite):
 class ApiResult(BaseModel):
     order: int
     playUrl: str
+    shortTitle: str
 
     @property
     def ep_id(self):
         return self.playUrl.split('/')[3].replace('.html', '')
+
+    @property
+    def title(self):
+        return self.shortTitle

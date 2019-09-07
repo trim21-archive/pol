@@ -89,8 +89,7 @@ def test_submit_subject_id_exist(client: TestClient):
     )
     assert r.status_code == 400, r.text
     assert r.json()['detail'] == 'object already exists'
-    assert r.json(
-    )['status'] == 'error', 'submit existed object should return 400'
+    assert r.json()['status'] == 'error', 'submit existed object should return 400'
 
     with pytest.raises(UserSubmitBangumi.DoesNotExist):
         with objects.allow_sync():

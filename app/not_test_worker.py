@@ -1,7 +1,5 @@
 from app.worker import submit_ep, submit_bangumi
-from app.db_models import (
-    IqiyiBangumi, IqiyiEpisode, BilibiliBangumi, BilibiliEpisode
-)
+from app.db_models import IqiyiBangumi, IqiyiEpisode, BilibiliBangumi, BilibiliEpisode
 from app.db.database import db
 
 

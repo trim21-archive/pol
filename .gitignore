@@ -11,3 +11,4 @@ dags
 .mypy_cache
 .pytest_cache
 docs/build
+docs/source/openapi.json

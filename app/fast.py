@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from starlette.requests import Request
 from starlette.responses import Response
 
-from app.api import bgm_tv, bgm_tv_auto_tracker
+from app.api import auth, bgm_tv, bgm_tv_auto_tracker
 from app.log import logger
 from app.core import config
 from app.md2bbc import router as md2bbc_router
@@ -19,7 +19,8 @@ from app.api.api_v1.api import api_router
 from app.middlewares.log import LogExceptionMiddleware
 
 app = FastAPI(
-    title='personal website',
+    title=config.APP_NAME,
+    version=config.COMMIT_REV,
     docs_url='/',
     redoc_url=None,
     swagger_ui_oauth2_redirect_url=None,
@@ -30,7 +31,6 @@ app = FastAPI(
         f'当前版本[{config.COMMIT_REV}]'
         f'(https://github.com/Trim21/personal-website/tree/{config.COMMIT_REV})'
     ),
-    version='0.0.1',
 )
 if config.DSN:
     from app.middlewares.sentry import SentryMiddleware
@@ -42,6 +42,7 @@ if config.DSN:
     app.add_middleware(SentryMiddleware)
 
 app.add_middleware(LogExceptionMiddleware)
+app.include_router(auth.router, prefix='/auth', tags=['auth'])
 bind_deprecated_path(app)
 app.include_router(api_router, prefix='/api.v1')
 app.include_router(

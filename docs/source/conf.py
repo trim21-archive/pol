@@ -35,7 +35,7 @@ if start == end:
 else:
     copyright_date = f'{start}-{end}'
 
-project = 'www.trim21.cn'
+project = 'pol'
 copyright = f'{copyright_date}, Trim21'
 author = 'Trim21'
 
@@ -56,7 +56,7 @@ extensions = [
 ]
 
 # Github repo
-issues_github_path = 'BGmi/BGmi'
+issues_github_path = 'Trim21/personal-website'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -73,7 +73,7 @@ templates_path = ['_templates']
 # Usually you set "language" from the command line for these cases.
 language = 'zh-CN'
 
-html_favicon = '_static/logo144.jpg'
+# html_favicon = '_static/logo144.jpg'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -84,8 +84,3 @@ exclude_patterns = []
 
 html_theme = 'sphinx_rtd_theme'
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
-
-viewcode_follow_imported_members = True
-html_show_sourcelink = True
-smart_quotes = True
-smartquotes = False

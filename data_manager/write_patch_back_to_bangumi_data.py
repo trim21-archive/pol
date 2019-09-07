@@ -19,10 +19,7 @@ file_list = glob.glob(str(data_dir / 'data' / 'items' / '*' / '*.json'))
 
 
 def item_match_subject(d: dict, subject_id: str):
-    return [
-        x for x in d['sites']
-        if x['site'] == 'bangumi' and x['id'] == subject_id
-    ]
+    return [x for x in d['sites'] if x['site'] == 'bangumi' and x['id'] == subject_id]
 
 
 def match_item_by_subject(j: List[dict], subject_id):
@@ -41,9 +38,8 @@ def add_website(d: dict, website, bangumi_id):
         return False
     else:
         d['sites'].append({
-            'site': website, 'id': bangumi_id, 'begin': d['begin'],
-            'official': None, 'premuiumOnly': None, 'censored': None,
-            'exist': True, 'comment': ''
+            'site': website, 'id': bangumi_id, 'begin': d['begin'], 'official': None,
+            'premuiumOnly': None, 'censored': None, 'exist': True, 'comment': ''
         }, )
         return True
 

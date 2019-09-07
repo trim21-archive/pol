@@ -15,6 +15,7 @@ class IqiyiBangumi(S.BgmIpViewer):
     subject_id = pw.IntegerField(primary_key=True)
 
     bangumi_id = pw.CharField(index=True)
+    title = pw.CharField(default='')
 
     @property
     def url(self):
@@ -30,6 +31,7 @@ class IqiyiEpisode(S.BgmIpViewer):
     source_ep_id = pw.CharField(primary_key=True)
     ep_id = pw.IntegerField()
     subject_id = pw.IntegerField()
+    title = pw.CharField(default='')
 
     @property
     def url(self):

@@ -6,7 +6,7 @@ from pydantic import ValidationError
 
 from app.log import logger
 from app.client import http_client
-from app.service import bgm_tv
+from app.services import bgm_tv
 from app.db_models import Ep, BilibiliBangumi, BilibiliEpisode
 from app.video_website_spider.base import BaseWebsite, UrlNotValidError, sync_db
 from app.video_website_spider.bilibili.model import (
@@ -46,12 +46,8 @@ def get_initial_state_from_html(html: str) -> dict:
 
 
 class Bilibili(BaseWebsite):
-    bangumi_regex = re.compile(
-        r'https?://www\.bilibili\.com/bangumi/media/md\d+/?.*'
-    )
-    episode_regex = re.compile(
-        r'https?://www\.bilibili\.com/bangumi/play/ep\d+/?.*'
-    )
+    bangumi_regex = re.compile(r'https?://www\.bilibili\.com/bangumi/media/md\d+/?.*')
+    episode_regex = re.compile(r'https?://www\.bilibili\.com/bangumi/play/ep\d+/?.*')
 
     @classmethod
     def valid_ep_url(cls, url: str):
@@ -95,6 +91,7 @@ class Bilibili(BaseWebsite):
             media_id=initial_state.mediaInfo.media_id,
             season_id=initial_state.mediaInfo.season_id
             or BilibiliBangumi.season_id.default,
+            title=initial_state.mediaInfo.title,
         ).execute()
         bgm_eps = bgm_tv.mirror.subject_eps(subject_id).eps
 
@@ -109,7 +106,7 @@ class Bilibili(BaseWebsite):
 
                     BilibiliEpisode.upsert(
                         ep_id=bgm_ep.id,
-                        source_ep_id=bgm_ep.id,
+                        source_ep_id=ep.ep_id,
                         subject_id=subject_id,
                     ).execute()
                     break
@@ -141,9 +138,7 @@ class Bilibili(BaseWebsite):
                 )
             )
         except Ep.DoesNotExist:
-            logger.warning(
-                'not fount episode {} with submit url {}', ep_id, url
-            )
+            logger.warning('not fount episode {} with submit url {}', ep_id, url)
             return
         try:
             BilibiliBangumi.get(
@@ -168,6 +163,4 @@ class Bilibili(BaseWebsite):
 
 
 if __name__ == '__main__':
-    Bilibili.subject(
-        271724, 'https://www.bilibili.com/bangumi/media/md28221412'
-    )
+    Bilibili.subject(271724, 'https://www.bilibili.com/bangumi/media/md28221412')

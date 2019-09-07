@@ -166,7 +166,9 @@ jobs:
       - run:
           name: Build Docs
           command: |
+            poetry run uvicorn app.fast:app
             cd docs
+            curl localhost:8000/openapi.json >docs/source/openapi.json
             poetry run sphinx-build source build
 
       - *upload_codecov_report

@@ -5,9 +5,15 @@ from urllib.parse import urlencode
 
 import pytz
 
-PROJ_ROOT = Path(os.path.join(os.path.dirname(__file__), '..'))
+PROJ_ROOT = Path(
+    os.path.normpath(os.path.join(
+        os.path.dirname(__file__),
+        '..',
+        '..',
+    ))
+)
 
-APP_NAME = 'trim21-www-server'
+APP_NAME = 'Pol server'
 
 DEBUG = bool(os.getenv('DEBUG'))
 

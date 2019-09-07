@@ -25,9 +25,7 @@ def mock_response(headers, body):
 
 
 def test_oauth_redirect(client: TestClient):
-    response = client.get(
-        '/bgm-tv-auto-tracker/api.v1/auth', allow_redirects=False
-    )
+    response = client.get('/bgm-tv-auto-tracker/api.v1/auth', allow_redirects=False)
     assert response.status_code == 302
 
     assert response.headers['location'] == config.BgmTvAutoTracker.oauth_url
@@ -67,8 +65,7 @@ def test_oauth_callback(client: TestClient):
     with mock.patch('app.depends.client.post',
                     mock_post), mock.patch('app.depends.client.get', mock_get):
         r = client.get(
-            '/bgm-tv-auto-tracker/api.v1/oauth_callback',
-            params={'code': '233'}
+            '/bgm-tv-auto-tracker/api.v1/oauth_callback', params={'code': '233'}
         )
         assert r.status_code == 200, 'response code not 200'
         assert 'bgm-tv-auto-tracker' in r.cookies
@@ -98,9 +95,7 @@ def test_oauth_callback(client: TestClient):
         assert user.refresh_token == 'some_token', 'refresh token mismatch'
         assert user.username == 'some_username', 'username mismatch'
         assert user.nickname == 'some_nickname', 'nickname mismatch'
-        assert user.auth_time == int(
-            auth_time.timestamp()
-        ), 'auth time mismatch'
+        assert user.auth_time == int(auth_time.timestamp()), 'auth time mismatch'
         assert user.expires_in == 6400, 'expires time mismatch'
         assert user.usergroup == 10, 'usergroup mismatch'
 
@@ -176,8 +171,6 @@ def test_refresh_token(client: TestClient):
         assert user.refresh_token == 'some_new_token', 'refresh token mismatch'
         assert user.username == 'some_username', 'username mismatch'
         assert user.nickname == 'some_nickname', 'nickname mismatch'
-        assert user.auth_time == int(
-            auth_time.timestamp()
-        ), 'auth time mismatch'
+        assert user.auth_time == int(auth_time.timestamp()), 'auth time mismatch'
         assert user.expires_in == 505, 'expires time mismatch'
         assert user.usergroup == 10, 'usergroup mismatch'

@@ -30,3 +30,8 @@ def test_submit_bangumi():
         subject_id=219200,
         bangumi_id='a_19rrh1ss1p',
     )
+    IqiyiEpisode.get(
+        source_ep_id='v_19rrfjvdww',
+        ep_id=767808,
+        subject_id=219200,
+    )

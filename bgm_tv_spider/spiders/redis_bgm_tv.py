@@ -18,8 +18,8 @@ blank_list = {'角色出演', '角色出演', '片头曲', '片尾曲', '其他'
 regexpNS = 'http://exslt.org/regular-expressions'
 
 collector = {
-    'wishes': 'wishes', 'done': 'collections', 'doings': 'doings',
-    'on_hold': 'on_hole', 'dropped': 'dropped'
+    'wishes': 'wishes', 'done': 'collections', 'doings': 'doings', 'on_hold': 'on_hole',
+    'dropped': 'dropped'
 }
 
 
@@ -32,9 +32,7 @@ class BgmTvSpider(RedisSpider):
     def parse(self, response: TypeResponse):
         subject_id = int(response.url.split('/')[-1])
         if '502 Bad Gateway' in response.text:
-            self.logger.warning(
-                f'Retry request {subject_id} in a few seconds...'
-            )
+            self.logger.warning(f'Retry request {subject_id} in a few seconds...')
             if response.meta.get('delay_request'):
                 self.logger.error(
                     '502 content, status: %s %s %s',
@@ -96,15 +94,12 @@ class BgmTvSpider(RedisSpider):
 
 def get_score_details(response: TypeResponse):
     detail = {
-        'total': response
-        .xpath('//*[@id="ChartWarpper"]/div/small/span/text()').extract_first()
+        'total': response.xpath('//*[@id="ChartWarpper"]/div/small/span/text()'
+                                ).extract_first()
     }
-    for li in response.xpath(
-        '//*[@id="ChartWarpper"]/ul[@class="horizontalChart"]/li'
-    ):
+    for li in response.xpath('//*[@id="ChartWarpper"]/ul[@class="horizontalChart"]/li'):
         detail[li.xpath('.//span[@class="label"]/text()').extract_first()
-               ] = li.xpath('.//span[@class="count"]/text()'
-                            ).extract_first()[1:-1]
+               ] = li.xpath('.//span[@class="count"]/text()').extract_first()[1:-1]
     return detail
 
 
@@ -112,9 +107,9 @@ def get_info(response: TypeResponse):
     info = defaultdict(list)
 
     for info_el in response.xpath('//*[@id="infobox"]/li'):
-        info[info_el.xpath('span/text()').extract_first().replace(': ', '')
-             ] = info_el.xpath('a/text()'
-                               ).extract() or info_el.xpath('text()').extract()
+        info[info_el.xpath('span/text()').extract_first().replace(
+            ': ', ''
+        )] = info_el.xpath('a/text()').extract() or info_el.xpath('text()').extract()
 
     return dict(info)
 
@@ -196,9 +191,7 @@ def get_relation(response: TypeResponse, source):
 
 
 def get_ep_list(response: TypeResponse, subject_id: int):
-    for ep in response.xpath(
-        '//*[@id="subject_detail"]//ul[@class="prg_list"]/li/a'
-    ):
+    for ep in response.xpath('//*[@id="subject_detail"]//ul[@class="prg_list"]/li/a'):
         href = ep.attrib.get('href')
         if not href:
             continue

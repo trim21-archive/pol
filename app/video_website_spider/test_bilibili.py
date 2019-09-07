@@ -36,13 +36,23 @@ def test_submit_bangumi():
         media_id=28221399,
         season_id=28002,
     )
-
-    Bilibili.subject(
-        271724,
-        'https://www.bilibili.com/bangumi/media/md28221412',
+    BilibiliEpisode.get(
+        source_ep_id=276476,
+        ep_id=891210,
+        subject_id=262939,
     )
-    BilibiliBangumi.get(
-        subject_id=271724,
-        media_id=28221412,
-        season_id=28013,
-    )
+    #
+    # Bilibili.subject(
+    #     271724,
+    #     'https://www.bilibili.com/bangumi/media/md28221412',
+    # )
+    # BilibiliBangumi.get(
+    #     subject_id=271724,
+    #     media_id=28221412,
+    #     season_id=28013,
+    # )
+    # BilibiliEpisode.get(
+    #     source_ep_id=276614,
+    #     ep_id=893707,
+    #     subject_id=265708,
+    # )

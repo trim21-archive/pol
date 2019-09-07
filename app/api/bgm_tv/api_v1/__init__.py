@@ -40,8 +40,7 @@ async def search_by_tag(
     for tag_text in tag:
         alias = Tag.alias()
         q = q.join(
-            alias,
-            on=((alias.subject_id == Subject.id) & (alias.text == tag_text))
+            alias, on=((alias.subject_id == Subject.id) & (alias.text == tag_text))
         )
 
     where = Subject.locked == 0

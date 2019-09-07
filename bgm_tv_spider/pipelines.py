@@ -83,8 +83,7 @@ def get_insert_sql(type_name, items):
         return Tag.insert_many(items).on_conflict(preserve=(Tag.count, )).sql()
     elif type_name == 'RelationItem':
         return Relation.insert_many([
-            dict(id=f'{item["source"]}-{item["target"]}', **item)
-            for item in items
+            dict(id=f'{item["source"]}-{item["target"]}', **item) for item in items
         ]).on_conflict(preserve=(Relation.relation, )).sql()
     elif type_name == 'EpItem':
         return Ep.insert_many(items).on_conflict(
