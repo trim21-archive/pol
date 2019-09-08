@@ -4,17 +4,17 @@ from starlette.testclient import TestClient
 
 import app.worker
 from app.db_models import UserToken
-from app.api.bgm_tv_auto_tracker.auth import get_current_user
+from app.api.auth.api_v1 import get_current_user
 
 
 @pytest.mark.parametrize(
     'url', [
-        '/bgm.tv/api.v0/player/subject/233593',
-        '/bgm.tv/api.v0/player/ep/233593',
+        '/bgm.tv/api.v0/subject/player/233593',
+        '/bgm.tv/api.v0/ep/player/233593',
     ]
 )
 def test_submit_subject_id_require_auth(client: TestClient, url):
-    r = client.post(
+    r = client.put(
         url, json={
             'bangumi_id': 'string',
             'source': 'bilibili',
@@ -35,9 +35,8 @@ def test_submit_subject_url(
     subject_id = 233593
     url = 'https://www.bilibili.com/bangumi/play/ep262002'
     with mocker.patch('app.worker.submit_bangumi'):
-        r = client.post(
-            f'/bgm.tv/api.v0/player/subject/{subject_id}', json={'url': url}
-        )
+        r = client.put(f'/bgm.tv/api.v0/subject/player/{subject_id}', json={'url': url})
+        assert r.status_code == 200, r.text
         app.worker.submit_bangumi.delay.assert_called_once_with(subject_id, url)
     assert r.status_code == 200, r.text
 
@@ -53,7 +52,8 @@ def test_submit_ep_url(
     ep_id = 2891213
     url = 'https://www.bilibili.com/bangumi/play/ep276479'
     with mocker.patch('app.worker.submit_ep'):
-        r = client.post(f'/bgm.tv/api.v0/player/ep/{ep_id}', json={'url': url})
+        r = client.put(f'/bgm.tv/api.v0/ep/player/{ep_id}', json={'url': url})
+        assert r.status_code == 200, r.text
         app.worker.submit_ep.delay.assert_called_once_with(ep_id, url)
 
     assert r.status_code == 200, r.text

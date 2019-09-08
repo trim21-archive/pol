@@ -114,6 +114,7 @@ class Bilibili(BaseWebsite):
     @classmethod
     @sync_db
     def ep(cls, ep_id: int, url: str):
+        # todo: need to save title
         r = http_client.get(url)
         initial_state = get_initial_state_from_html(r.text)
         if initial_state:
