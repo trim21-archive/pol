@@ -8,7 +8,10 @@ version = "0.1.0"
 description = ""
 authors = ["Trim21 <i@trim21.me>"]
 packages=[
-  { include='app' },
+    # fix install error in container with only pyprooject.toml and poetry.lock
+    # and make project could by install by `pip install -e .`
+    { include = "poetry.lock" },
+
 ]
 
 [tool.poetry.dependencies]
