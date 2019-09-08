@@ -27,9 +27,9 @@ app = FastAPI(
     openapi_url='/openapi.json',
     description=(
         '出于兴趣写的一些api，源码见'
-        '[GitHub](https://github.com/Trim21/personal-website)\n'
+        '[GitHub](https://github.com/Trim21/pol)\n'
         f'当前版本[{config.COMMIT_REV}]'
-        f'(https://github.com/Trim21/personal-website/tree/{config.COMMIT_REV})'
+        f'(https://github.com/Trim21/pol/tree/{config.COMMIT_REV})'
     ),
 )
 if config.DSN:
