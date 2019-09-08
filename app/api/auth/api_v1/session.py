@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 from app.db.redis import PickleRedis
 
-KEY_PREFIX = 'personal-website:bgm-tv-info:session:'
+KEY_PREFIX = 'pol:server:session:'
 DEFAULT_TIMEOUT = 30 * 7 * 24 * 3600
 
 
