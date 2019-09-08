@@ -7,6 +7,9 @@ name = "pol"
 version = "0.1.0"
 description = ""
 authors = ["Trim21 <i@trim21.me>"]
+packages=[
+  { include='app' },
+]
 
 [tool.poetry.dependencies]
 python = "^3.7"

@@ -2,11 +2,11 @@ FROM python:3.7
 LABEL MAINTAINER="Trim21 <Trim21me@gmail.com>"
 ENV PYTHONPATH=/
 
-RUN pip install -q poetry
+RUN pip install -U pip
 
-COPY poetry.lock pyproject.toml /
+COPY poetry.lock pyproject.toml setup.py /
 
-RUN poetry config settings.virtualenvs.create false && poetry install --no-dev
+RUN pip install -e '.[docs]'
 
 COPY / /
 
