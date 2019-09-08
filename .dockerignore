@@ -13,3 +13,5 @@ a.html
 __pycache__
 Dockerfile*
 .docker/*.in
+.dockerignore
+docs

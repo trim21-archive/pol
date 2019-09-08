@@ -3,11 +3,8 @@ backlog = 2048
 
 workers = 3
 worker_class = 'uvicorn.workers.UvicornWorker'
-worker_connections = 1000
-timeout = 30
-keepalive = 2
-
-daemon = True
+timeout = 5
+keepalive = 10
 
 errorlog = '-'
 loglevel = 'info'
