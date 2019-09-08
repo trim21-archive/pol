@@ -12,31 +12,30 @@
 #
 import os
 import sys
-from datetime import datetime
+import json
 
 import sphinx_rtd_theme
-from git import Repo
 
 doc_path = os.path.dirname(os.path.dirname(__file__))
 project_path = os.path.dirname(doc_path)
 sys.path.insert(0, project_path)
 
+# -- generate openapi.json
+
+from app.core import config  # isort:skip # noqa: E402
+from app.fast import app  # isort:skip # noqa: E402
+
+if not (config.PROJ_ROOT / 'docs' / 'source' / 'openapi.json').exists():
+    with open(
+        config.PROJ_ROOT / 'docs' / 'source' / 'openapi.json',
+        'w+',
+        encoding='utf-8',
+    ) as f:
+        json.dump(app.openapi(), f)
+
 # -- Project information -----------------------------------------------------
-
-repo = Repo(search_parent_directories=True)
-commits = list(reversed(list(repo.iter_commits())))
-start = datetime.now().year
-end = start
-if commits:
-    start = commits[0].committed_datetime.year
-    end = commits[-1].committed_datetime.year
-if start == end:
-    copyright_date = start
-else:
-    copyright_date = f'{start}-{end}'
-
 project = 'pol'
-copyright = f'{copyright_date}, Trim21'
+copyright = '2017-2019, Trim21'
 author = 'Trim21'
 
 # -- General configuration ---------------------------------------------------

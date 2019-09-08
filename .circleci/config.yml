@@ -165,6 +165,6 @@ jobs:
 
       - run:
           name: Build Docs
-          command: PYTHONPATH=. poetry run python scripts/build_docs.py
+          command: cd docs && poetry run sphinx-build -M html source build
 
       - *upload_codecov_report
