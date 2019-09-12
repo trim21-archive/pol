@@ -1,3 +1,4 @@
+import sys
 import logging
 import platform
 
@@ -14,7 +15,7 @@ def setup_logger():
         key=f'{config.APP_NAME}-log',
         extra={
             '@metadata': {'beat': 'py_logging'},
-            'version': config.COMMIT_SHA,
+            'version': config.COMMIT_REV,
             'platform': platform.platform(),
         },
         tz=config.TIMEZONE,
@@ -25,6 +26,13 @@ def setup_logger():
         level=logging.INFO,
         filter=lambda record: 'event' in record['extra']
     )
+    if config.DEBUG:
+        logger.add(sys.stdout, level=logging.DEBUG, colorize=True)
+    else:
+        logger.add(sys.stdout, level=logging.INFO, colorize=True)
+
+    logger.debug('setup logger')
 
 
+logger.remove()
 setup_logger()

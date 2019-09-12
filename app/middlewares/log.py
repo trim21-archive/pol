@@ -17,6 +17,7 @@ class LogExceptionMiddleware(Middleware):
                 url=self.get_url(scope),
                 query=self.get_query(scope),
                 headers=self.get_headers(scope),
+                transaction=self.get_transaction(scope),
                 event='http.exception',
             ).exception('catch exception in middleware')
             raise exc from None

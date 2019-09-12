@@ -1,5 +1,18 @@
+from loguru import logger
+
+from app.core import config
 from app.core.celery_app import celery
 from app.video_website_spider import Dispatcher
+
+if config.DSN:
+    import sentry_sdk
+    from sentry_sdk.integrations.celery import CeleryIntegration
+    logger.debug('setup sentry for celery')
+    sentry_sdk.init(
+        dsn=config.DSN,
+        release=config.COMMIT_SHA,
+        integrations=[CeleryIntegration()],
+    )
 
 dispatcher = Dispatcher()
 

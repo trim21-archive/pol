@@ -159,9 +159,9 @@ class PostEpInfo(PostError):
     ep_id: int
 
 
-@router.post(
-    '/subject/player/{subject_id}',
-)
+# @router.post(
+#     '/subject/player/{subject_id}',
+# )
 async def set_subject_player_url_status(
     subject_id: int,
     data: PostSubjectInfo,
@@ -178,9 +178,9 @@ async def set_subject_player_url_status(
     ).info('user {} submit error {}', current_user.user_id, subject_id)
 
 
-@router.post(
-    '/subject/ep/{ep_id}',
-)
+# @router.post(
+#     '/subject/ep/{ep_id}',
+# )
 async def set_ep_player_url_status(
     ep_id: int,
     data: PostEpInfo,

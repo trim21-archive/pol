@@ -1,8 +1,6 @@
 import os
 import time
-import asyncio
 import threading
-from warnings import warn
 
 from fastapi import FastAPI
 from starlette.requests import Request
@@ -33,13 +31,17 @@ app = FastAPI(
     ),
 )
 if config.DSN:
-    from app.middlewares.sentry import SentryMiddleware
     import sentry_sdk
     from sentry_sdk.integrations.logging import ignore_logger
+    from sentry_sdk.integrations.redis import RedisIntegration
+    from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 
     ignore_logger('asyncio')
-    sentry_sdk.init(dsn=config.DSN, release=config.COMMIT_SHA)
-    app.add_middleware(SentryMiddleware)
+    logger.debug('setup sentry')
+    sentry_sdk.init(
+        dsn=config.DSN, release=config.COMMIT_SHA, integrations=[RedisIntegration()]
+    )
+    app.add_middleware(SentryAsgiMiddleware)
 
 app.add_middleware(LogExceptionMiddleware)
 app.include_router(auth.router, prefix='/auth', tags=['auth'])
@@ -67,11 +69,6 @@ async def add_process_time_header(request: Request, call_next):
     process_time = time.time() - start_time
     response.headers['X-Process-Time'] = str(int(process_time * 1000)) + 'ms'
     return response
-
-
-for router in app.routes:
-    if not asyncio.iscoroutinefunction(router.endpoint):
-        warn(f'{router.path} {router.endpoint} is not async function')
 
 
 @app.on_event('startup')

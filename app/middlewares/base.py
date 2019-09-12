@@ -1,6 +1,8 @@
 import abc
 import urllib.parse
-from typing import Any, Dict
+from typing import Dict
+
+from sentry_sdk.utils import transaction_from_function
 
 
 class Middleware(metaclass=abc.ABCMeta):
@@ -11,23 +13,11 @@ class Middleware(metaclass=abc.ABCMeta):
     async def __call__(self, scope, receive, send):
         raise NotImplementedError()
 
-    @classmethod
-    def event_processor(cls, event, hint, asgi_scope) -> Dict[str, Any]:
-        if asgi_scope['type'] in ('http', 'websocket'):
-            event['request'] = {
-                'url': cls.get_url(asgi_scope),
-                'method': asgi_scope['method'],
-                'headers': cls.get_headers(asgi_scope),
-                'query_string': cls.get_query(asgi_scope),
-            }
-        if asgi_scope.get('client'):
-            event['request']['env'] = {'REMOTE_ADDR': asgi_scope['client'][0]}
-        if asgi_scope.get('endpoint'):
-            event['transaction'] = cls.get_transaction(asgi_scope)
-        return event
-
-    @classmethod
-    def get_url(cls, scope):
+    """
+    below functions come from ``sentry_sdk.integrations.asgi.SentryAsgiMiddleware``
+    """
+    @staticmethod
+    def get_url(scope):
         """
         Extract URL from the ASGI scope, without also including the querystring.
         """
@@ -42,12 +32,7 @@ class Middleware(metaclass=abc.ABCMeta):
 
         if server is not None:
             host, port = server
-            default_port = {
-                'http': 80,
-                'https': 443,
-                'ws': 80,
-                'wss': 443,
-            }[scheme]
+            default_port = {'http': 80, 'https': 443, 'ws': 80, 'wss': 443}[scheme]
             if port != default_port:
                 return f'{scheme}://{host}:{port}{path}'
             return f'{scheme}://{host}{path}'
@@ -55,19 +40,11 @@ class Middleware(metaclass=abc.ABCMeta):
 
     @staticmethod
     def get_query(scope):
-        """
-        Extract querystring from the ASGI scope,
-        in the format that the Sentry protocol expects.
-        """
         return urllib.parse.unquote(scope['query_string'].decode('latin-1'))
 
     @staticmethod
     def get_headers(scope):
-        """
-        Extract headers from the ASGI scope,
-        in the format that the Sentry protocol expects.
-        """
-        headers = {}
+        headers = {}  # type: Dict[str, str]
         for raw_key, raw_value in scope['headers']:
             key = raw_key.decode('latin-1')
             value = raw_value.decode('latin-1')
@@ -79,14 +56,4 @@ class Middleware(metaclass=abc.ABCMeta):
 
     @staticmethod
     def get_transaction(scope):
-        """
-        Return a transaction string to identify the routed endpoint.
-        """
-        endpoint = scope['endpoint']
-        qualname = (
-            getattr(endpoint, '__qualname__', None)
-            or getattr(endpoint, '__name__', None) or None
-        )
-        if not qualname:
-            return None
-        return f'{endpoint.__module__}.{qualname}'
+        return transaction_from_function(scope['endpoint'])
