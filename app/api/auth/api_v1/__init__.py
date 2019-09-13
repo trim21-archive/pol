@@ -131,7 +131,7 @@ async def oauth_callback(
             status_code=HTTP_503_SERVICE_UNAVAILABLE,
         )
 
-    except (json.JSONDecodeError, ValidationError):
+    except (json.decoder.JSONDecodeError, ValidationError, ConnectionError):
         return redirect_response
 
 

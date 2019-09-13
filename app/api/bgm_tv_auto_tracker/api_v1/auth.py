@@ -80,8 +80,8 @@ async def oauth_callback(
     request: Request,
     db: Manager = Depends(get_db),
     redis: PickleRedis = Depends(get_redis),
-    aio_client: httpx.AsyncClient = Depends(aio_http_client),
 ):
+    aio_client = httpx.AsyncClient()
     try:
         resp = await aio_client.post(
             'https://bgm.tv/oauth/access_token',
@@ -120,9 +120,7 @@ async def oauth_callback(
         html_response = HTMLResponse(content=response.body)
         html_response.set_cookie(cookie_scheme.model.name, session.api_key)
         return html_response
-    except json.decoder.JSONDecodeError:
-        return RedirectResponse('./auth')
-    except ValidationError:
+    except (json.decoder.JSONDecodeError, ValidationError, ConnectionError):
         return RedirectResponse('./auth')
 
 
