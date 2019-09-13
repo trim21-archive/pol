@@ -9,6 +9,7 @@ from requests.structures import CaseInsensitiveDict
 from starlette.testclient import TestClient
 
 from app.core import config
+from app.depends import aio_http_client
 from app.db_models import UserToken
 from app.db.database import objects
 from app.api.bgm_tv_auto_tracker.auth import get_current_user
@@ -61,26 +62,29 @@ def test_oauth_callback(client: TestClient):
     )
 
     UserToken.delete().execute()
+    # client.app
+    mock_client = mock.Mock()
+    mock_client.get = mock_get
+    mock_client.post = mock_post
+    client.app.dependency_overrides[aio_http_client] = lambda: mock_client
 
-    with mock.patch('app.depends.client.post',
-                    mock_post), mock.patch('app.depends.client.get', mock_get):
-        r = client.get(
-            '/bgm-tv-auto-tracker/api.v1/oauth_callback', params={'code': '233'}
-        )
-        assert r.status_code == 200, 'response code not 200'
-        assert 'bgm-tv-auto-tracker' in r.cookies
-        me_resp = client.get('/bgm-tv-auto-tracker/api.v1/me').json()
-        mock_post.assert_awaited_once_with(
-            'https://bgm.tv/oauth/access_token',
-            data={
-                'code': '233',
-                'client_id': config.BgmTvAutoTracker.APP_ID,
-                'grant_type': 'authorization_code',
-                'redirect_uri': config.BgmTvAutoTracker.callback_url,
-                'client_secret': config.BgmTvAutoTracker.APP_SECRET,
-            },
-        )
-        mock_get.assert_awaited_once_with('https://api.bgm.tv/user/233')
+    # with mock.patch('app.depends.client.post',
+    #                 mock_post), mock.patch('app.depends.client.get', mock_get):
+    r = client.get('/bgm-tv-auto-tracker/api.v1/oauth_callback', params={'code': '233'})
+    assert r.status_code == 200, 'response code not 200 ' + r.text
+    assert 'bgm-tv-auto-tracker' in r.cookies
+    me_resp = client.get('/bgm-tv-auto-tracker/api.v1/me').json()
+    mock_post.assert_awaited_once_with(
+        'https://bgm.tv/oauth/access_token',
+        data={
+            'code': '233',
+            'client_id': config.BgmTvAutoTracker.APP_ID,
+            'grant_type': 'authorization_code',
+            'redirect_uri': config.BgmTvAutoTracker.callback_url,
+            'client_secret': config.BgmTvAutoTracker.APP_SECRET,
+        },
+    )
+    mock_get.assert_awaited_once_with('https://api.bgm.tv/user/233')
 
     assert me_resp['access_token'] == 'some_access_token', (
         'access token mismatch in /me'
@@ -149,21 +153,23 @@ def test_refresh_token(client: TestClient):
         }),
     )
 
-    with mock.patch('app.depends.client.post',
-                    mock_post), mock.patch('app.depends.client.get', mock_get):
-        r = client.post('/bgm-tv-auto-tracker/api.v1/refresh')
-        assert r.status_code == 200, r.text
-        mock_post.assert_awaited_once_with(
-            'https://bgm.tv/oauth/access_token',
-            data={
-                'grant_type': 'refresh_token',
-                'refresh_token': 'some_token',
-                'client_id': config.BgmTvAutoTracker.APP_ID,
-                'redirect_uri': config.BgmTvAutoTracker.callback_url,
-                'client_secret': config.BgmTvAutoTracker.APP_SECRET,
-            }
-        )
-        mock_get.assert_awaited_once_with('https://api.bgm.tv/user/233')
+    mock_client = mock.Mock()
+    mock_client.get = mock_get
+    mock_client.post = mock_post
+    client.app.dependency_overrides[aio_http_client] = lambda: mock_client
+    r = client.post('/bgm-tv-auto-tracker/api.v1/refresh')
+    assert r.status_code == 200, r.text
+    mock_post.assert_awaited_once_with(
+        'https://bgm.tv/oauth/access_token',
+        data={
+            'grant_type': 'refresh_token',
+            'refresh_token': 'some_token',
+            'client_id': config.BgmTvAutoTracker.APP_ID,
+            'redirect_uri': config.BgmTvAutoTracker.callback_url,
+            'client_secret': config.BgmTvAutoTracker.APP_SECRET,
+        }
+    )
+    mock_get.assert_awaited_once_with('https://api.bgm.tv/user/233')
 
     with objects.allow_sync():
         user: UserToken = UserToken.get(user_id=233)
