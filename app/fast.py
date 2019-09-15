@@ -17,6 +17,7 @@ from app.api.api_v1.api import api_router
 from app.middlewares.log import LogExceptionMiddleware
 
 app = FastAPI(
+    debug=config.DEBUG,
     title=config.APP_NAME,
     version=config.COMMIT_REV,
     docs_url='/',
@@ -31,6 +32,7 @@ app = FastAPI(
         '更详细的文档见 [pol.readthedocs.io](https://pol.readthedocs.io/zh_CN/latest/)'
     ),
 )
+
 if config.DSN:
     import sentry_sdk
     from sentry_sdk.integrations.logging import ignore_logger
@@ -48,10 +50,7 @@ app.add_middleware(LogExceptionMiddleware)
 app.include_router(auth.router, prefix='/auth', tags=['auth'])
 bind_deprecated_path(app)
 app.include_router(api_router, prefix='/api.v1')
-app.include_router(
-    bgm_tv_auto_tracker.router,
-    prefix='/bgm-tv-auto-tracker',
-)
+app.include_router(bgm_tv_auto_tracker.router, prefix='/bgm-tv-auto-tracker')
 app.include_router(md2bbc_router)
 app.include_router(bgm_tv.router, prefix='/bgm.tv', tags=['bgm.tv'])
 
