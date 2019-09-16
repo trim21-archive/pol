@@ -25,7 +25,6 @@ celery = "4.3"
 cython = "0.29.13"
 email-validator = "1.0.4"
 fastapi = "0.38.1"
-gitpython = {version = "3.0.2", optional = true}
 gunicorn = "19.9.0"
 httpx = "0.7.2"
 icalendar = "4.0.3"
@@ -74,7 +73,6 @@ doc8 = "0.8.0"
 
 [tool.poetry.extras]
 docs = [
-  "gitpython",
   "sphinx",
   "sphinx-issues",
   "sphinx-rtd-theme",
