@@ -2,12 +2,12 @@
 import datetime
 from collections import defaultdict
 
-import httpx
-from fastapi import Depends, APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException
 from icalendar import Event, Calendar
 
-from app.depends import aio_http_client
+from app import aio_services
 from app.responses import CalendarResponse
+from app.models.errors import ErrorDetail
 
 from .view_ip import router as view_ip_router
 
@@ -18,18 +18,18 @@ router.include_router(view_ip_router, prefix='/view_ip')
 @router.get(
     '/calendar/bgm.tv/{user_id}',
     summary='iCalendar for watching bangumi',
-    response_class=CalendarResponse
+    response_class=CalendarResponse,
+    responses={
+        502: {'model': ErrorDetail},
+        404: {'model': ErrorDetail},
+    }
 )
-async def bgm_calendar(
-    user_id: str,
-    aio_client: httpx.AsyncClient = Depends(aio_http_client),
-):
-    r = await aio_client.get(
-        f'https://mirror.api.bgm.rin.cat/user/{user_id}/collection',
-        params={'cat': 'watching'}
-    )
-    res = r.json()
-    if 'code' in res:
+async def bgm_calendar(user_id: str):
+    try:
+        res = await aio_services.bgm_api.get_user_watching_subjects(user_id)
+    except aio_services.ServerConnectionError:
+        raise HTTPException(502, 'connect to bgm.tv error')
+    if res is None:
         raise HTTPException(404, "username doesn't exists")
 
     cal = Calendar()
@@ -41,14 +41,14 @@ async def bgm_calendar(
     cal.add('X-WR-CALDESC', 'Followed Bangumi Calendar')
     bangumi = defaultdict(list)
     for item in res:
-        bangumi[item['subject']['air_weekday']].append(item)
+        bangumi[item.subject.air_weekday].append(item)
 
     weekday = datetime.datetime.now().weekday()
     for i, k in enumerate(range(weekday, weekday + 7)):
         if k % 7 in bangumi:
             for item in bangumi[k % 7]:
                 event = Event()
-                event.add('summary', item['name'])
+                event.add('summary', item.name)
                 event.add(
                     'dtstart',
                     datetime.datetime.now().date() + datetime.timedelta(i - 1)
@@ -58,4 +58,5 @@ async def bgm_calendar(
                     datetime.datetime.now().date() + datetime.timedelta(i - 1)
                 )
                 cal.add_component(event)
+
     return cal.to_ical().decode('utf8')

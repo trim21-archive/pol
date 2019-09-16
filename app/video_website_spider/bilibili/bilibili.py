@@ -2,10 +2,10 @@ import re
 import json
 from urllib import parse
 
+import httpx
 from pydantic import ValidationError
 
 from app.log import logger
-from app.client import http_client
 from app.services import bgm_tv
 from app.db_models import Ep, BilibiliBangumi, BilibiliEpisode
 from app.video_website_spider.base import BaseWebsite, UrlNotValidError, sync_db
@@ -48,6 +48,7 @@ def get_initial_state_from_html(html: str) -> dict:
 class Bilibili(BaseWebsite):
     bangumi_regex = re.compile(r'https?://www\.bilibili\.com/bangumi/media/md\d+/?.*')
     episode_regex = re.compile(r'https?://www\.bilibili\.com/bangumi/play/ep\d+/?.*')
+    http_client = httpx.Client()
 
     @classmethod
     def valid_ep_url(cls, url: str):
@@ -69,7 +70,7 @@ class Bilibili(BaseWebsite):
     @classmethod
     @sync_db
     def subject(cls, subject_id: int, url: str):
-        r = http_client.get(url)
+        r = cls.http_client.get(url)
         initial_state = get_initial_state_from_html(r.text)
         if initial_state:
             if 'ep' in url:
@@ -115,7 +116,7 @@ class Bilibili(BaseWebsite):
     @sync_db
     def ep(cls, ep_id: int, url: str):
         # todo: need to save title
-        r = http_client.get(url)
+        r = cls.http_client.get(url)
         initial_state = get_initial_state_from_html(r.text)
         if initial_state:
             initial_state = PlayerPageInitialState.parse_obj(initial_state)

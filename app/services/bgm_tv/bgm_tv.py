@@ -1,6 +1,6 @@
 import httpx
 
-from app.services.bgm_tv.model import ApiSubject
+from app.services.bgm_tv.model import SubjectWithEps
 
 
 class BgmApi:
@@ -11,8 +11,8 @@ class BgmApi:
         else:
             self.host = 'api.bgm.tv'
 
-    def subject_eps(self, subject_id: int) -> ApiSubject:
+    def subject_eps(self, subject_id: int) -> SubjectWithEps:
 
-        return ApiSubject.parse_raw(
+        return SubjectWithEps.parse_raw(
             self.session.get(f'https://{self.host}/subject/{subject_id}/ep', ).text
         )

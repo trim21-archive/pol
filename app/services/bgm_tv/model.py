@@ -21,13 +21,23 @@ class SubjectImage(BaseModel):
 
 
 class EpisodeType(Enum):
+    #: 本篇
     type0 = 0
+    #： SP
     special = 1
     op = 2
     ed = 3
     ad = 4
     mad = 5
     other = 6
+
+
+class SubjectCollection(BaseModel):
+    wish: int = None
+    collect: int = None
+    doing: int = None
+    on_hold: int = None
+    dropped: int = None
 
 
 class StatusEnum(Enum):
@@ -51,7 +61,7 @@ class Episode(BaseModel):
     status: StatusEnum
 
 
-class ApiSubject(BaseModel):
+class SubjectWithEps(BaseModel):
     id: int
     url: str
     type: SubjectType
@@ -101,3 +111,32 @@ class RefreshResponse(BaseModel):
     token_type: str
     scope: Optional[str] = ''
     refresh_token: str
+
+
+class UserCollectionSubject(BaseModel):
+
+    images: SubjectImage
+    id: int
+    url: str
+    type: SubjectType
+    summary: str
+    name: str
+    name_cn: str
+
+    air_weekday: int
+    air_date: str
+
+    eps: int
+    eps_count: int
+    collection: SubjectCollection
+
+
+class UserCollection(BaseModel):
+    name: str
+    subject_id: int
+    #: 完成话数
+    ep_status: int
+    #: 完成话数（书籍）
+    vol_status: int
+    lasttouch: int
+    subject: UserCollectionSubject
