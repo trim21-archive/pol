@@ -9,6 +9,9 @@ workflows:
       - build-docker:
           requires:
             - unittest
+      - docs-deploy:
+          requires:
+            - unittest
 
 aliases:
   restore_pip_cache: &restore_pip_pre_commit_cache
@@ -155,4 +158,35 @@ jobs:
           name: Build Docs
           command: cd docs && sphinx-build -M html source build
 
+      - persist_to_workspace:
+          root: docs/build
+          paths: html
+
       - *upload_codecov_report
+
+  docs-deploy:
+    docker:
+      - image: node:8.10.0
+    steps:
+      - checkout
+      - attach_workspace:
+          at: docs/build
+      - run:
+          name: Disable jekyll builds
+          command: touch docs/build/html/.nojekyll
+      - run:
+          name: Install and configure dependencies
+          command: |
+            npm install -g --silent gh-pages@2.0.1
+            git config user.email "circleci@trim21.me"
+            git config user.name "circleci"
+
+      - add_ssh_keys:
+          fingerprints:
+            - "59:ad:fd:64:71:eb:81:01:6a:d7:1a:c9:0c:19:39:af"
+
+      - run:
+          name: Deploy docs to gh-pages branch
+          command: |
+            gh-pages --dotfiles --message "[skip ci] Updates" --dist docs/build/html \
+                --repo https://$DOCKER_PASS@github.com/Trim21/pol.git
