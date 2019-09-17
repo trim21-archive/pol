@@ -1,12 +1,12 @@
 FROM python:3.7
 LABEL MAINTAINER="Trim21 <Trim21me@gmail.com>"
-ENV PYTHONPATH=/
+ENV PYTHONPATH=/ PIPENV_SYSTEM=1
 
 RUN pip install -q poetry
 
-COPY poetry.lock pyproject.toml /
+COPY Pipfile Pipfile.lock /
 
-RUN poetry config settings.virtualenvs.create false && poetry install --no-dev
+RUN pip install pipenv -U && pipenv install --deploy
 
 COPY / /
 

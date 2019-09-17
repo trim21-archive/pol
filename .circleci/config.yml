@@ -9,33 +9,32 @@ workflows:
       - build-docker:
           requires:
             - unittest
-          filters:
-            branches:
-              only: master
 
 aliases:
   restore_pip_cache: &restore_pip_pre_commit_cache
     restore_cache:
       keys:
-        - pip-v1-{{ checksum "poetry.lock" }}-{{ checksum ".pre-commit-config.yaml" }}
-        - pip-v1-{{ checksum "poetry.lock" }}-
-        - pip-v1-
+        - pip-v3-{{ checksum "Pipfile.lock" }}-{{ checksum ".pre-commit-config.yaml" }}
+        - pip-v3-{{ checksum "Pipfile.lock" }}-
+        - pip-v3-
 
   install_pip_deps: &install_pip_deps
-    run: poetry install -E docs
+    run: PIP_USER=1 pipenv install --deploy --dev
 
   save_pip_cache: &save_pip_pre_commit_cache
     save_cache:
-      key: pip-v1-{{ checksum "poetry.lock" }}-{{ checksum ".pre-commit-config.yaml" }}
+      key: pip-v3-{{ checksum "Pipfile.lock" }}-{{ checksum ".pre-commit-config.yaml" }}
       paths:
         - /home/circleci/.cache/pip
+        - /home/circleci/.cache/pipenv
+        - /home/circleci/.cache/pip-tools
         - /home/circleci/.cache/pre-commit
 
   upload_codecov_report: &upload_codecov_report
     run:
       when: on_success
       name: Upload Coverage Report
-      command: poetry run codecov
+      command: codecov
 
   restore_test_data_cache: &restore_test_data_cache
     restore_cache:
@@ -69,20 +68,6 @@ jobs:
       - run: cat .docker/cron.in   |cpp -E|docker build $BUILD_ARGS -t cron   -f - .
       - run: cat .docker/spider.in |cpp -E|docker build $BUILD_ARGS -t spider -f - .
       - run: cat .docker/worker.in |cpp -E|docker build $BUILD_ARGS -t worker -f - .
-
-      - run: echo "$DOCKER_PASS" | docker login docker.pkg.github.com --username $DOCKER_USER --password-stdin
-
-      - run:
-          command: |
-            set -ex
-            RemoteBaseTagPrefix="docker.pkg.github.com/trim21/pol"
-            for baseTag in 'server' 'spider' 'worker' 'cron'; do
-              for version in "$CIRCLE_BRANCH-latest" "$CIRCLE_BRANCH-${CIRCLE_SHA1:0:8}";do
-                finalTag=$RemoteBaseTagPrefix/$baseTag:$version
-                docker tag $baseTag "$finalTag"
-                docker push "$finalTag"
-              done
-            done
 
   unittest:
 
@@ -123,6 +108,8 @@ jobs:
       BGM_TV_AUTO_TRACKER_APP_ID: bgm2955b3b3050e7bf2
       COMMIT_SHA: 'dev'
 
+      PIPENV_SYSTEM: '1'
+
     steps:
       - checkout # check out the code in the project directory
       - *restore_pip_pre_commit_cache
@@ -130,7 +117,7 @@ jobs:
 
       - run:
           name: Code Style
-          command: poetry run pre-commit run --all-files
+          command: pre-commit run --all-files
 
       - *save_pip_pre_commit_cache
       - *restore_test_data_cache
@@ -162,10 +149,10 @@ jobs:
 
       - run:
           name: UnitTest
-          command: PYTHONPATH=. poetry run coverage run -m pytest
+          command: PYTHONPATH=. coverage run -m pytest
 
       - run:
           name: Build Docs
-          command: cd docs && poetry run sphinx-build -M html source build
+          command: cd docs && sphinx-build -M html source build
 
       - *upload_codecov_report

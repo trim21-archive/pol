@@ -73,13 +73,6 @@ repos:
                '--remove-unused-variables',
                '--remove-all-unused-imports']
 
-      - id: poetry
-        name: Check Poetry Config
-        language: python
-        entry: poetry check
-        pass_filenames: false
-        files: 'pyproject.toml'
-
       - id: doc8
         name: Check rst file
         language: python
