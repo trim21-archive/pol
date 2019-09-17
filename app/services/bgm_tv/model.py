@@ -126,8 +126,8 @@ class UserCollectionSubject(BaseModel):
     air_weekday: int
     air_date: str
 
-    eps: int
-    eps_count: int
+    eps: Optional[int]
+    eps_count: Optional[int]
     collection: SubjectCollection
 
 
