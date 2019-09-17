@@ -1,12 +1,11 @@
 FROM python:3.7
 LABEL MAINTAINER="Trim21 <Trim21me@gmail.com>"
 ENV PYTHONPATH=/ PIPENV_SYSTEM=1
-
-RUN pip install -q poetry
+RUN pip install pipenv -U
 
 COPY Pipfile Pipfile.lock /
 
-RUN pip install pipenv -U && pipenv install --deploy
+RUN pipenv install --deploy
 
 COPY / /
 
