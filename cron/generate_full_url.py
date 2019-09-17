@@ -24,7 +24,7 @@ def generate_full_url():
         list(
             reversed([
                 bgm_tv_spider.spiders.redis_bgm_tv.url_from_id(x)
-                for x in range(1, 290000)
+                for x in range(1, 300000)
             ])
         ),
         500,
