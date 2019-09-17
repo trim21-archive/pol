@@ -6,16 +6,16 @@ workflows:
   main:
     jobs:
       - unittest:
-        filters:
-          tags:
-            only: /v.*/
+          filters:
+            tags:
+              only: /.*/
 
       - build-docker:
           requires:
             - unittest
           filters:
             tags:
-              only: /v.*/
+              only: /.*/
 
       - docs-deploy:
           requires:
