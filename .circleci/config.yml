@@ -2,14 +2,13 @@ version: 2.1
 
 workflows:
   version: 2
+
   main:
     jobs:
       - unittest:
         filters:
           tags:
             only: /v.*/
-          branches:
-            only: /.*/
 
       - build-docker:
           requires:
@@ -17,8 +16,6 @@ workflows:
           filters:
             tags:
               only: /v.*/
-            branches:
-              only: /.*/
 
       - docs-deploy:
           requires:
@@ -27,8 +24,6 @@ workflows:
           filters:
             tags:
               only: /v.*/
-            branches:
-              ignore: /.*/
 
 aliases:
   restore_pip_cache: &restore_pip_pre_commit_cache
