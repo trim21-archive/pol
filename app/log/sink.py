@@ -7,7 +7,7 @@ import msgpack
 
 class Sink:
 
-    FIELD = frozenset(['event', 'kwargs', 'url', 'query', 'headers'])
+    FIELD = frozenset(['event', 'kwargs', 'url', 'query', 'headers', 'exception'])
 
     def __init__(
         self,
@@ -32,14 +32,16 @@ class Sink:
         self.tz = tz
 
     def __call__(self, record):
-        message = self.format(record.record)
+        message = self.format(record)
         self.client.rpush(self.key, message)
 
-    def format(self, record: dict):
-        # print(record)
+    def format(self, record):
+        body = str(record)
+        record = record.record
         serialized_time = record['time'].astimezone(self.tz).isoformat()
         o = deepcopy(self.extra)
         o.update({
+            'body': body,
             'msg': record['message'],
             'logged_at': serialized_time,
             'line_number': record['line'],
