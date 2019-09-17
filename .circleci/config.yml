@@ -12,7 +12,11 @@ workflows:
       - docs-deploy:
           requires:
             - unittest
-
+          filters:
+            tags:
+              only: /v.*/
+            branches:
+              ignore: /.*/
 aliases:
   restore_pip_cache: &restore_pip_pre_commit_cache
     restore_cache:

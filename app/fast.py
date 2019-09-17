@@ -29,7 +29,7 @@ app = FastAPI(
         '[GitHub](https://github.com/Trim21/pol)\n'
         f'当前版本[{config.COMMIT_REV}]'
         f'(https://github.com/Trim21/pol/tree/{config.COMMIT_REV})\n\n'
-        '更详细的文档见 [pol.readthedocs.io](https://pol.readthedocs.io/zh_CN/latest/)'
+        '更详细的文档见 [github pages](https://trim21.github.io/pol/)'
     ),
 )
 
