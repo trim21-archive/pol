@@ -4,6 +4,7 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 from cron import generate_full_url, generate_wiki_url
 from app.core import config
 from data_manager import re_calculate_map
+from cron.timeline_spider import get
 
 executors = {
     'default': ThreadPoolExecutor(20),
@@ -44,6 +45,11 @@ if __name__ == '__main__':
         executor='process-pool',
         max_instances=1,
     )
+
+    def get_timeline():
+        get()
+
+    scheduler.add_job(get_timeline, 'cron', second=3)
     scheduler.print_jobs()
     print(flush=True)
     try:

@@ -3,7 +3,7 @@ from typing import Tuple, Optional
 import httpx
 
 from app.aio_services.utils import wrap_connection_error
-from app.services.bgm_tv.model import UserCollection
+from app.services.bgm_tv.model import UserInfo, UserCollection
 
 
 class BgmApi:
@@ -34,6 +34,16 @@ class BgmApi:
             return None
 
         return tuple(UserCollection.parse_obj(x) for x in r)
+
+    @wrap_connection_error
+    async def get_user_info(self, user_id: str) -> Optional[UserInfo]:
+        r = (await self.session.get(
+            f'/user/{user_id}',
+            params={'cat': 'watching'},
+        )).json()
+        if self.error_in_response(r):
+            return None
+        return UserInfo.parse_obj(r)
 
 
 if __name__ == '__main__':
