@@ -18,13 +18,13 @@ class BgmApi:
         return 'error' in data
 
     def subject_eps(self, subject_id: int) -> Optional[SubjectWithEps]:
-        r = self.session.get(f'/subject/{subject_id}/ep', ).json()
+        r = self.session.get(f'/subject/{subject_id}/ep').json()
         if self.error_in_response(r):
             return None
         return SubjectWithEps.parse_obj(r)
 
     def get_user_info(self, user_id: str) -> Optional[UserInfo]:
-        r = self.session.get(f'/user/{user_id}', params={'cat': 'watching'}).json()
+        r = self.session.get(f'/user/{user_id}').json()
         if self.error_in_response(r):
             return None
         return UserInfo.parse_obj(r)
