@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "025050e58c53781c595c90963d7fc1c500d5aa9d23249bae82c170903b03c12a"
+            "sha256": "e404513c62a1019fae119fce179473937aa86739aadda40c4acf300626e7f156"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -353,7 +353,6 @@
             "hashes": [
                 "sha256:e00cbd7ba01ff748e494248183abc6e153f49181169d8a3d41bb49132ca01dfc"
             ],
-            "markers": "sys_platform != 'win32' and sys_platform != 'cygwin' and platform_python_implementation != 'pypy'",
             "version": "==0.0.13"
         },
         "httpx": {
@@ -679,11 +678,11 @@
         },
         "sentry-sdk": {
             "hashes": [
-                "sha256:528f936118679e9a52dacb96bfefe20acb5d63e0797856c64a582cc3c2bc1f9e",
-                "sha256:b4edcb1296fee107439345d0f8b23432b8732b7e28407f928367d0a4a36301a9"
+                "sha256:01c8b27233c792d7d957cefd0e261d7913e1633a7d8a67ad1df742cb9f2b50a5",
+                "sha256:13e58855d6e347f8545c7f18ae4db3d56639540f21e4476d94c8fc16a0af57ca"
             ],
             "index": "pypi",
-            "version": "==0.11.2"
+            "version": "==0.12.0"
         },
         "service-identity": {
             "hashes": [
@@ -776,7 +775,6 @@
                 "sha256:c63b6c0bf33144c604dd72f7eecf2d3a3ac7405c503c67bd98128cf306efe18a",
                 "sha256:e698a20a3b4ccb380d207f9d491d4085d7c38d364f6a0bae98684a1612a9607a"
             ],
-            "markers": "sys_platform != 'win32' and sys_platform != 'cygwin' and platform_python_implementation != 'pypy'",
             "version": "==0.13.0"
         },
         "vine": {
