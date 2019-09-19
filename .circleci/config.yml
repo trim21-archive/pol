@@ -163,6 +163,7 @@ jobs:
             fi
 
             MYSQL_CLIENT_ARGS="--host $MYSQL_HOST --database=$MYSQL_DB -u root -p$MYSQL_PASSWORD"
+            mysql $MYSQL_CLIENT_ARGS -e "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'NO_AUTO_CREATE_USER',''));"
             mysql $MYSQL_CLIENT_ARGS < ./tests_data/all.sql
 
       - *save_test_data_cache

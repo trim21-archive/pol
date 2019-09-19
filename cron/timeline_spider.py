@@ -13,7 +13,7 @@ from app.db.database import objects
 from app.aio_services import ServerConnectionError
 from app.db_models.timeline import BgmTimeline
 
-delta_time_pattern = re.compile(r'((\d+)分钟?)?((\d+)秒)?前')
+delta_time_pattern = re.compile(r'.*((\d+)分钟?)?((\d+)秒)?前.*')
 REDIS_HASH_KEY = f'{config.APP_NAME}:user_id_map'
 
 redis_client: redis.StrictRedis = redis.StrictRedis.from_url(config.REDIS_URI)
@@ -41,7 +41,7 @@ def get():
         user_id = 0
 
         date: Tag = (li.find('p', class_='date'))
-        delta_time_str = date.decode_contents().split(' · ')[0].strip()
+        delta_time_str = date.decode_contents().strip()
         time = parse_time(delta_time_str, now)
 
         if user_name.isdecimal():
@@ -57,7 +57,6 @@ def get():
                     redis_client.hset(REDIS_HASH_KEY, user_name, str(r.id))
                     user_id_map_result = r.id
                     user_id = int(user_id_map_result)
-
         parsed_timeline.append({
             'id': int(tml_id.split('_')[-1]),
             'user_name': user_name,
@@ -65,6 +64,7 @@ def get():
             'time': int(time.timestamp()),
         })
 
+    print(len(parsed_timeline))
     with objects.allow_sync():
         BgmTimeline.insert_many(parsed_timeline).on_conflict(
             preserve=(BgmTimeline.user_name, BgmTimeline.user_id, BgmTimeline.time)
@@ -85,8 +85,12 @@ def get_user_name(info: Tag) -> str:
 
 @logger.catch()
 def parse_time(delta_time_str, now: datetime.datetime):
-    result = delta_time_pattern.match(delta_time_str).groups()
+    result = delta_time_pattern.search(delta_time_str).groups()
     minute = int(result[1] or '0')
     second = int(result[3] or '0')
     delta = datetime.timedelta(minutes=minute, seconds=second)
     return now - delta
+
+
+if __name__ == '__main__':
+    get()
