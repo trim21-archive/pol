@@ -9,7 +9,7 @@ def _poetry_lock_to_requirements_txt(start_dir):
         lock = toml.load(f)
 
     requirements = {
-        package['name']: package['version'] + ' # ' +
+        package['name']: package['version'] + '; ' +
         package.get('marker', '') if 'marker' in package else package['version']
         for package in lock['package']
         if package.get('category') == 'main' and not package.get('optional')
