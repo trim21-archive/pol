@@ -168,7 +168,10 @@ jobs:
 
       - run:
           name: UnitTest
-          command: PYTHONPATH=. coverage run -m pytest
+          command: PYTHONPATH=. coverage run -m pytest --junitxml=$HOME/junit/test_report.xml
+
+      - store_test_results:
+          path: ~/junit
 
       - run:
           name: Build Docs
