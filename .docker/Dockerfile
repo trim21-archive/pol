@@ -1,11 +1,17 @@
+FROM python:3.7 as generator
+WORKDIR /src/app
+COPY .circleci/export_requirements.py poetry.lock /src/app/
+RUN pip install toml==0.10.0 && python export_requirements.py
+
+#######################################
+
 FROM python:3.7
 LABEL MAINTAINER="Trim21 <Trim21me@gmail.com>"
-ENV PYTHONPATH=/ PIPENV_SYSTEM=1
-RUN pip install pipenv -U
+ENV PYTHONPATH=/
 
-COPY Pipfile Pipfile.lock /
+COPY --from=generator /src/app/requirements.txt /
 
-RUN pipenv install --deploy
+RUN pip install -r /requirements.txt
 
 COPY / /
 

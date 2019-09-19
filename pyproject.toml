@@ -1,0 +1,81 @@
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
+
+[tool.poetry]
+name = "pol"
+version = "0.1.0"
+description = ""
+authors = ["Trim21 <i@trim21.me>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+aiomysql = "0.0.20"
+aioredis = "1.2.0"
+apscheduler = "3.6.1"
+brotlipy = "0.7.0"
+celery = "4.3"
+cython = "0.29.13"
+email-validator = "1.0.4"
+fastapi = "0.38.1"
+gunicorn = "19.9.0"
+httpx = "0.7.2"
+icalendar = "4.0.3"
+jinja2 = "2.10.1"
+loguru = "0.3.2"
+lxml = "4.4.1"
+mistune = "0.8.4"
+msgpack = "0.6.1"
+peewee = "3.10"
+peewee-async = "0.6.3a0"
+python-dateutil = "2.8.0"
+python-multipart = "0.0.5"
+pytz = "2019.2"
+scrapy = "1.7.3"
+scrapy-redis = "0.6.8"
+sentry-sdk = "0.12.0"
+tqdm = "4.36.1"
+uvicorn = "0.9.0"
+beautifulsoup4 = "4.8.0"
+requests = "2.22.0"
+
+sphinx = {version = "2.2", optional = true}
+sphinxcontrib-httpdomain = {version = "1.7", optional = true}
+sphinxcontrib-httpexample = {version = "0.10.3", optional = true}
+sphinxcontrib-openapi = {version = "0.5.0", optional = true,  extras = ["markdown"]}
+sphinx-issues = {version = "1.2", optional = true}
+sphinx-rtd-theme = {version = "0.4.3", optional = true}
+
+[tool.poetry.dev-dependencies]
+# tests
+pytest = "5.1.2"
+pytest-mock = "1.10.4"
+pytest-asyncio = "0.10.0"
+asynctest = "0.13.0"
+mock = "3.0.5"
+pytest-jest = "0.3.0"
+# linter and formatter
+pre-commit = "1.18.3"
+yapf = "0.28.0"
+autoflake = "1.3.1"
+isort = "4.3.21"
+pyupgrade = "1.23.0"
+flake8-comprehensions = "2.2.0"
+flake8-bugbear = "19.8.0"
+flake8-commas = "2.0.0"
+flake8-mutable = "1.2.0"
+livereload = "2.6.1"
+gevent = "1.4"
+doc8 = "0.8.0"
+coverage = "*"
+
+[tool.poetry.extras]
+docs = [
+  "sphinx",
+  "sphinx-issues",
+  "sphinx-rtd-theme",
+  "sphinxcontrib-httpdomain",
+  "sphinxcontrib-httpexample",
+  "sphinxcontrib-openapi"
+]
