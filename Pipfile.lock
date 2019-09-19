@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "208ad43d892f41db4a8221e8e8d995cb7d1ae0200984bf8fecdc8b321ada3b59"
+            "sha256": "30ad7479625d96889be9dac86cab8d568a339a31c41a671f8e89897421c3cf20"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -353,7 +353,6 @@
             "hashes": [
                 "sha256:e00cbd7ba01ff748e494248183abc6e153f49181169d8a3d41bb49132ca01dfc"
             ],
-            "markers": "sys_platform != 'win32' and sys_platform != 'cygwin' and platform_python_implementation != 'pypy'",
             "version": "==0.0.13"
         },
         "httpx": {
@@ -714,11 +713,11 @@
         },
         "tqdm": {
             "hashes": [
-                "sha256:4c34f077399736e5dbf403183b5f0f1bda46e06433a3f93812386a9d56b28004",
-                "sha256:74d40d49cab95a93735323e450161f1e580dac42b25bf39770f6e3501d36ebfb"
+                "sha256:abc25d0ce2397d070ef07d8c7e706aede7920da163c64997585d42d3537ece3d",
+                "sha256:dd3fcca8488bb1d416aa7469d2f277902f26260c45aa86b667b074cd44b3b115"
             ],
             "index": "pypi",
-            "version": "==4.36.0"
+            "version": "==4.36.1"
         },
         "twisted": {
             "hashes": [
@@ -776,7 +775,6 @@
                 "sha256:c63b6c0bf33144c604dd72f7eecf2d3a3ac7405c503c67bd98128cf306efe18a",
                 "sha256:e698a20a3b4ccb380d207f9d491d4085d7c38d364f6a0bae98684a1612a9607a"
             ],
-            "markers": "sys_platform != 'win32' and sys_platform != 'cygwin' and platform_python_implementation != 'pypy'",
             "version": "==0.13.0"
         },
         "vine": {
