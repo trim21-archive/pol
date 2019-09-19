@@ -786,7 +786,7 @@ description = "a little orm"
 name = "peewee"
 optional = false
 python-versions = "*"
-version = "3.10.0"
+version = "3.11.0"
 
 [[package]]
 category = "main"
@@ -1570,7 +1570,7 @@ setuptools = "*"
 docs = ["sphinx", "sphinx-issues", "sphinx-rtd-theme", "sphinxcontrib-httpdomain", "sphinxcontrib-httpexample", "sphinxcontrib-openapi"]
 
 [metadata]
-content-hash = "2c51f75912d4ff2fcd9390d027ccae1c1137f753ffe71b77fe4bf5fb1b1f2375"
+content-hash = "489851cd87f8af7b3a72c41ea1cbc7d5b0de765811876c9a03381a2deea23b43"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -1651,7 +1651,7 @@ nodeenv = ["ad8259494cf1c9034539f6cced78a1da4840a4b157e23640bc4a0c0546b0cb7a"]
 packaging = ["28b924174df7a2fa32c1953825ff29c61e2f5e082343165438812f00d3a7fc47", "d9551545c6d761f3def1677baf08ab2a3ca17c56879e70fecba2fc4dde4ed108"]
 parsel = ["4da4262ba4605573b6b72a5f557616a2fc9dee7a47a1efad562752a28d366723", "74f8e9d3b345b14cb1416bd777a03982cde33a74d8b32e0c71e651d07d41d40a"]
 pbr = ["2c8e420cd4ed4cec4e7999ee47409e876af575d4c35a45840d59e8b5f3155ab8", "b32c8ccaac7b1a20c0ce00ce317642e6cf231cf038f9875e0280e28af5bf7ac9"]
-peewee = ["35bc7a1373b7e5c55fa984e852cddaff9e353a42cbb0b5e0c41a5060928fd192"]
+peewee = ["f0cad072ca3213ca3cfea445a4969c8951cbccc05b68092a758ce43b0e207ed2"]
 peewee-async = ["d337a2b91e920cb1bfdb039ace8926693a17f91233ce20a9392aedfcda7bc71d", "da7b8b2f01c768a3ec272b1906bb57f4927ba7ddd23723de58f8f8d33c12f910"]
 pluggy = ["0db4b7601aae1d35b4a033282da476845aa19185c1e6964b25cf324b5e4ec3e6", "fa5fa1622fa6dd5c030e9cad086fa19ef6a0cf6d7a2d12318e10cb49d6d68f34"]
 pre-commit = ["1d3c0587bda7c4e537a46c27f2c84aa006acc18facf9970bf947df596ce91f3f", "fa78ff96e8e9ac94c748388597693f18b041a181c94a4f039ad20f45287ba44a"]
