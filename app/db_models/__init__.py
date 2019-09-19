@@ -3,9 +3,11 @@ import datetime
 
 import peewee as pw
 
+from app.db_models.log import EpLog, BangumiLog
 from app.db_models.base import S
 from app.db_models.iqiyi import IqiyiBangumi, IqiyiEpisode
 from app.db_models.bilibili import BilibiliBangumi, BilibiliEpisode
+from app.db_models.timeline import BgmTimeline
 
 
 class MyJSONField(pw.TextField):
@@ -157,6 +159,26 @@ class UserSubmitBangumi(S.BgmIpViewer):
     user_id = pw.IntegerField()
     modify_time = pw.DateTimeField(default=datetime.datetime.now)
 
+
+__all__ = [
+    'IqiyiBangumi',
+    'IqiyiEpisode',
+    'BilibiliBangumi',
+    'BilibiliEpisode',
+    'BgmTimeline',
+    'BangumiLog',
+    'EpLog',
+    'Subject',
+    'Relation',
+    'Tag',
+    'UserSubmitBangumi',
+    'UserSubmitEpisode',
+    'UserToken',
+    'MissingBangumi',
+    'BangumiSource',
+    'Ep',
+    'EpSource',
+]
 
 if __name__ == '__main__':
     from app.db.database import objects

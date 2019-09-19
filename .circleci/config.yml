@@ -53,7 +53,7 @@ aliases:
     run:
       when: on_success
       name: Upload Coverage Report
-      command: codecov
+      command: bash <(curl -s https://codecov.io/bash)
 
   restore_test_data_cache: &restore_test_data_cache
     restore_cache:
