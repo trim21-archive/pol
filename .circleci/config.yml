@@ -16,8 +16,6 @@ workflows:
           filters:
             tags:
               only: /.*/
-            branches:
-              ignore: /.*/
 
       - docs-deploy:
           requires:

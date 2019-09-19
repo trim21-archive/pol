@@ -1570,7 +1570,7 @@ setuptools = "*"
 docs = ["sphinx", "sphinx-issues", "sphinx-rtd-theme", "sphinxcontrib-httpdomain", "sphinxcontrib-httpexample", "sphinxcontrib-openapi"]
 
 [metadata]
-content-hash = "489851cd87f8af7b3a72c41ea1cbc7d5b0de765811876c9a03381a2deea23b43"
+content-hash = "b6010bbc0d691f7adb0eca1aa18bb927076be4fb031fe7941fbdff97423817fb"
 python-versions = "^3.7"
 
 [metadata.hashes]
