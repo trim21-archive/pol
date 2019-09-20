@@ -73,20 +73,24 @@ async def add_process_time_header(request: Request, call_next):
 
 @app.on_event('startup')
 async def startup():
-    app.objects = objects
-    app.redis_pool = await setup_redis_pool()
-    app.logger = logger
-    app.logger.bind(
-        event='startup',
-        kwargs={
-            'pid': os.getpid(),
-            'thread': threading.get_ident(),
-        },
-    ).info(
-        'server start at pid {}, tid {}',
-        os.getpid(),
-        threading.get_ident(),
-    )
+    try:
+        app.objects = objects
+        app.redis_pool = await setup_redis_pool()
+        app.logger = logger
+        app.logger.bind(
+            event='startup',
+            kwargs={
+                'pid': os.getpid(),
+                'thread': threading.get_ident(),
+            },
+        ).info(
+            'server start at pid {}, tid {}',
+            os.getpid(),
+            threading.get_ident(),
+        )
+    except Exception as e:
+        print(e)
+        raise
 
 
 @app.on_event('shutdown')

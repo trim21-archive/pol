@@ -61,7 +61,8 @@ async def setup_redis_pool():
     )
     for lua_fs in (config.PROJ_ROOT / 'app' / 'lua').glob('*.lua'):
         with lua_fs.open('r') as f:
-            script_hash = await pool.script_load(f.read())
-            pool.script_hash[lua_fs.name] = script_hash
+            content = f.read()
+        script_hash = await pool.script_load(content)
+        pool.script_hash[lua_fs.name] = script_hash
 
     return pool
