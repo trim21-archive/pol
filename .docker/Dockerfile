@@ -11,7 +11,7 @@ ENV PYTHONPATH=/
 
 COPY --from=generator /src/app/requirements.txt /
 
-RUN pip install -r /requirements.txt
+RUN pip install --no-deps -r /requirements.txt
 
 COPY / /
 
