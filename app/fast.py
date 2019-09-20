@@ -37,14 +37,15 @@ if config.DSN:
     import sentry_sdk
     from sentry_sdk.integrations.logging import ignore_logger
     from sentry_sdk.integrations.redis import RedisIntegration
-    from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
+
+    from app.middlewares.sentry import SentryMiddleware
 
     ignore_logger('asyncio')
     logger.debug('setup sentry')
     sentry_sdk.init(
         dsn=config.DSN, release=config.COMMIT_SHA, integrations=[RedisIntegration()]
     )
-    app.add_middleware(SentryAsgiMiddleware)
+    app.add_middleware(SentryMiddleware)
 
 app.add_middleware(LogExceptionMiddleware)
 app.include_router(auth.router, prefix='/auth', tags=['auth'])
@@ -73,24 +74,20 @@ async def add_process_time_header(request: Request, call_next):
 
 @app.on_event('startup')
 async def startup():
-    try:
-        app.objects = objects
-        app.redis_pool = await setup_redis_pool()
-        app.logger = logger
-        app.logger.bind(
-            event='startup',
-            kwargs={
-                'pid': os.getpid(),
-                'thread': threading.get_ident(),
-            },
-        ).info(
-            'server start at pid {}, tid {}',
-            os.getpid(),
-            threading.get_ident(),
-        )
-    except Exception as e:
-        print(e)
-        raise
+    app.objects = objects
+    app.redis_pool = await setup_redis_pool()
+    app.logger = logger
+    app.logger.bind(
+        event='startup',
+        kwargs={
+            'pid': os.getpid(),
+            'thread': threading.get_ident(),
+        },
+    ).info(
+        'server start at pid {}, tid {}',
+        os.getpid(),
+        threading.get_ident(),
+    )
 
 
 @app.on_event('shutdown')

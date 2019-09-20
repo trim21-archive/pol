@@ -22,7 +22,7 @@ DSN = config('DSN', default=None)
 
 COMMIT_TAG = config('COMMIT_TAG', default=None)
 COMMIT_SHA = config('COMMIT_SHA', default='None')[:8]
-COMMIT_REV = COMMIT_TAG or COMMIT_SHA
+COMMIT_REV = COMMIT_TAG or COMMIT_SHA or ''
 
 TIMEZONE = pytz.timezone('Etc/GMT-8')
 
