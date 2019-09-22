@@ -24,7 +24,7 @@ class Sink:
         super().__init__()
         self.key = key
         self.client: redis.StrictRedis = client
-        self.packer = msgpack.Packer()
+        self.packer = msgpack.Packer(use_bin_type=True, encoding='utf-8')
         if extra is None:
             self.extra = {}
         else:

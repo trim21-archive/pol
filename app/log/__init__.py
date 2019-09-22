@@ -10,16 +10,6 @@ from app.log.sink import Sink
 
 
 def setup_logger():
-    sink = Sink(
-        client=redis.StrictRedis.from_url(config.REDIS_URI),
-        key=f'{config.APP_NAME}-log',
-        extra={
-            '@metadata': {'beat': 'py_logging'},
-            'version': config.COMMIT_REV,
-            'platform': platform.platform(),
-        },
-        tz=config.TIMEZONE,
-    )
     logger.add(
         sink,
         enqueue=True,
@@ -34,5 +24,15 @@ def setup_logger():
     logger.debug('setup logger')
 
 
+sink = Sink(
+    client=redis.StrictRedis.from_url(config.REDIS_URI),
+    key=f'{config.APP_NAME}-log',
+    extra={
+        '@metadata': {'beat': 'py_logging'},
+        'version': config.COMMIT_REV,
+        'platform': platform.platform(),
+    },
+    tz=config.TIMEZONE,
+)
 logger.remove()
 setup_logger()
