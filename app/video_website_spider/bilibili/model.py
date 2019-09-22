@@ -28,6 +28,8 @@ class PlayerPageMediaInfo(BaseModel):
     """
     ``mediaInfo.season_id``
     """
+    title: str
+
     @property
     def media_id(self):
         return self.id
@@ -55,6 +57,13 @@ class PlayerPageEpInfo(BaseModel):
     """
     ``epInfo.index``
     """
+    longTitle: str
+    titleFormat: str
+
+    @property
+    def title(self):
+        return self.titleFormat + ' ' + self.longTitle
+
     @property
     def ep_id(self):
         return self.id

@@ -34,4 +34,5 @@ def test_submit_bangumi():
         source_ep_id='v_19rrfjvdww',
         ep_id=767808,
         subject_id=219200,
+        title='擅长捉弄的高木同学 第3集',
     )

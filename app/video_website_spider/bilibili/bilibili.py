@@ -48,7 +48,6 @@ def get_initial_state_from_html(html: str) -> dict:
 class Bilibili(BaseWebsite):
     bangumi_regex = re.compile(r'https?://www\.bilibili\.com/bangumi/media/md\d+/?.*')
     episode_regex = re.compile(r'https?://www\.bilibili\.com/bangumi/play/ep\d+/?.*')
-    http_client = httpx.Client()
 
     @classmethod
     def valid_ep_url(cls, url: str):
@@ -70,98 +69,102 @@ class Bilibili(BaseWebsite):
     @classmethod
     @sync_db
     def subject(cls, subject_id: int, url: str):
-        r = cls.http_client.get(url)
-        initial_state = get_initial_state_from_html(r.text)
-        if initial_state:
-            if 'ep' in url:
-                model = PlayerPageInitialState
+        with httpx.Client() as http_client:
+            r = http_client.get(url)
+            initial_state = get_initial_state_from_html(r.text)
+            if initial_state:
+                if 'ep' in url:
+                    model = PlayerPageInitialState
+                else:
+                    model = BangumiPageInitialState
+                try:
+                    initial_state = model.parse_obj(initial_state)
+                except ValidationError as e:
+                    logger.error(model.__name__)
+                    logger.error(str(e))
+                    logger.error(repr(initial_state))
+                    return
             else:
-                model = BangumiPageInitialState
-            try:
-                initial_state = model.parse_obj(initial_state)
-            except ValidationError as e:
-                logger.error(model.__name__)
-                logger.error(str(e))
-                logger.error(repr(initial_state))
+                logger.error("can't get initial state from url {}", url)
                 return
-        else:
-            logger.error("can't get initial state from url {}", url)
-            return
-        BilibiliBangumi.upsert(
-            subject_id=subject_id,
-            media_id=initial_state.mediaInfo.media_id,
-            season_id=initial_state.mediaInfo.season_id
-            or BilibiliBangumi.season_id.default,
-            title=initial_state.mediaInfo.title,
-        ).execute()
-        bgm_eps = bgm_tv.mirror.subject_eps(subject_id).eps
+            BilibiliBangumi.upsert(
+                subject_id=subject_id,
+                media_id=initial_state.mediaInfo.media_id,
+                season_id=initial_state.mediaInfo.season_id
+                or BilibiliBangumi.season_id.default,
+                title=initial_state.mediaInfo.title,
+            ).execute()
+            bgm_eps = bgm_tv.mirror.subject_eps(subject_id).eps
 
-        bgm_ep_start = min(x.sort for x in bgm_eps)
-        ep_start = int(min(x.index for x in initial_state.epList))
+            bgm_ep_start = min(x.sort for x in bgm_eps)
+            ep_start = int(min(x.index for x in initial_state.epList))
 
-        for bgm_ep in bgm_eps:
-            for ep in initial_state.epList:
-                if not ep.index.isdecimal():
-                    continue
-                if (bgm_ep.sort - bgm_ep_start) == (int(ep.index) - ep_start):
+            for bgm_ep in bgm_eps:
+                for ep in initial_state.epList:
+                    if not ep.index.isdecimal():
+                        continue
+                    if (bgm_ep.sort - bgm_ep_start) == (int(ep.index) - ep_start):
 
-                    BilibiliEpisode.upsert(
-                        ep_id=bgm_ep.id,
-                        source_ep_id=ep.ep_id,
-                        subject_id=subject_id,
-                    ).execute()
-                    break
+                        BilibiliEpisode.upsert(
+                            ep_id=bgm_ep.id,
+                            source_ep_id=ep.ep_id,
+                            subject_id=subject_id,
+                        ).execute()
+                        break
 
     @classmethod
     @sync_db
     def ep(cls, ep_id: int, url: str):
-        # todo: need to save title
-        r = cls.http_client.get(url)
-        initial_state = get_initial_state_from_html(r.text)
-        if initial_state:
-            initial_state = PlayerPageInitialState.parse_obj(initial_state)
-        else:
-            logger.error("can't get initial state from url {}", url)
-            return
-        # source_ep_id = video_website_spider.bilibili.get_ep_id_from_url(url)
+        with httpx.Client() as http_client:
 
-        try:
-            ep = Ep.get(ep_id=ep_id)
-            BilibiliEpisode.upsert(
-                ep_id=ep_id,
-                source_ep_id=initial_state.epInfo.ep_id,
-                subject_id=ep.subject_id,
-            ).execute()
-            logger.info(
-                'upsert BilibiliEpisode with kwargs {{!r}}'.format(
-                    source_ep_id=ep_id,
-                    ep_id=initial_state.epInfo.ep_id,
+            r = http_client.get(url)
+            initial_state = get_initial_state_from_html(r.text)
+            if initial_state:
+                initial_state = PlayerPageInitialState.parse_obj(initial_state)
+            else:
+                logger.error("can't get initial state from url {}", url)
+                return
+            # source_ep_id = video_website_spider.bilibili.get_ep_id_from_url(url)
+
+            try:
+                ep = Ep.get(ep_id=ep_id)
+                BilibiliEpisode.upsert(
+                    ep_id=ep_id,
+                    source_ep_id=initial_state.epInfo.ep_id,
                     subject_id=ep.subject_id,
+                    title=initial_state.epInfo.title,
+                ).execute()
+                logger.info(
+                    'upsert BilibiliEpisode with kwargs {{!r}}'.format(
+                        source_ep_id=ep_id,
+                        ep_id=initial_state.epInfo.ep_id,
+                        subject_id=ep.subject_id,
+                    )
                 )
-            )
-        except Ep.DoesNotExist:
-            logger.warning('not fount episode {} with submit url {}', ep_id, url)
-            return
-        try:
-            BilibiliBangumi.get(
-                season_id=initial_state.mediaInfo.season_id,
-                subject_id=ep.subject_id,
-                media_id=initial_state.mediaInfo.media_id,
-            )
-            print('no exception')
-        except BilibiliBangumi.DoesNotExist:
-            logger.info(
-                'upsert BilibiliBangumi<{!r}>', {
-                    'media_id': initial_state.mediaInfo.media_id,
-                    'season_id': initial_state.mediaInfo.season_id,
-                    'subject_id': ep.subject_id
-                }
-            )
-            BilibiliBangumi.upsert(
-                media_id=initial_state.mediaInfo.media_id,
-                season_id=initial_state.mediaInfo.season_id,
-                subject_id=ep.subject_id,
-            ).execute()
+            except Ep.DoesNotExist:
+                logger.warning('not fount episode {} with submit url {}', ep_id, url)
+                return
+            try:
+                BilibiliBangumi.get(
+                    season_id=initial_state.mediaInfo.season_id,
+                    subject_id=ep.subject_id,
+                    media_id=initial_state.mediaInfo.media_id,
+                )
+                print('no exception')
+            except BilibiliBangumi.DoesNotExist:
+                logger.info(
+                    'upsert BilibiliBangumi<{!r}>', {
+                        'media_id': initial_state.mediaInfo.media_id,
+                        'season_id': initial_state.mediaInfo.season_id,
+                        'subject_id': ep.subject_id
+                    }
+                )
+                BilibiliBangumi.upsert(
+                    media_id=initial_state.mediaInfo.media_id,
+                    season_id=initial_state.mediaInfo.season_id,
+                    subject_id=ep.subject_id,
+                    title=initial_state.mediaInfo.title,
+                ).execute()
 
 
 if __name__ == '__main__':
