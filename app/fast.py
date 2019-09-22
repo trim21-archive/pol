@@ -37,15 +37,14 @@ if config.DSN:
     import sentry_sdk
     from sentry_sdk.integrations.logging import ignore_logger
     from sentry_sdk.integrations.redis import RedisIntegration
-
-    from app.middlewares.sentry import SentryMiddleware
+    from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 
     ignore_logger('asyncio')
     logger.debug('setup sentry')
     sentry_sdk.init(
         dsn=config.DSN, release=config.COMMIT_SHA, integrations=[RedisIntegration()]
     )
-    app.add_middleware(SentryMiddleware)
+    app.add_middleware(SentryAsgiMiddleware)
 
 app.add_middleware(LogExceptionMiddleware)
 app.include_router(auth.router, prefix='/auth', tags=['auth'])
