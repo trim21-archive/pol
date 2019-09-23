@@ -102,7 +102,7 @@ def get_media_id(season_id):
     return state.mediaInfo.media_id
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     with database.db.allow_sync():
         # BangumiSource.create_table()
         # MissingBangumi.create_table()

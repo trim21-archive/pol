@@ -180,7 +180,7 @@ __all__ = [
     'EpSource',
 ]
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     from app.db.database import objects
 
     with objects.allow_sync():

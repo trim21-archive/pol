@@ -35,5 +35,5 @@ def parse(response: parsel.Selector):
                 yield url
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     generate_wiki_url()

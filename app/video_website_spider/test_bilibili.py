@@ -7,6 +7,14 @@ def test_init():
     Bilibili()
 
 
+def test_valid_ep_url():
+    pass
+
+
+def test_valid_subject_url():
+    pass
+
+
 def test_submit_ep():
     Bilibili.ep(
         ep_id=893707,

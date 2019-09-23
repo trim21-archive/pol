@@ -32,5 +32,5 @@ def generate_full_url():
         r.lpush(settings.REDIS_START_URL_KEY, *chunk)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     generate_full_url()

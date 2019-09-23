@@ -38,7 +38,7 @@ class IqiyiEpisode(S.BgmIpViewer):
         return f'https://www.iqiyi.com/{self.source_ep_id}.html'
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     from app.db.database import db
 
     with db.allow_sync():

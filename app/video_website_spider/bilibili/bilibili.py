@@ -163,5 +163,5 @@ class Bilibili(BaseWebsite):
                 ).execute()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     Bilibili.subject(271724, 'https://www.bilibili.com/bangumi/media/md28221412')

@@ -43,7 +43,7 @@ class BilibiliEpisode(S.BgmIpViewer):
         return f'https://www.bilibili.com/bangumi/play/ep{self.source_ep_id}'
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     from app.db.database import db
 
     with db.allow_sync():

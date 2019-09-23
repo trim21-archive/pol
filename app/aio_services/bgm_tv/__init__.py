@@ -46,7 +46,7 @@ class BgmApi:
         return UserInfo.parse_obj(r)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     import asyncio
 
     async def main():
