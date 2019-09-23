@@ -4,7 +4,7 @@ from app.core import config
 from app.core.celery_app import celery
 from app.video_website_spider import Dispatcher
 
-if config.DSN:
+if config.DSN:  # pragma: no cover
     import sentry_sdk
     from sentry_sdk.integrations.celery import CeleryIntegration
     logger.debug('setup sentry for celery')

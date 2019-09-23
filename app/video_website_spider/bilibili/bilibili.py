@@ -1,6 +1,5 @@
 import re
 import json
-from urllib import parse
 
 import httpx
 from pydantic import ValidationError
@@ -13,16 +12,13 @@ from app.video_website_spider.bilibili.model import (
     PlayerPageInitialState, BangumiPageInitialState
 )
 
+# def get_ep_id_from_url(url: str):
+#     url_obj: parse.ParseResult = parse.urlparse(url)
+#     return url_obj.path.split('/')[-1].repalce('ep', '')
 
-def get_ep_id_from_url(url: str):
-    url_obj: parse.ParseResult = parse.urlparse(url)
-    return url_obj.path.split('/')[-1].repalce('ep', '')
-
-
-def get_bangumi_id_from_url(url: str):
-    url_obj: parse.ParseResult = parse.urlparse(url)
-    return url_obj.path.split('/')[-1].repalce('ep', '')
-
+# def get_bangumi_id_from_url(url: str):
+#     url_obj: parse.ParseResult = parse.urlparse(url)
+#     return url_obj.path.split('/')[-1].repalce('ep', '')
 
 regex = re.compile(
     r'<script>window\.'

@@ -11,7 +11,7 @@ class Middleware(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     async def __call__(self, scope, receive, send):
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover
 
     """
     below functions come from ``sentry_sdk.integrations.asgi.SentryAsgiMiddleware``

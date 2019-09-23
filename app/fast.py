@@ -33,7 +33,7 @@ app = FastAPI(
     ),
 )
 
-if config.DSN:
+if config.DSN:  # pragma: no cover
     import sentry_sdk
     from sentry_sdk.integrations.logging import ignore_logger
     from sentry_sdk.integrations.redis import RedisIntegration

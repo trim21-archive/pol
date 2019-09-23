@@ -12,7 +12,7 @@ class UrlNotValidError(Exception):
 class BaseWebsite(metaclass=abc.ABCMeta):
     @classmethod
     @abc.abstractmethod
-    def valid_ep_url(cls, url: str):
+    def valid_ep_url(cls, url: str):  # pragma: no cover
         """
         valid if url if a correct episode player url
 
@@ -31,7 +31,7 @@ class BaseWebsite(metaclass=abc.ABCMeta):
 
     @classmethod
     @abc.abstractmethod
-    def valid_subject_url(cls, url: str):
+    def valid_subject_url(cls, url: str):  # pragma: no cover
         """
         valid if url if a correct bangumi player url
 
@@ -50,12 +50,12 @@ class BaseWebsite(metaclass=abc.ABCMeta):
 
     @classmethod
     @abc.abstractmethod
-    def subject(cls, subject_id: int, url: str):
+    def subject(cls, subject_id: int, url: str):  # pragma: no cover
         raise NotImplementedError(cls.__name__, 'subject')
 
     @classmethod
     @abc.abstractmethod
-    def ep(cls, ep_id: int, url: str):
+    def ep(cls, ep_id: int, url: str):  # pragma: no cover
         raise NotImplementedError(cls.__name__, 'subject')
 
 
