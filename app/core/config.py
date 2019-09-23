@@ -8,11 +8,7 @@ from starlette.config import Config
 
 PROJ_ROOT = Path(os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
-try:
-    config = Config(PROJ_ROOT / 'env' / 'dev')
-except OSError as e:
-    print(e)
-    config = Config()
+config = Config(PROJ_ROOT / 'env' / 'dev')
 
 APP_NAME = 'Pol server'
 

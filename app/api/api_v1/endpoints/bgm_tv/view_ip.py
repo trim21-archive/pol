@@ -17,7 +17,7 @@ router = APIRouter()
     include_in_schema=False,
 )
 async def bgm_calendar(subject_id: int, db: Manager = Depends(get_db)):
-    s = await curd.subject.get_by_id(db, subject_id)
+    s = await db.get(Subject, id=subject_id)
     return s.dict()
 
 
