@@ -69,6 +69,7 @@ livereload = "2.6.1"
 gevent = "1.4.0"
 doc8 = "0.8.0"
 coverage = "*"
+pytest-faker = "^2.0"
 
 [tool.poetry.extras]
 docs = [
