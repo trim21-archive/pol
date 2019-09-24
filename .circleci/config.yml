@@ -82,6 +82,7 @@ jobs:
           command: |
             echo "export BUILD_ARGS=\"--build-arg DAO_COMMIT_SHA=$CIRCLE_SHA1 --build-arg DAO_COMMIT_TAG=$CIRCLE_TAG\"" >> $BASH_ENV
 
+      - run: docker build $BUILD_ARGS -t base -f .docker/Dockerfile .
       - run: cat .docker/server.in |cpp -E|docker build $BUILD_ARGS -t server -f - .
       - run: cat .docker/cron.in   |cpp -E|docker build $BUILD_ARGS -t cron   -f - .
       - run: cat .docker/spider.in |cpp -E|docker build $BUILD_ARGS -t spider -f - .
