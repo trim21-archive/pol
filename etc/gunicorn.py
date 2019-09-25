@@ -1,12 +1,14 @@
+import os
 import multiprocessing
 
 
 def get_worker():
     cores = multiprocessing.cpu_count()
-    workers_per_core = 1
+    workers_per_core = 2
     web_concurrency = workers_per_core * cores + 1
+    web_concurrency = os.getenv('WEB_CONCURRENCY') or web_concurrency
+    web_concurrency = int(web_concurrency)
     assert web_concurrency > 0
-    assert isinstance(web_concurrency, int)
     return web_concurrency
 
 
