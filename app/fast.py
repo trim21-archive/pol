@@ -1,22 +1,37 @@
 import os
-import time
 import threading
 
+import jinja2
 from fastapi import FastAPI
-from starlette.requests import Request
-from starlette.responses import Response
+from peewee_async import Manager
 
 from app.api import auth, bgm_tv, bgm_tv_auto_tracker
 from app.log import logger
 from app.core import config
 from app.md2bbc import router as md2bbc_router
-from app.db.redis import setup_redis_pool
+from app.db.redis import PickleRedis, setup_redis_pool
 from app.db.database import objects
 from app.deprecation import bind_deprecated_path
 from app.api.api_v1.api import api_router
 from app.middlewares.log import LogExceptionMiddleware
+from app.middlewares.http import setup_http_middleware
 
-app = FastAPI(
+template = jinja2.Template(
+    """出于兴趣写的一些api，源码见[GitHub](https://github.com/Trim21/pol)
+
+当前版本[{{config.COMMIT_REV}}](https://github.com/Trim21/pol/tree/{{config.COMMIT_REV}})
+
+更详细的文档见 [github pages](https://trim21.github.io/pol/)
+"""
+)
+
+
+class App(FastAPI):
+    redis_pool: PickleRedis
+    objects: Manager
+
+
+app: App = FastAPI(
     debug=config.DEBUG,
     title=config.APP_NAME,
     version=config.COMMIT_REV,
@@ -24,13 +39,7 @@ app = FastAPI(
     redoc_url=None,
     swagger_ui_oauth2_redirect_url=None,
     openapi_url='/openapi.json',
-    description=(
-        '出于兴趣写的一些api，源码见'
-        '[GitHub](https://github.com/Trim21/pol)\n'
-        f'当前版本[{config.COMMIT_REV}]'
-        f'(https://github.com/Trim21/pol/tree/{config.COMMIT_REV})\n\n'
-        '更详细的文档见 [github pages](https://trim21.github.io/pol/)'
-    ),
+    description=template.render(config=config),
 )
 
 if config.DSN:  # pragma: no cover
@@ -46,6 +55,7 @@ if config.DSN:  # pragma: no cover
     )
     app.add_middleware(SentryAsgiMiddleware)
 
+setup_http_middleware(app)
 app.add_middleware(LogExceptionMiddleware)
 app.include_router(auth.router, prefix='/auth', tags=['auth'])
 bind_deprecated_path(app)
@@ -53,22 +63,6 @@ app.include_router(api_router, prefix='/api.v1')
 app.include_router(bgm_tv_auto_tracker.router, prefix='/bgm-tv-auto-tracker')
 app.include_router(md2bbc_router)
 app.include_router(bgm_tv.router, prefix='/bgm.tv', tags=['bgm.tv'])
-
-
-@app.middleware('http')
-async def server_version_middleware(request: Request, call_next):
-    response: Response = await call_next(request)
-    response.headers['x-server-version'] = config.COMMIT_SHA
-    return response
-
-
-@app.middleware('http')
-async def add_process_time_header(request: Request, call_next):
-    start_time = time.time()
-    response = await call_next(request)
-    process_time = time.time() - start_time
-    response.headers['X-Process-Time'] = str(int(process_time * 1000)) + 'ms'
-    return response
 
 
 @app.on_event('startup')
@@ -93,3 +87,4 @@ async def startup():
 async def shutdown():
     await objects.close()
     app.redis_pool.close()
+    await app.redis_pool.wait_closed()
