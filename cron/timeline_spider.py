@@ -19,13 +19,30 @@ REDIS_HASH_KEY = f'{config.APP_NAME}:user_id_map'
 redis_client: redis.StrictRedis = redis.StrictRedis.from_url(config.REDIS_URI)
 
 client = requests.Session()
+client.headers['User-Agent'] = ' '.join((
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+    'AppleWebKit/537.36 (KHTML, like Gecko)',
+    'Chrome/74.0.3729.169 Safari/537.36',
+))
+
+client.headers['accept'] = ','.join([
+    'text/html',
+    'application/xhtml+xml',
+    'application/xml;q=0.9',
+    'image/webp,image/apng,*/*;q=0.8',
+    'application/signed-exchange;v=b3',
+])
+
+client.headers.setdefault('cache-control', 'max-age=0')
+client.headers.setdefault('accept-language', 'zh-CN,zh;q=0.9')
 
 
 @logger.catch()
 def get():
     try:
-        r = client.get('https://bgm.tv//m/timeline')
-    except requests.RequestException:
+        r = client.get('https://bangumi.tv/m/timeline')
+    except requests.RequestException as e:
+        logger.info('request exception ' + str(e))
         return
     now = dateutil.parser.parse(r.headers.get('date'))
     print('get timeline', now)
