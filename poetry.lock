@@ -499,7 +499,7 @@ description = "The next generation HTTP client."
 name = "httpx"
 optional = false
 python-versions = ">=3.6"
-version = "0.7.3"
+version = "0.7.4"
 
 [package.dependencies]
 certifi = "*"
@@ -1581,7 +1581,7 @@ setuptools = "*"
 docs = ["sphinx", "sphinx-issues", "sphinx-rtd-theme", "sphinxcontrib-httpdomain", "sphinxcontrib-httpexample", "sphinxcontrib-openapi"]
 
 [metadata]
-content-hash = "4e8b0c1f8687f29e79df7fc02b5e937c09ba75c1add8c4636e3f2abbc573dca6"
+content-hash = "c917d676d83ea7fae934c912c6710d02bca6557c18b9d950d94f279918e2a164"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -1634,7 +1634,7 @@ hiredis = ["0124911115f2cb7deb4f8e221e109a53d3d718174b238a2c5e2162175a3929a5", "
 hpack = ["0edd79eda27a53ba5be2dfabf3b15780928a0dff6eb0c60a3d6767720e970c89", "8eec9c1f4bfae3408a3f30500261f7e6a65912dc138526ea054f9ad98892e9d2"]
 hstspreload = ["5d6ebe30e050344fa76cfabd0b50e4a2d725eb1c6e92f9a2d1813383780c1100"]
 httptools = ["e00cbd7ba01ff748e494248183abc6e153f49181169d8a3d41bb49132ca01dfc"]
-httpx = ["8f10e80c394ef7ced28dcefae659fa73f6b984d38db224ed8b5d63eb698bd925"]
+httpx = ["c1fd72b4bd73bf7c4b04e6a91b69c28dcaa1a21f994043722d7b7141b9162154"]
 hyperframe = ["5187962cb16dcc078f23cb5a4b110098d546c3f41ff2d4038a9896893bbd0b40", "a9f5c17f2cc3c719b917c4f33ed1c61bd1f8dfac4b1bd23b7c80b3400971b41f"]
 hyperlink = ["4288e34705da077fada1111a24a0aa08bb1e76699c9ce49876af722441845654", "ab4a308feb039b04f855a020a6eda3b18ca5a68e6d8f8c899cbe9e653721d04f"]
 icalendar = ["07c2447a1d44cbb27c90b8c6a5c98e890cc1853c6223e2a52195cddec26c6356", "83f7248b7485ddd29c7d69b706b21c441e34855d9c1d888939fd24aefdd9d19b"]
