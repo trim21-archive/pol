@@ -11,7 +11,7 @@ ENV PYTHONPATH=/
 
 COPY --from=generator /src/app/requirements.txt /
 
-RUN pip install --no-cache-dir --no-deps -r /requirements.txt
+RUN pip install --require-hashes --no-cache-dir --no-deps -r /requirements.txt
 
 COPY / /
 
