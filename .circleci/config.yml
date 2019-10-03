@@ -38,7 +38,7 @@ aliases:
   install_pip_deps: &install_pip_deps
     run: |
       poetry config settings.virtualenvs.create false
-      PIP_USER=1 poetry install -E docs
+      PIP_USER=1 poetry install
 
   save_pip_cache: &save_pip_pre_commit_cache
     save_cache:
