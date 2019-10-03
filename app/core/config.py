@@ -1,3 +1,4 @@
+import sys
 import os.path
 import secrets
 from pathlib import Path
@@ -59,3 +60,16 @@ class BgmTvAutoTracker:
         'response_type': 'code',
         'redirect_uri': callback_url,
     })
+
+
+REQUEST_SERVICE_USER_AGENT = ' '.join((
+    f'Python/{".".join(str(x) for x in sys.version_info[:3])} ({sys.platform})',
+    f'app/{COMMIT_REV} ({COMMIT_SHA})',
+    'https://github.com/trim21/pol',
+))
+
+REQUEST_USER_AGENT = ' '.join((
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+    'AppleWebKit/537.36 (KHTML, like Gecko)',
+    'Chrome/74.0.3729.169 Safari/537.36',
+))

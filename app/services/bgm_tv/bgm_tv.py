@@ -2,6 +2,7 @@ from typing import Optional
 
 import httpx
 
+from app.core import config
 from app.services.bgm_tv.model import UserInfo, SubjectWithEps
 
 
@@ -11,7 +12,10 @@ class BgmApi:
             self.host = 'mirror.api.bgm.rin.cat'
         else:
             self.host = 'api.bgm.tv'
-        self.session = httpx.Client(base_url=f'https://{self.host}')
+        self.session = httpx.Client(
+            base_url=f'https://{self.host}',
+            headers={'user-agent': config.REQUEST_SERVICE_USER_AGENT},
+        )
 
     @staticmethod
     def error_in_response(data: dict):

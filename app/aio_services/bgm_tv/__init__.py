@@ -2,6 +2,7 @@ from typing import Tuple, Optional
 
 import httpx
 
+from app.core import config
 from app.aio_services.utils import wrap_connection_error
 from app.services.bgm_tv.model import UserInfo, UserCollection
 
@@ -13,7 +14,10 @@ class BgmApi:
         else:
             self.host = 'api.bgm.tv'
 
-        self.session = httpx.AsyncClient(base_url=f'https://{self.host}/')
+        self.session = httpx.AsyncClient(
+            base_url=f'https://{self.host}/',
+            headers={'user-agent': config.REQUEST_SERVICE_USER_AGENT},
+        )
 
     @staticmethod
     def error_in_response(data: dict):
