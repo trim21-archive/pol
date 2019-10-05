@@ -19,7 +19,7 @@ def test_subject_eps_404(bgm_api: BgmApi):
     assert r is None, 'non exists subject should return None'
 
 
-def test_subject_eps_202(bgm_api: BgmApi):
+def test_subject_eps_200(bgm_api: BgmApi):
     r = bgm_api.subject_eps(EXIST_SUBJECT_ID)
     assert isinstance(
         r, SubjectWithEps

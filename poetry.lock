@@ -60,7 +60,7 @@ description = "Fast ASN.1 parser and serializer with definitions for private key
 name = "asn1crypto"
 optional = false
 python-versions = "*"
-version = "1.0.0"
+version = "1.0.1"
 
 [[package]]
 category = "dev"
@@ -1041,6 +1041,17 @@ version = "1.11.0"
 pytest = ">=2.7"
 
 [[package]]
+category = "dev"
+description = "pytest plugin to re-run tests to eliminate flaky failures"
+name = "pytest-rerunfailures"
+optional = false
+python-versions = "*"
+version = "7.0"
+
+[package.dependencies]
+pytest = ">=3.10"
+
+[[package]]
 category = "main"
 description = "Extensions to the standard Python datetime module"
 name = "python-dateutil"
@@ -1218,7 +1229,7 @@ description = "This package provides 26 stemmers for 25 languages generated from
 name = "snowballstemmer"
 optional = false
 python-versions = "*"
-version = "1.9.1"
+version = "2.0.0"
 
 [[package]]
 category = "main"
@@ -1578,7 +1589,7 @@ version = "4.6.0"
 setuptools = "*"
 
 [metadata]
-content-hash = "447bc2f52294a007067937a5fc3ee54e76e1f27ac96a680234fe3bc81c858edd"
+content-hash = "560d429159de34df89671f97532357e53be9d2b1af0931588c7e81aa1f2f6041"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -1587,7 +1598,7 @@ aioredis = ["71302cebeb7add86f1fe660b469068760ca4364504e75ee83dd6f6b7118bfe28", 
 alabaster = ["446438bdcca0e05bd45ea2de1668c1d9b032e1a9154c2c259092d77031ddd359", "a661d72d58e6ea8a57f7a86e37d86716863ee5e92788398526d58b26a4e4dc02"]
 amqp = ["19a917e260178b8d410122712bac69cb3e6db010d68f6101e7307508aded5e68", "19d851b879a471fcfdcf01df9936cff924f422baa77653289f7095dedd5fb26a"]
 apscheduler = ["529afb7909e08416132891188cbfea5351eb35e4a684b67e983d819e8d01a6b0", "cde18f6dbffa1b75aff67fd7fe423a3020cb0363f6c67bd45f24306d90898231"]
-asn1crypto = ["d02bf8ea1b964a5ff04ac7891fe3a39150045d1e5e4fe99273ba677d11b92a04", "f822954b90c4c44f002e2cd46d636ab630f1fe4df22c816a82b66505c404eb2a"]
+asn1crypto = ["0b199f211ae690df3db4fd6c1c4ff976497fb1da689193e368eedbadc53d9292", "bca90060bd995c3f62c4433168eab407e44bdbdb567b3f3a396a676c1a4c4a3f"]
 "aspy.yaml" = ["463372c043f70160a9ec950c3f1e4c3a82db5fca01d334b6bc89c7164d744bdc", "e7c742382eff2caed61f87a39d13f99109088e5e93f04d76eb8d4b28aa143f45"]
 astunparse = ["271fb1f3d7a2e3c66eab41000298860f046253d22ec96e4f024cfaf266805a8e", "dab3e426715373fd76cd08bb1abe64b550f5aa494cf1e32384f26fd60961eb67"]
 async-timeout = ["0c3c816a028d47f659d6ff5c745cb2acf1f966da1fe5c19c77a70282b25f4c5f", "4291ca197d287d274d0b6cb5d6f8f8f82d434ed288f962539ff18cc9012f9ea3"]
@@ -1683,6 +1694,7 @@ pytest-faker = ["6b37bb89d94f96552bfa51f8e8b89d32addded8ddb58a331488299ef0137d9b
 pytest-jest = ["5b772232626a366a722b9ed01421f6c1d4d3b2d122c3edb0dd98c09798b00624", "7d7379fc7a238c98805ace1b869bd7c9ab35ead34f187c7cf35af2733034ac53"]
 pytest-metadata = ["2071a59285de40d7541fde1eb9f1ddea1c9db165882df82781367471238b66ba", "c29a1fb470424926c63154c1b632c02585f2ba4282932058a71d35295ff8c96d"]
 pytest-mock = ["3fd5ffb33b7041aea60a77f77b98e05d5acd577d53a01bf2ff0ca9780c6e3d84", "a89104018a4083b5c402e23b15b855924b74d9a3511e94f230a33621b72e35e1"]
+pytest-rerunfailures = ["1180a0f98975e1e1a2e055c87c1159cbd3bace8ceb71b1e7ffe4ace6121e7801", "f3c9cf31339bf87b048c09dadb633a81156fa4899527fffc55cde105d04ed5fd"]
 python-dateutil = ["7e6584c74aeed623791615e26efd690f29817a27c73085b78e4bad02493df2fb", "c89805f6f4d64db21ed966fda138f8a5ed7a4fdbc1a8ee329ce1b74e3c74da9e"]
 python-multipart = ["f7bb5f611fc600d15fa47b3974c8aa16e93724513b49b5f95c81e6624c83fa43"]
 pytz = ["26c0b32e437e54a18161324a2fca3c4b9846b74a8dccddd843113109e1116b32", "c894d57500a4cd2d5c71114aaab77dbab5eabd9022308ce5ac9bb93a60a6f0c7"]
@@ -1698,7 +1710,7 @@ scrapy-redis = ["1508dfb29141a7eb562e303a12d2733fd490dee866f7fabe3bee3e5c5bef6df
 sentry-sdk = ["2529ab6f93914d01bcd80b1b16c15a025902350ab19af2033aa5ff797c1600ad", "ab16b539c40cc18e3dcfec99d0d3fff16337a050eaf79d4503ef2b73af9a7d9e"]
 service-identity = ["001c0707759cb3de7e49c078a7c0c9cd12594161d3bf06b9c254fdcb1a60dc36", "0858a54aabc5b459d1aafa8a518ed2081a285087f349fe3e55197989232e2e2d"]
 six = ["3350809f0555b11f552448330d0b52d5f24c91a322ea4a15ef22629740f3761c", "d16a0141ec1a18405cd4ce8b4613101da75da0e9a7aec5bdd4fa804d0e0eba73"]
-snowballstemmer = ["713e53b79cbcf97bc5245a06080a33d54a77e7cce2f789c835a143bcdb5c033e"]
+snowballstemmer = ["209f257d7533fdb3cb73bdbd24f436239ca3b2fa67d56f6ff88e86be08cc5ef0", "df3bac3df4c2c01363f3dd2cfa78cce2840a79b9f1c2d2de9ce8d31683992f52"]
 soupsieve = ["605f89ad5fdbfefe30cdc293303665eff2d188865d4dbe4eb510bba1edfbfce3", "b91d676b330a0ebd5b21719cb6e9b57c57d433671f65b9c28dd3461d9a1ed0b6"]
 sphinx = ["0d586b0f8c2fc3cc6559c5e8fd6124628110514fda0e5d7c82e682d749d2e845", "839a3ed6f6b092bb60f492024489cc9e6991360fb9f52ed6361acd510d261069"]
 sphinx-issues = ["1208e1869742b7800a45b3c47ab987b87b2ad2024cbc36e0106e8bba3549dd22", "845294736c7ac4c09c706f13431f709e1164037cbb00f6bf623ae16eccf509f3"]
