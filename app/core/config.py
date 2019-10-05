@@ -1,4 +1,3 @@
-import sys
 import os.path
 import secrets
 from pathlib import Path
@@ -63,7 +62,6 @@ class BgmTvAutoTracker:
 
 
 REQUEST_SERVICE_USER_AGENT = ' '.join((
-    f'Python/{".".join(str(x) for x in sys.version_info[:3])} ({sys.platform})',
     f'app/{COMMIT_REV} ({COMMIT_SHA})',
     'https://github.com/trim21/pol',
 ))
