@@ -3,6 +3,17 @@ version: 2.1
 workflows:
   version: 2
 
+  daily:
+    jobs:
+      - unittest
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - master
+                - dev
   main:
     jobs:
       - unittest:
