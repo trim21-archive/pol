@@ -26,7 +26,7 @@ async def new_session(user_id: int, redis: PickleRedis) -> SessionValue:
 
 
 def generator_session_id(user_id):
-    h = hashlib.md5()
+    h = hashlib.sha256()
     h.update(str(user_id).encode())
 
-    return h.hexdigest() + uuid.uuid4().hex
+    return h.hexdigest()[:32] + uuid.uuid4().hex

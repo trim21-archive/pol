@@ -44,7 +44,7 @@ class Middleware(metaclass=abc.ABCMeta):
 
     @staticmethod
     def get_headers(scope):
-        headers = {}  # type: Dict[str, str]
+        headers: Dict[str, str] = {}
         for raw_key, raw_value in scope['headers']:
             key = raw_key.decode('latin-1')
             value = raw_value.decode('latin-1')

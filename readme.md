@@ -10,7 +10,7 @@
 
 ## convert markdown to bbcode
 
-https://www.trim21.cn/md2bbc
+<https://www.trim21.cn/md2bbc>
 
 由于bbcode不支持行内代码，所以将其转换为粗体
 
@@ -21,10 +21,8 @@ https://www.trim21.cn/md2bbc
 根据`https://api.bgm.tv/user/{user_id}/collection?cat=watching`生成，
 所以不会排除已完结的番剧和未开播的番剧
 
-
 todo:
-<!-- - [ ] 上log几个api脚本 -->
-- [ ] qq
-- [ ] youku
-- [ ] acfun
-- [x] patch保存到对应的数据库中
+-   [ ] qq
+-   [ ] youku
+-   [ ] acfun
+-   [x] patch保存到对应的数据库中
