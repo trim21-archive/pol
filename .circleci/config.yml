@@ -42,22 +42,24 @@ aliases:
   restore_pip_cache: &restore_pip_pre_commit_cache
     restore_cache:
       keys:
-        - pip-v2-{{ checksum "poetry.lock" }}-{{ checksum ".pre-commit-config.yaml" }}
-        - pip-v2{{ checksum "poetry.lock" }}-
-        - pip-v2-
+        - pip-v3-{{ checksum "poetry.lock" }}-{{ checksum ".pre-commit-config.yaml" }}
+        - pip-v3-{{ checksum "poetry.lock" }}-
 
   install_pip_deps: &install_pip_deps
     run: |
-      poetry config settings.virtualenvs.create false
-      PIP_USER=1 poetry install
+      pip install --user toml==0.10.0
+      python .circleci/export_requirements.py --all
+      pip install --user --require-hashes --no-deps -r requirements.txt
 
   save_pip_cache: &save_pip_pre_commit_cache
     save_cache:
-      key: pip-v2-{{ checksum "poetry.lock" }}-{{ checksum ".pre-commit-config.yaml" }}
+      key: pip-v3-{{ checksum "poetry.lock" }}-{{ checksum ".pre-commit-config.yaml" }}
       paths:
         - /home/circleci/.cache/pip
         - /home/circleci/.cache/pypoetry
         - /home/circleci/.cache/pre-commit
+        - /home/circleci/.local/bin
+        - /home/circleci/.local/lib/python3.7/site-packages
 
   upload_codecov_report: &upload_codecov_report
     run:
