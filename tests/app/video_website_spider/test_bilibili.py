@@ -1,6 +1,5 @@
 from app.db_models import BilibiliBangumi, BilibiliEpisode
-
-from .bilibili import Bilibili
+from app.video_website_spider.bilibili import Bilibili
 
 
 def test_init():

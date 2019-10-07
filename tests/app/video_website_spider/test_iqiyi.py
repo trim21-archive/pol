@@ -1,6 +1,5 @@
 from app.db_models import IqiyiBangumi, IqiyiEpisode
-
-from .iqiyi import Iqiyi
+from app.video_website_spider.iqiyi import Iqiyi
 
 
 def test_init():

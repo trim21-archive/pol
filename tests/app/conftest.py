@@ -20,9 +20,12 @@ def redis_client():
         yield redis_client
 
 
-def pytest_sessionstart(session):
-    """
-    Called after the Session object has been created and
+def pytest_sessionstart(session: pytest.Session):
+    """Called after the Session object has been created and
+
     before performing collection and entering the run test loop.
+
+    Args:
+        session: pytest Session object
     """
     db.set_allow_sync(True)
