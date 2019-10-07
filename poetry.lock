@@ -968,7 +968,7 @@ description = "pytest: simple powerful testing with Python"
 name = "pytest"
 optional = false
 python-versions = ">=3.5"
-version = "5.2.0"
+version = "5.2.1"
 
 [package.dependencies]
 atomicwrites = ">=1.0"
@@ -1589,7 +1589,7 @@ version = "4.6.0"
 setuptools = "*"
 
 [metadata]
-content-hash = "abc6be612fc61fb403a6520f34b0348de5f87b9e19b8abead5956a849dcd56c6"
+content-hash = "b54081d37ec19a46b0fbbfe24dc5a3c43215dff8fb049cf0327937ffe55202ee"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -1688,7 +1688,7 @@ pyopenssl = ["aeca66338f6de19d1aa46ed634c3b9ae519a64b458f8468aec688e7e3c20f200",
 pyparsing = ["6f98a7b9397e206d78cc01df10131398f1c8b8510a2f4d97d9abd82e1aacdd80", "d9338df12903bbf5d65a0e4e87c2161968b10d2e489652bb47001d82a9b028b4"]
 pypydispatcher = ["b6bec5dfcff9d2535bca2b23c80eae367b1ac250a645106948d315fcfa9130f2"]
 pyrsistent = ["34b47fa169d6006b32e99d4b3c4031f155e6e68ebcc107d6454852e8e0ee6533"]
-pytest = ["13c1c9b22127a77fc684eee24791efafcef343335d855e3573791c68588fe1a5", "d8ba7be9466f55ef96ba203fc0f90d0cf212f2f927e69186e1353e30bc7f62e5"]
+pytest = ["7e4800063ccfc306a53c461442526c5571e1462f61583506ce97e4da6a1d88c8", "ca563435f4941d0cb34767301c27bc65c510cb82e90b9ecf9cb52dc2c63caaa0"]
 pytest-asyncio = ["9fac5100fd716cbecf6ef89233e8590a4ad61d729d1732e0a96b84182df1daaf", "d734718e25cfc32d2bf78d346e99d33724deeba774cc4afdf491530c6184b63b"]
 pytest-faker = ["6b37bb89d94f96552bfa51f8e8b89d32addded8ddb58a331488299ef0137d9b6"]
 pytest-jest = ["5b772232626a366a722b9ed01421f6c1d4d3b2d122c3edb0dd98c09798b00624", "7d7379fc7a238c98805ace1b869bd7c9ab35ead34f187c7cf35af2733034ac53"]
