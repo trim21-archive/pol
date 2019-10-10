@@ -367,11 +367,11 @@ description = "FastAPI framework, high performance, easy to learn, fast to code,
 name = "fastapi"
 optional = false
 python-versions = ">=3.6"
-version = "0.40.0"
+version = "0.42.0"
 
 [package.dependencies]
 pydantic = "0.32.2"
-starlette = ">=0.11.1,<=0.12.8"
+starlette = "0.12.9"
 
 [[package]]
 category = "dev"
@@ -1382,7 +1382,7 @@ description = "The little ASGI library that shines."
 name = "starlette"
 optional = false
 python-versions = ">=3.6"
-version = "0.12.8"
+version = "0.12.9"
 
 [[package]]
 category = "dev"
@@ -1589,7 +1589,7 @@ version = "4.6.0"
 setuptools = "*"
 
 [metadata]
-content-hash = "39b8c9f6e4ba8d2db0f72be8e82a91de4b1542ccaecc6ccfc99f012ec4b8c1f7"
+content-hash = "f4d84a3089d2133d69c0851b9be627d79ece17890aaae12d51c5252d733c88c8"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -1629,7 +1629,7 @@ docutils = ["6c4f696463b79f1fb8ba0c594b63840ebd41f059e92b31957c46b74a4599b6d0", 
 email-validator = ["79966e318d6d68fed359c90f8f19d242bcc178b724011f1c07145bd093da6cc7"]
 entrypoints = ["589f874b313739ad35be6e0cd7efde2a4e9b6fea91edcc34e58ecbb8dbe56d19", "c70dd71abe5a8c85e55e12c19bd91ccfeec11a6e99044204511f9ed547d48451"]
 faker = ["45cc9cca3de8beba5a2da3bd82a6e5544f53da1a702645c8485f682366c15026", "a6459ff518d1fc6ee2238a7209e6c899517872c7e1115510279033ffe6fe8ef3"]
-fastapi = ["345a8b0a8761bf830c99af2c38881f2215703844e4d5e52fff1ff711824bae0b", "7a81762807d8ed43b2dddac8bb189d174e270f9c64493542d279673a6d768b26"]
+fastapi = ["38356cf424392142a561f32ab49113dec6e2ab7318862ae14d5e1d7ede16d14f", "48cb522c1c993e238bfe272fbb18049cbd4bf5b9d6c0d4a4fa113cc790e8196c"]
 flake8 = ["19241c1cbc971b9962473e4438a2ca19749a7dd002dd1a946eaba171b4114548", "8e9dfa3cecb2400b3738a42c54c3043e821682b9c840b0448c0503f781130696"]
 flake8-bugbear = ["d8c466ea79d5020cb20bf9f11cf349026e09517a42264f313d3f6fddb83e0571", "ded4d282778969b5ab5530ceba7aa1a9f1b86fa7618fc96a19a1d512331640f8"]
 flake8-commas = ["d3005899466f51380387df7151fb59afec666a0f4f4a2c6a8995b975de0f44b7", "ee2141a3495ef9789a3894ed8802d03eff1eaaf98ce6d8653a7c573ef101935e"]
@@ -1724,7 +1724,7 @@ sphinxcontrib-jsmath = ["2ec2eaebfb78f3f2078e73666b1415417a116cc848b72e5172e596c
 sphinxcontrib-openapi = ["2a5883456c0caba0dad90f07968c75a50d5fc425a3aa06d1c538472ddf8c7e22"]
 sphinxcontrib-qthelp = ["513049b93031beb1f57d4daea74068a4feb77aa5630f856fcff2e50de14e9a20", "79465ce11ae5694ff165becda529a600c754f4bc459778778c7017374d4d406f"]
 sphinxcontrib-serializinghtml = ["c0efb33f8052c04fd7a26c0a07f1678e8512e0faec19f4aa8f2473a8b81d5227", "db6615af393650bf1151a6cd39120c29abaf93cc60db8c48eb2dddbfdc3a9768"]
-starlette = ["f600bf9d0beeeeebcb143e6d0c4f8858c2b05067d5a4feb446ba7400ba5e5dc5"]
+starlette = ["c2ac9a42e0e0328ad20fe444115ac5e3760c1ee2ac1ff8cdb5ec915c4a453411"]
 stevedore = ["01d9f4beecf0fbd070ddb18e5efb10567801ba7ef3ddab0074f54e3cd4e91730", "e0739f9739a681c7a1fda76a102b65295e96a144ccdb552f2ae03c5f0abe8a14"]
 text-unidecode = ["1311f10e8b895935241623731c2ba64f4c455287888b18189350b67134a822e8", "bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93"]
 tokenize-rt = ["2f44eee8f620102f8a03c50142795121faf86e020d208896ea7a7047bbe933cf", "53f5c22d36e5c6f8e3fdbc6cb4dd151d1b3d38cea1b85b5fef6268f153733899"]
