@@ -1,6 +1,16 @@
+from contextlib import asynccontextmanager
+
 import httpx
-from starlette.requests import Request
+
+from app.core import config
 
 
-async def aio_http_client(request: Request) -> httpx.AsyncClient:
-    return request.state.aio_client
+@asynccontextmanager
+async def aio_http_client() -> httpx.AsyncClient:
+    aio_client = httpx.AsyncClient(
+        headers={'user-agent': config.REQUEST_SERVICE_USER_AGENT}
+    )
+    try:
+        yield aio_client
+    finally:
+        await aio_client.close()

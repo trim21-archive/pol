@@ -1,14 +1,21 @@
+import mock
 import httpx
 import pytest
-import starlette.requests
+import asynctest.mock
 
 from app.depends import aio_http_client
 
 
 @pytest.mark.asyncio
 async def test_aio_http_client():
-    req = starlette.requests.Request(scope={'type': 'http'})
-    req.state.aio_client = httpx.AsyncClient()
-    client = await aio_http_client(req)
-    assert isinstance(client, httpx.AsyncClient)
-    assert id(req.state.aio_client) == id(client)
+    async with aio_http_client() as client:
+        assert isinstance(client, httpx.AsyncClient)
+
+    with mock.patch('httpx.AsyncClient') as mocker:
+        m = mock.Mock()
+        close = asynctest.mock.CoroutineMock()
+        m.close = close
+        mocker.return_value = m
+        async with aio_http_client() as client:
+            assert client is m
+        close.assert_awaited_once()
