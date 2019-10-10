@@ -1,8 +1,5 @@
 import os
 import argparse
-import pkg_resources.extern
-import pkg_resources.extern.packaging
-import pkg_resources.extern.packaging.markers
 
 import toml
 
@@ -23,7 +20,7 @@ def _poetry_lock_to_requirements_txt(start_dir, options):
         version = package['version']
 
         if 'marker' in package:
-            marker = ';' + (remove_extra_field(package['marker']) or '')
+            marker = ';' + package['marker']
         else:
             marker = ''
 
@@ -33,18 +30,6 @@ def _poetry_lock_to_requirements_txt(start_dir, options):
 
     with open(f'{start_dir}/requirements.txt', 'w', encoding='utf-8') as f:
         f.write(s)
-
-
-def remove_extra_field(marker_string):
-    marker = pkg_resources.extern.packaging.markers.Marker(marker_string)
-    index = None
-    for i, mk in enumerate(marker._markers):
-        # mk: field op value
-        if str(mk[0]) == 'extra':
-            index = i
-    if index is not None:
-        del marker._markers[index]
-    return str(marker)
 
 
 if __name__ == '__main__':
