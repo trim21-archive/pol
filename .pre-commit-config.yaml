@@ -37,6 +37,7 @@ repos:
         require_serial: true
         language: python
         types: [python]
+        exclude: ^.circleci/
 
       - id: yapf
         name: yapf

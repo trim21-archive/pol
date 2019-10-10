@@ -1,5 +1,8 @@
 import os
 import argparse
+import pkg_resources.extern
+import pkg_resources.extern.packaging
+import pkg_resources.extern.packaging.markers
 
 import toml
 
@@ -7,6 +10,7 @@ import toml
 def _poetry_lock_to_requirements_txt(start_dir, options):
     with open(f'{start_dir}/poetry.lock') as f:
         lock = toml.load(f)
+
     hashes = lock['metadata']['hashes']
     s = ''
     for package in lock['package']:
@@ -17,7 +21,11 @@ def _poetry_lock_to_requirements_txt(start_dir, options):
 
         name = package['name']
         version = package['version']
-        marker = f'; {package["marker"]}' if 'marker' in package else ''
+
+        if 'marker' in package:
+            marker = ';' + (remove_extra_field(package['marker']) or '')
+        else:
+            marker = ''
 
         hash_args = ' '.join([f'--hash=sha256:{x}' for x in hashes.get(name, [])])
 
@@ -25,6 +33,18 @@ def _poetry_lock_to_requirements_txt(start_dir, options):
 
     with open(f'{start_dir}/requirements.txt', 'w', encoding='utf-8') as f:
         f.write(s)
+
+
+def remove_extra_field(marker_string):
+    marker = pkg_resources.extern.packaging.markers.Marker(marker_string)
+    index = None
+    for i, mk in enumerate(marker._markers):
+        # mk: field op value
+        if str(mk[0]) == 'extra':
+            index = i
+    if index is not None:
+        del marker._markers[index]
+    return str(marker)
 
 
 if __name__ == '__main__':
