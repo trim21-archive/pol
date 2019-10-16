@@ -22,7 +22,8 @@
 所以不会排除已完结的番剧和未开播的番剧
 
 todo:
--   [ ] qq
--   [ ] youku
--   [ ] acfun
--   [x] patch保存到对应的数据库中
+
+- [ ] qq
+- [ ] youku
+- [ ] acfun
+- [x] patch保存到对应的数据库中

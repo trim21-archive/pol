@@ -48,17 +48,9 @@ class Render(mistune.Renderer):
         return self.not_support('hrule')
 
     def double_emphasis(self, text):
-        """Rendering **strong** text.
-
-        :param text: text content for emphasis.
-        """
         return f'[b]{text}[/b]'
 
     def emphasis(self, text):
-        """Rendering *emphasis* text.
-
-        :param text: text content for emphasis.
-        """
         return f'[i]{text}[/i]'
 
     def paragraph(self, text):
@@ -71,11 +63,10 @@ class Render(mistune.Renderer):
         return self.linebreak() + f'[quote]{text}[/quote]' + self.linebreak()
 
     def footnotes(self, text):
-        """Wrapper for all footnotes.
+        return text
 
-        :param text: contents of all footnotes.
-        """
-        return ''
+    def autolink(self, link, is_email=False):
+        return link
 
 
 markdown2bbcode = mistune.Markdown(renderer=Render(escape=True, hard_wrap=True))
