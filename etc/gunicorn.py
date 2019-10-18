@@ -21,7 +21,7 @@ timeout = 5
 keepalive = 10
 
 errorlog = '-'
-loglevel = 'info'
+loglevel = 'warning'
 accesslog = '-'
 access_log_format = (
     '%(h)s %(l)s %(u)s %(t)s '
