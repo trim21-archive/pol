@@ -120,7 +120,12 @@ async def oauth_callback(
         html_response = HTMLResponse(content=response.body)
         html_response.set_cookie(cookie_scheme.model.name, session.api_key)
         return html_response
-    except (json.decoder.JSONDecodeError, ValidationError, ConnectionError):
+    except (
+        json.decoder.JSONDecodeError,
+        ValidationError,
+        ConnectionError,
+        httpx.ConnectTimeout,
+    ):
         return RedirectResponse('./auth')
 
 
