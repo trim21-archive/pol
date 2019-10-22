@@ -1,4 +1,4 @@
-FROM python:3.7.4-slim as generator
+FROM python:3.8.0-slim as generator
 WORKDIR /src/app
 COPY .circleci/export_requirements.py poetry.lock /src/app/
 RUN pip install toml==0.10.0 && python export_requirements.py
