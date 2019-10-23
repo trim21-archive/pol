@@ -39,6 +39,9 @@ workflows:
               ignore: /.*/
 
 aliases:
+  python-image: &python-image
+    image: circleci/python:3.7.5
+
   restore_pip_cache: &restore_pip_pre_commit_cache
     restore_cache:
       keys:
@@ -49,7 +52,7 @@ aliases:
     run: |
       pip install --user toml==0.10.0
       python .circleci/export_requirements.py --all
-      pip install --user --require-hashes --no-deps -r requirements.txt
+      pip install --user --require-hashes --no-deps --progress-bar off -r requirements.txt
 
   save_pip_cache: &save_pip_pre_commit_cache
     save_cache:
@@ -58,8 +61,7 @@ aliases:
         - /home/circleci/.cache/pip
         - /home/circleci/.cache/pypoetry
         - /home/circleci/.cache/pre-commit
-        - /home/circleci/.local/bin
-        - /home/circleci/.local/lib/python3.7/site-packages
+        - /home/circleci/.local
 
   upload_codecov_report: &upload_codecov_report
     run:
@@ -104,7 +106,7 @@ jobs:
   unittest:
 
     docker:
-      - image: circleci/python:3.7
+      - *python-image
 
       - image: redis:2.8
         command: redis-server --requirepass "redis_password"
