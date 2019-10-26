@@ -1,0 +1,35 @@
+{
+  "extends": [
+    "config:base",
+    "schedule:weekly"
+  ],
+  "baseBranches": [
+    "dev"
+  ],
+  "rangeStrategy": "pin",
+  "semanticCommits": true,
+  "packageRules": [
+    {
+      "groupName": "deps-build",
+      "managers": [
+        "Dockerfile",
+        "CircleCI"
+      ],
+      "semanticCommitScope": "deps-build"
+    },
+    {
+      "groupName": "deps-prod",
+      "depTypeList": [
+        "dependencies"
+      ],
+      "semanticCommitScope": "deps-dev"
+    },
+    {
+      "groupName": "deps-dev",
+      "depTypeList": [
+        "devDependencies"
+      ],
+      "semanticCommitScope": "deps-dev"
+    }
+  ]
+}
