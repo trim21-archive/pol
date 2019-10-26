@@ -12,8 +12,8 @@
     {
       "groupName": "deps-build",
       "managers": [
-        "Dockerfile",
-        "CircleCI"
+        "dockerfile",
+        "circleci"
       ],
       "semanticCommitScope": "deps-build"
     },
