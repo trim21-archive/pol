@@ -863,7 +863,7 @@ category = "main"
 description = "C parser in Python"
 name = "pycparser"
 optional = false
-python-versions = "*"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "2.19"
 
 [[package]]
@@ -1097,7 +1097,7 @@ category = "dev"
 description = "YAML parser and emitter for Python"
 name = "pyyaml"
 optional = false
-python-versions = "*"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "5.1.2"
 
 [[package]]
@@ -1155,7 +1155,7 @@ description = "A high-level Web Crawling and Web Scraping framework"
 name = "scrapy"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "1.7.3"
+version = "1.7.4"
 
 [package.dependencies]
 PyDispatcher = ">=2.0.5"
@@ -1589,7 +1589,7 @@ version = "4.6.0"
 setuptools = "*"
 
 [metadata]
-content-hash = "0b3b62eb658d9c32685854c0095977563d2b8d02d3581124a6d0251143f411c1"
+content-hash = "b3ced53357268604cd881b8693ba65a1123ff06982921928b73d21784fe89c11"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -1705,7 +1705,7 @@ redis = ["98a22fb750c9b9bb46e75e945dc3f61d0ab30d06117cbb21ff9cd1d315fedd3b", "c5
 requests = ["11e007a8a2aa0323f5a921e9e6a2d7e4e67d9877e85773fba9ba6419025cbeb4", "9cf5292fcd0f598c671cfc1e0d7d1a7f13bb8085e9a590f48c010551dc6c4b31"]
 restructuredtext-lint = ["97b3da356d5b3a8514d8f1f9098febd8b41463bed6a1d9f126cf0a048b6fd908"]
 rfc3986 = ["0344d0bd428126ce554e7ca2b61787b6a28d2bbd19fc70ed2dd85efe31176405", "df4eba676077cefb86450c8f60121b9ae04b94f65f85b69f3f731af0516b7b18"]
-scrapy = ["1d2b2672049c3e7ebcab9736bbf759ec32d4cbf598292067737806453c208f95", "fe5a40177960e97d42d1c752a73edb40f76a85a24076dec8535cffa499eb08c8"]
+scrapy = ["2eb7fb3e2b04b92d4a1f901539cfb080bb3e48dc3d1b0a07af90565e2be1c8a1", "f0813d23a3f5659f403f469b11488ecd81e989e834205c4366cd231536496513"]
 scrapy-redis = ["1508dfb29141a7eb562e303a12d2733fd490dee866f7fabe3bee3e5c5bef6df8", "b6991f2c0b2a72cd211296756acd03b9a7695fc437f5adbc3770d2e035979707"]
 sentry-sdk = ["7d8668f082cb1eb9bf1e0d3f8f9bd5796d05d927c1197af226d044ed32b9815f", "ff14935cc3053de0650128f124c36f34a4be120b8cc522c149f5cba342c1fd05"]
 service-identity = ["001c0707759cb3de7e49c078a7c0c9cd12594161d3bf06b9c254fdcb1a60dc36", "0858a54aabc5b459d1aafa8a518ed2081a285087f349fe3e55197989232e2e2d"]
