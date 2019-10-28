@@ -16,6 +16,7 @@
         "dockerfile",
         "circleci"
       ],
+      "versionScheme": "pep440",
       "semanticCommitScope": "deps-build"
     },
     {
