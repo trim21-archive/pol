@@ -424,11 +424,11 @@ description = "A flake8 plugin to help you write better list/set/dict comprehens
 name = "flake8-comprehensions"
 optional = false
 python-versions = ">=3.5"
-version = "2.3.0"
+version = "3.0.0"
 
 [package.dependencies]
 cached-property = ">=1.0.0,<2.0.0"
-flake8 = "!=3.2.0"
+flake8 = ">=3.0,<3.2.0 || >3.2.0,<4"
 
 [package.dependencies.importlib-metadata]
 python = "<3.8"
@@ -1605,7 +1605,7 @@ version = "4.6.0"
 setuptools = "*"
 
 [metadata]
-content-hash = "5cdc01ef5b37ce97fdd35db8206fa3cb27eac4a9b0179a40aed24b50d7790f28"
+content-hash = "0300f537ac988a2f370086be47dc76d1653b03e69d2b4741c71b2ead08c3c5e9"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -1650,7 +1650,7 @@ fastapi = ["38356cf424392142a561f32ab49113dec6e2ab7318862ae14d5e1d7ede16d14f", "
 flake8 = ["19241c1cbc971b9962473e4438a2ca19749a7dd002dd1a946eaba171b4114548", "8e9dfa3cecb2400b3738a42c54c3043e821682b9c840b0448c0503f781130696"]
 flake8-bugbear = ["d8c466ea79d5020cb20bf9f11cf349026e09517a42264f313d3f6fddb83e0571", "ded4d282778969b5ab5530ceba7aa1a9f1b86fa7618fc96a19a1d512331640f8"]
 flake8-commas = ["d3005899466f51380387df7151fb59afec666a0f4f4a2c6a8995b975de0f44b7", "ee2141a3495ef9789a3894ed8802d03eff1eaaf98ce6d8653a7c573ef101935e"]
-flake8-comprehensions = ["1d731dcccbef1f9a68b54d6846cf4e45cd2fea397cb0b71c463aab965118f594", "5ead5962307187a13359a1f108ab7c371c8a63343fb0dfa9fc97c30612a99561"]
+flake8-comprehensions = ["60a3d8eb8f29b11ba7dd22a9ba3641b8a5f241fbc31287d00d398eafe823d16d", "f5ca4f2b8752dbe7e49fc430290761bb4bd030d47bc1ba39bcaa24b79b0c8672"]
 flake8-mutable = ["38fd9dadcbcda6550a916197bc40ed76908119dabb37fbcca30873666c31d2d5", "ee9b77111b867d845177bbc289d87d541445ffcc6029a0c5c65865b42b18c6a6"]
 gunicorn = ["aa8e0b40b4157b36a5df5e599f45c9c76d6af43845ba3b3b0efe2c70473c2471", "fa2662097c66f920f53f70621c6c58ca4a3c4d3434205e608e121b5b3b71f4f3"]
 h11 = ["acca6a44cb52a32ab442b1779adf0875c443c689e9e028f8d831a3769f9c5208", "f2b1ca39bfed357d1f19ac732913d5f9faa54a5062eca7d2ec3a916cfb7ae4c7"]
