@@ -6,6 +6,7 @@
   "baseBranches": [
     "dev"
   ],
+  "prHourlyLimit": 6,
   "rangeStrategy": "pin",
   "semanticCommits": true,
   "packageRules": [
