@@ -1,11 +1,11 @@
-FROM python:3.7.5-slim as generator
+FROM python:3.8.0b1-slim as generator
 WORKDIR /src/app
 COPY .circleci/export_requirements.py poetry.lock /src/app/
 RUN pip install toml==0.10.0 && python export_requirements.py
 
 #######################################
 
-FROM python:3.7.5
+FROM python:3.8.0b1
 LABEL MAINTAINER="Trim21 <Trim21me@gmail.com>"
 ENV PYTHONPATH=/
 

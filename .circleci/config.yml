@@ -111,7 +111,7 @@ jobs:
       - image: redis:2.8
         command: redis-server --requirepass "redis_password"
 
-      - image: mysql:5.7.27
+      - image: mysql:5.7.28
         command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
         environment:
           MYSQL_USER: root
