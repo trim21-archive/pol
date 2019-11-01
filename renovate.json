@@ -24,7 +24,7 @@
       "depTypeList": [
         "dependencies"
       ],
-      "semanticCommitScope": "deps-dev"
+      "semanticCommitScope": "deps"
     },
     {
       "groupName": "deps-dev",
