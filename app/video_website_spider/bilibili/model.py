@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 
 from pydantic import BaseModel
 
@@ -37,6 +37,28 @@ class PlayerPageMediaInfo(BaseModel):
     @property
     def season_id(self):
         return self.ssId
+
+
+class EpisodeType(BaseModel):
+    aid: int
+    badge: str
+    badge_type: int
+    cid: int
+    cover: str
+    id: int
+    long_title: str
+    share_url: str
+    status: int
+    title: str
+    vid: str
+
+    @property
+    def index(self):
+        return self.title
+
+    @property
+    def ep_id(self):
+        return self.id
 
 
 class OldPlayerPageEpInfo(BaseModel):
@@ -88,7 +110,6 @@ class BangumiPageMediaInfo(BaseModel):
     media_id: int
     title: str
     seasons: List[BangumiPageSeason]
-    episodes: List[OldPlayerPageEpInfo]
 
     @property
     def season_id(self):
@@ -97,12 +118,16 @@ class BangumiPageMediaInfo(BaseModel):
                 return season.season_id
 
 
+class BangumiPageMainSectionList(BaseModel):
+    episodes: List[EpisodeType]
+    id: int
+    title: str
+
+
 class BangumiPageInitialState(BaseModel):
     mediaInfo: BangumiPageMediaInfo
-    # mainSectionList: List[PlayerPageEpInfo]
+    mainSectionList: Union[BangumiPageMainSectionList, dict]
 
     @property
     def epList(self):
-        return self.mediaInfo.episodes
-
-    # class Config(BaseModel.Config):
+        return self.mainSectionList.episodes

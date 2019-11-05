@@ -9,7 +9,7 @@ from app.services import bgm_tv
 from app.db_models import Ep, BilibiliBangumi, BilibiliEpisode
 from app.video_website_spider.base import BaseWebsite, UrlNotValidError, sync_db
 from app.video_website_spider.bilibili.model import (
-    PlayerPageInitialState, BangumiPageInitialState
+    PlayerPageInitialState, BangumiPageInitialState, BangumiPageMainSectionList
 )
 
 # def get_ep_id_from_url(url: str):
@@ -68,6 +68,7 @@ class Bilibili(BaseWebsite):
         with httpx.Client() as http_client:
             r = http_client.get(url)
             initial_state = get_initial_state_from_html(r.text)
+
             if initial_state:
                 if 'ep' in url:
                     model = PlayerPageInitialState
@@ -76,6 +77,7 @@ class Bilibili(BaseWebsite):
                 try:
                     initial_state = model.parse_obj(initial_state)
                 except ValidationError as e:
+                    print(initial_state['mainSectionList'])
                     logger.error(model.__name__)
                     logger.error(str(e))
                     logger.error(repr(initial_state))
@@ -83,6 +85,17 @@ class Bilibili(BaseWebsite):
             else:
                 logger.error("can't get initial state from url {}", url)
                 return
+
+            if model == BangumiPageInitialState:
+                section = http_client.get(
+                    f'https://api.bilibili.com/pgc/web/'
+                    f'season/section?season_id={initial_state.mediaInfo.season_id}'
+                )
+
+                initial_state.mainSectionList = BangumiPageMainSectionList.parse_obj(
+                    section.json()['result']['main_section']
+                )
+
             BilibiliBangumi.upsert(
                 subject_id=subject_id,
                 media_id=initial_state.mediaInfo.media_id,
