@@ -13,9 +13,7 @@ class Middleware(metaclass=abc.ABCMeta):
     async def __call__(self, scope, receive, send):
         raise NotImplementedError()  # pragma: no cover
 
-    """
-    below functions come from ``sentry_sdk.integrations.asgi.SentryAsgiMiddleware``
-    """
+    # below functions come from ``sentry_sdk.integrations.asgi.SentryAsgiMiddleware``
     @staticmethod
     def get_url(scope):
         """

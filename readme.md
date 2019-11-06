@@ -6,7 +6,7 @@
 
 后端使用mysql和redis
 
-文档详情见[Openapi](https://www.trim21.cn)
+文档详情见[https://trim21.github.io/pol/](https://trim21.github.io/pol/)
 
 ## convert markdown to bbcode
 

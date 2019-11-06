@@ -244,7 +244,8 @@ def first_run(subject_start, subject_end):
 
             for source, edges in relation_from_id.items():
                 sub = subjects[source]
-                [maps[sub.map].add(x.id) for x in edges]
+                for x in edges:
+                    maps[sub.map].add(x.id)
             for map_id, ids in tqdm.tqdm(maps.items(), total=len(maps.keys())):
                 for chunk in chunk_iter_list(list(ids)):
                     Relation.update(map=map_id).where(Relation.id.in_(chunk)).execute()

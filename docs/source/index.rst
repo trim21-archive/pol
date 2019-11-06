@@ -15,5 +15,6 @@
 
 .. toctree::
 
+   not-developer.rst
    auth.rst
    player_url.rst
