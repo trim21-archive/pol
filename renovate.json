@@ -9,6 +9,7 @@
   "prHourlyLimit": 6,
   "rangeStrategy": "pin",
   "semanticCommits": true,
+  "semanticCommitType": "chore",
   "packageRules": [
     {
       "groupName": "deps-build",
