@@ -1,6 +1,7 @@
 {
   "extends": [
     "config:base",
+    ":semanticCommitTypeAll(chore)",
     "schedule:weekly"
   ],
   "baseBranches": [
@@ -9,7 +10,6 @@
   "prHourlyLimit": 6,
   "rangeStrategy": "pin",
   "semanticCommits": true,
-  "semanticCommitType": "chore",
   "ignoreDeps": [
     "mysql",
     "redis"
