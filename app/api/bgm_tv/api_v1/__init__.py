@@ -93,5 +93,5 @@ async def list_tags(
         limit=limit,
         offset=offset,
         count=await db.count(Tag.select(pw.fn.COUNT(Tag.text))),
-        tags=[x for x in res],
+        tags=list(res),
     )
