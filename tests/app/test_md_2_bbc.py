@@ -1,4 +1,4 @@
-import pytest_mock
+import mock
 from starlette.testclient import TestClient
 
 import app.fast
@@ -13,7 +13,7 @@ def test_html_view():
     assert 'text/html' in response.headers['content-type']
 
 
-def test_convert_api(mocker: pytest_mock.MockFixture):
+def test_convert_api():
     response = client.post(
         '/md2bbc',
         data={'markdown': '**b** *i*'},
@@ -23,8 +23,8 @@ def test_convert_api(mocker: pytest_mock.MockFixture):
     assert 'text/plain' in response.headers['content-type']
 
 
-def test_call_api(mocker: pytest_mock.MockFixture):
-    with mocker.patch('app.md2bbc.markdown2bbcode', return_value='[i]b[/i]'):
+def test_call_api():
+    with mock.patch('app.md2bbc.markdown2bbcode', return_value='[i]b[/i]') as mocker:
         response = client.post(
             '/md2bbc',
             data={'markdown': '*b*'},
@@ -32,4 +32,4 @@ def test_call_api(mocker: pytest_mock.MockFixture):
         assert response.status_code == 200
         assert response.text.strip() == '[i]b[/i]'
         assert 'text/plain' in response.headers['content-type']
-    app.md2bbc.markdown2bbcode.assert_called_once_with('*b*')
+        mocker.assert_called_once_with('*b*')
