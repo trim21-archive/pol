@@ -3,7 +3,7 @@ import pathlib
 from os import path
 from collections import defaultdict
 
-import pydantic
+from pydantic import ValidationError
 
 from app.db import database
 from app.client import http_client
@@ -25,7 +25,7 @@ def save_bangumi_data_to_db():
     ).json()['items']:
         try:
             data.append(Item.parse_obj(item))
-        except pydantic.ValidationError as e:
+        except ValidationError as e:
             print(item)
             print(e)
 

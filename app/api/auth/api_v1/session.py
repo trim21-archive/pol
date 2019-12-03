@@ -29,4 +29,12 @@ def generator_session_id(user_id):
     h = hashlib.sha256()
     h.update(str(user_id).encode())
 
-    return h.hexdigest()[:32] + uuid.uuid4().hex
+    return h.hexdigest()[:16] + uuid.uuid4().hex[:32]
+
+
+if __name__ == '__main__':
+
+    def t():
+        print(len(uuid.uuid4().hex[:32]))
+
+    t()

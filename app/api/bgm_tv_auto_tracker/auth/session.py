@@ -10,6 +10,8 @@ from app.api.bgm_tv_auto_tracker.auth.scheme import cookie_scheme
 
 KEY_PREFIX = 'personal-website:bgm-tv-auto-tracker:session:'
 
+ANOTHER_KEY_PREFIX = 'pol:auth:session:'
+
 
 class SessionValue(BaseModel):
     api_key: str
@@ -22,7 +24,9 @@ async def get_session(
 ) -> SessionValue:
     r = await redis.get(KEY_PREFIX + token)
     if not r:
-        raise HTTPException(403, 'you need to auth your bgm.tv account first')
+        r = await redis.get(ANOTHER_KEY_PREFIX + token)
+        if not r:
+            raise HTTPException(403, 'you need to auth your bgm.tv account first')
     return r
 
 
@@ -33,10 +37,9 @@ async def new_session(
     token = generator_session_id()
     session = SessionValue(api_key=token, user_id=user_id)
     await redis.set(
-        KEY_PREFIX + token,
+        ANOTHER_KEY_PREFIX + token,
         session,
         expire=60 * 60 * 24 * 30,
-        # exist=False,
     )
     return session
 
