@@ -1,6 +1,6 @@
 FROM python:3.7.5-slim as generator
 WORKDIR /src/app
-COPY .circleci/export_requirements.py poetry.lock /src/app/
+COPY scripts/export_requirements.py poetry.lock /src/app/
 RUN pip install toml==0.10.0 && python export_requirements.py
 
 #######################################

@@ -51,7 +51,7 @@ aliases:
   install_pip_deps: &install_pip_deps
     run: |
       pip install --user toml==0.10.0
-      python .circleci/export_requirements.py --all
+      python scripts/export_requirements.py --all
       pip install --user --require-hashes --no-deps --progress-bar off -r requirements.txt
 
   save_pip_cache: &save_pip_pre_commit_cache
