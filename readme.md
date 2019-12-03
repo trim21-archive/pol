@@ -26,4 +26,3 @@ todo:
 - [ ] qq
 - [ ] youku
 - [ ] acfun
-- [x] patch保存到对应的数据库中
