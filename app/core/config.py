@@ -61,13 +61,13 @@ class BgmTvAutoTracker:
     })
 
 
-REQUEST_SERVICE_USER_AGENT = ' '.join((
-    f'app/{COMMIT_REV} ({COMMIT_SHA})',
-    'https://github.com/trim21/pol',
-))
+REQUEST_SERVICE_USER_AGENT = (
+    f'app/{COMMIT_REV} ({COMMIT_SHA})'
+    'https://github.com/trim21/pol'
+)
 
-REQUEST_USER_AGENT = ' '.join((
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-    'AppleWebKit/537.36 (KHTML, like Gecko)',
-    'Chrome/74.0.3729.169 Safari/537.36',
-))
+REQUEST_USER_AGENT = (
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
+    'AppleWebKit/537.36 (KHTML, like Gecko)'
+    'Chrome/78.0.3904.97 Safari/537.36'
+)

@@ -1,4 +1,4 @@
-import httpx
+import requests
 
-http_client = httpx.Client()
-h11_client = httpx.Client(http_versions=['HTTP/1.1'])
+http_client = requests.Session()
+h11_client = requests.Session()

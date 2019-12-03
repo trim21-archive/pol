@@ -14,7 +14,7 @@ class BgmApi:
         else:
             self.host = 'api.bgm.tv'
 
-        self.session = httpx.AsyncClient(
+        self.session = httpx.Client(
             base_url=f'https://{self.host}/',
             headers={'user-agent': config.REQUEST_SERVICE_USER_AGENT},
         )

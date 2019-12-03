@@ -1,7 +1,7 @@
 import re
 import json
 
-import httpx
+import requests
 from pydantic import ValidationError
 
 from app.log import logger
@@ -65,7 +65,7 @@ class Bilibili(BaseWebsite):
     @classmethod
     @sync_db
     def subject(cls, subject_id: int, url: str):
-        with httpx.Client() as http_client:
+        with requests.Session() as http_client:
             r = http_client.get(url)
             initial_state = get_initial_state_from_html(r.text)
 
@@ -124,8 +124,7 @@ class Bilibili(BaseWebsite):
     @classmethod
     @sync_db
     def ep(cls, ep_id: int, url: str):
-        with httpx.Client() as http_client:
-
+        with requests.Session() as http_client:
             r = http_client.get(url)
             initial_state = get_initial_state_from_html(r.text)
             if initial_state:

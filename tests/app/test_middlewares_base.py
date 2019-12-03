@@ -9,7 +9,7 @@ from app.middlewares.base import Middleware
 async def test_base():
     state = {'called': False}
     app = FastAPI()
-    client = httpx.AsyncClient(app=app)
+    client = httpx.Client(app=app)
 
     class M(Middleware):
         async def __call__(self, scope, receive, send):

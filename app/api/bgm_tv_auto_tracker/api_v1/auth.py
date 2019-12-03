@@ -80,7 +80,7 @@ async def oauth_callback(
     request: Request,
     db: Manager = Depends(get_db),
     redis: PickleRedis = Depends(get_redis),
-    aio_client: httpx.AsyncClient = Depends(aio_http_client),
+    aio_client: httpx.Client = Depends(aio_http_client),
 ):
     try:
         resp = await aio_client.post(
@@ -147,7 +147,7 @@ class RefreshResponse(BaseModel):
 async def refresh_token(
     db: Manager = Depends(get_db),
     current_user: db_models.UserToken = Depends(get_current_user),
-    aio_client: httpx.AsyncClient = Depends(aio_http_client),
+    aio_client: httpx.Client = Depends(aio_http_client),
 ):
     try:
         resp = await aio_client.post(

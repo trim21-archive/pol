@@ -13,7 +13,7 @@ from app.services.bgm_tv.model import UserInfo, AuthResponse
 
 def mock_http_client(app):
     async def c():
-        return httpx.AsyncClient(app=app)
+        return httpx.Client(app=app)
 
     return c
 

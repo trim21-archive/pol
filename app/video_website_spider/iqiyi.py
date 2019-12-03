@@ -1,8 +1,8 @@
 import re
 from urllib import parse
 
-import httpx
 import peewee as pw
+import requests
 from bs4 import Tag, BeautifulSoup
 from pydantic import BaseModel
 
@@ -50,7 +50,7 @@ class Iqiyi(BaseWebsite):
     @classmethod
     @sync_db
     def subject(cls, subject_id: int, url: str):
-        with httpx.Client(http_versions=['HTTP/1.1']) as http_client:
+        with requests.Session() as http_client:
             bangumi_id = get_bangumi_id_from_url(url)
             IqiyiBangumi.upsert(
                 subject_id=subject_id,
@@ -111,7 +111,7 @@ class Iqiyi(BaseWebsite):
     @sync_db
     def ep(cls, ep_id: int, url: str):
         source_ep_id = get_ep_id_from_url(url)
-        r = httpx.get(url)
+        r = requests.get(url)
         r.encoding = 'utf8'
         soup = BeautifulSoup(r.text, 'lxml')
         t: Tag = soup.find('meta', attrs={'name': 'irTitle'})
