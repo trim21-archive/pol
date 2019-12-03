@@ -46,10 +46,10 @@ class Sink:
             'logged_at': serialized_time,
             'line_number': record['line'],
             'function': record['function'],
-            'level': record['level'],
+            'level': record['level'].name,
             'module': record['name'],
-            'process': record['process'],
-            'thread': record['thread'],
+            'process': record['process'].id,
+            'thread': record['thread'].id,
         })
         for field in self.FIELD:
             value = record['extra'].get(field)
