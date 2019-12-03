@@ -2,9 +2,8 @@ from enum import Enum
 from typing import List, Union
 
 from fastapi import Depends, APIRouter
-from pydantic import BaseModel
+from pydantic import HttpUrl, BaseModel
 from peewee_async import Manager
-from pydantic.types import UrlStr
 from starlette.exceptions import HTTPException
 
 from app import worker, db_models
@@ -37,7 +36,7 @@ class PlayerSubject(BaseModel):
 
 
 class SubmitBody(BaseModel):
-    url: UrlStr
+    url: HttpUrl
 
 
 @router.get(
@@ -147,7 +146,7 @@ class ErrorTypeEnum(str, Enum):
 
 
 class PostError(BaseModel):
-    url: UrlStr
+    url: HttpUrl
     error: ErrorTypeEnum
 
 

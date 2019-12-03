@@ -23,7 +23,7 @@ class SubjectImage(BaseModel):
 class EpisodeType(Enum):
     #: 本篇
     type0 = 0
-    #： SP
+    #: SP
     special = 1
     op = 2
     ed = 3
