@@ -2,6 +2,7 @@
   "extends": [
     "config:base",
     ":semanticCommitTypeAll(chore)",
+    ":masterIssue",
     "schedule:weekly"
   ],
   "baseBranches": [
