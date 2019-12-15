@@ -359,7 +359,7 @@ description = "FastAPI framework, high performance, easy to learn, fast to code,
 name = "fastapi"
 optional = false
 python-versions = ">=3.6"
-version = "0.44.0"
+version = "0.45.0"
 
 [package.dependencies]
 pydantic = ">=0.32.2,<2.0.0"
@@ -1604,7 +1604,7 @@ version = "4.7.1"
 setuptools = "*"
 
 [metadata]
-content-hash = "4080e4042837c627b8c97d00074001c0e189a215c8f3a7ff1fece901f0002559"
+content-hash = "0f0667b012f5760204bc6f34018bffe29e23e5530e3ced6f17bcf293e3be32ee"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -1643,7 +1643,7 @@ docutils = ["6c4f696463b79f1fb8ba0c594b63840ebd41f059e92b31957c46b74a4599b6d0", 
 email-validator = ["e3e6ede1765d7c1e580d2050d834b2689361f7da2d50ce74df6a5968fca7cb13"]
 entrypoints = ["589f874b313739ad35be6e0cd7efde2a4e9b6fea91edcc34e58ecbb8dbe56d19", "c70dd71abe5a8c85e55e12c19bd91ccfeec11a6e99044204511f9ed547d48451"]
 faker = ["48c03580720e0b46538d528b1296e4e5b24a809dcaf33a7dddec719489a9edb8", "6327c665c0d8721280b3036d9c9e851c60092bc1f30c8394cc433f8723e2bda5"]
-fastapi = ["2e5a4c5727576492e3cc2d2d09c414e478f95f1566345d87efee957dd71fe44d", "a9c891473091c1f868235c25397cba71fa8b62fae8c8c3a5bc1ad008298e0990"]
+fastapi = ["3f626eda9b6edaa17c90c21a4d0d1a97a2a2fcba43a55f8c425b6b37e832c8bb", "44712863ca3899eb812a6869a2efe02d6be6ae972968c76a43d82ec472788f17"]
 flake8 = ["45681a117ecc81e870cbf1262835ae4af5e7a8b08e40b944a8a6e6b895914cfb", "49356e766643ad15072a789a20915d3c91dc89fd313ccd71802303fd67e4deca"]
 flake8-bugbear = ["d8c466ea79d5020cb20bf9f11cf349026e09517a42264f313d3f6fddb83e0571", "ded4d282778969b5ab5530ceba7aa1a9f1b86fa7618fc96a19a1d512331640f8"]
 flake8-commas = ["d3005899466f51380387df7151fb59afec666a0f4f4a2c6a8995b975de0f44b7", "ee2141a3495ef9789a3894ed8802d03eff1eaaf98ce6d8653a7c573ef101935e"]
