@@ -1,7 +1,7 @@
 {
   "extends": [
-    "github>Trim21/renovate-config:poetry",
-    "schedule:weekly"
+    "github>Trim21/renovate-config",
+    "github>Trim21/renovate-config:poetry"
   ],
   "baseBranches": [
     "dev"
