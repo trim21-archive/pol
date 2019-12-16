@@ -1,7 +1,7 @@
-FROM python:3.7.5-slim as generator
+FROM trim21/poetry:1.0.0 as generator
 WORKDIR /src/app
-COPY scripts/export_requirements.py poetry.lock /src/app/
-RUN pip install toml==0.10.0 && python export_requirements.py
+COPY poetry.lock pyproject.toml /src/app/
+RUN poetry export --format requirements.txt --dev > requirements.txt
 
 #######################################
 
