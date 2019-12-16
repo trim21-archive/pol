@@ -1,12 +1,12 @@
 {
   "extends": [
     "github>Trim21/renovate-config",
-    "github>Trim21/renovate-config:poetry"
+    "github>Trim21/renovate-config:poetry",
+    "github>Trim21/renovate-config:py-app"
   ],
   "baseBranches": [
     "dev"
   ],
-  "rangeStrategy": "pin",
   "ignoreDeps": [
     "mysql",
     "redis"
