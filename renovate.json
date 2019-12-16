@@ -1,43 +1,14 @@
 {
   "extends": [
-    "config:base",
-    ":semanticCommitTypeAll(chore)",
-    ":masterIssue",
+    "github>Trim21/renovate-config:poetry",
     "schedule:weekly"
   ],
   "baseBranches": [
     "dev"
   ],
-  "prHourlyLimit": 6,
   "rangeStrategy": "pin",
-  "semanticCommits": true,
   "ignoreDeps": [
     "mysql",
     "redis"
-  ],
-  "packageRules": [
-    {
-      "groupName": "deps-build",
-      "managers": [
-        "dockerfile",
-        "circleci"
-      ],
-      "versionScheme": "pep440",
-      "semanticCommitScope": "deps-build"
-    },
-    {
-      "groupName": "deps-prod",
-      "depTypeList": [
-        "dependencies"
-      ],
-      "semanticCommitScope": "deps"
-    },
-    {
-      "groupName": "deps-dev",
-      "depTypeList": [
-        "dev-dependencies"
-      ],
-      "semanticCommitScope": "deps-dev"
-    }
   ]
 }
