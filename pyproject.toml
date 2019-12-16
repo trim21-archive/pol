@@ -67,9 +67,9 @@ coverage = "4.5.4"
 sphinx = "2.3.0"
 sphinxcontrib-httpdomain = "1.7.0"
 sphinxcontrib-httpexample = "0.10.3"
-sphinxcontrib-openapi = {version = "0.5.0", extras = ["markdown"]}
+sphinxcontrib-openapi = { version = "0.5.0", extras = ["markdown"] }
 sphinx-issues = "1.2.0"
 sphinx-rtd-theme = "0.4.3"
-m2r = "0.2.1"
+mypy = "0.750"
 
 [tool.poetry.extras]

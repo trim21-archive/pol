@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:5.7.18
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+    networks:
+      - backend
+    ports:
+      - "3307:3306" # 3306 is in use
+    environment:
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: bgm_ip_viewer
+
+  redis:
+    image: redis:2.8.23
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass "redis_password"
+
+  rabbitmq:
+    image: rabbitmq:3
+    ports:
+      - "5672:5672"
+      - "5671:5671"
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbit_user
+      RABBITMQ_DEFAULT_PASS: rabbit_pass
+
+networks:
+  backend:
+    driver: bridge

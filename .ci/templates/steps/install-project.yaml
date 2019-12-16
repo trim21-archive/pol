@@ -1,0 +1,25 @@
+steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: $(python_version)
+
+  - bash: |
+      curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.0.0
+      echo "##vso[task.prependpath]$HOME/.poetry/bin"
+      echo "##vso[task.prependpath]$HOME/.local/bin"
+      echo "##vso[task.setvariable variable=PY]$(python -VV)"
+    displayName: Install Poetry
+
+  - task: Cache@2
+    inputs:
+      key: '"pip" | "2" | "$(PY)" | poetry.lock'
+      restoreKeys: |
+        "pip" | "2" | "$(PY)" | poetry.lock
+        "pip" | "2" | "$(PY)"
+      path: $(HOME)/.local
+    displayName: Cache pip
+
+  - bash: |
+      poetry export --format requirements.txt --dev > requirements.txt
+      pip install --user --no-deps -q -r requirements.txt
+    displayName: Install Packages

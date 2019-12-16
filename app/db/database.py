@@ -15,9 +15,14 @@ class AsyncMySQLConnection(peewee_async.AsyncMySQLConnection):
         self.connect_params = kwargs
 
 
+if ':' in config.MYSQL_HOST:
+    host, port = config.MYSQL_HOST.split(':')
+else:
+    host, port = config.MYSQL_HOST, 3306
 db = peewee_async.PooledMySQLDatabase(
     config.MYSQL_DB,
-    host=config.MYSQL_HOST,
+    host=host,
+    port=int(port),
     user=config.MYSQL_USER,
     password=config.MYSQL_PASSWORD,
     charset='utf8mb4',

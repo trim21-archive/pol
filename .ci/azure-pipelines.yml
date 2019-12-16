@@ -1,0 +1,50 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - '*'
+    exclude:
+      - dependabot/*
+      - renovate/*
+
+schedules:
+- cron: "0 12 * * 6"
+  displayName: Weekly Saturday build
+  branches:
+    include:
+    - master
+    - dev
+  always: true
+
+stages:
+- stage: Lint
+  jobs:
+    - template: ./templates/jobs/prepare.yaml
+- stage: Test
+  jobs:
+    - template: ./templates/jobs/test-app.yaml
+- stage: Build
+  jobs:
+    - template: ./templates/jobs/build-docker.yaml
+    - template: ./templates/jobs/build-docs.yaml
+
+
+variables:
+  MYSQL_HOST: 127.0.0.1:3307
+  MYSQL_USER: root
+  MYSQL_PASSWORD: root_password
+  MYSQL_DB: bgm_ip_viewer
+
+  REDIS_HOST: 127.0.0.1
+  REDIS_PASSWORD: redis_password
+
+  RABBITMQ_ADDR: 127.0.0.1:5672
+  RABBITMQ_USER: rabbit_user
+  RABBITMQ_PASS: rabbit_pass
+
+  VIRTUAL_HOST: 127.0.0.1:8000
+  PROTOCOL: http
+  BGM_TV_AUTO_TRACKER_APP_SECRET: 3e452da34f146314694a0e1e7f23b722
+  BGM_TV_AUTO_TRACKER_APP_ID: bgm2955b3b3050e7bf2
+  COMMIT_SHA: 'dev'
+  python_version: '3.7'
