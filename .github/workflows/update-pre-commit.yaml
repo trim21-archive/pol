@@ -1,0 +1,48 @@
+name: check pre-commit update
+
+on:
+  schedule:
+    # monthly on github default branch
+    - cron:  '0 0 1 * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-16.04
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - uses: actions/setup-python@v1
+        with:
+          python-version: '3.7'
+
+      - uses: actions/cache@v1
+        id: cache
+        with:
+          path: ~/.local
+          key: 3.7-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python - --version 1.0.0
+          echo "::add-path::$HOME/.poetry/bin"
+          echo "::add-path::$HOME/.local/bin"
+
+      - name: Install Dependencies
+        run: |
+          pip install --user --no-deps -q -r <(poetry export -f requirements.txt --dev)
+
+      - name: check if pre-commit update
+        run: |
+          pre-commit autoupdate
+          git diff --exit-code
+
+      - name: Create A PR
+        if: failure()
+        uses: peter-evans/create-pull-request@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore: update pre-commit config'
+          title: update pre-commit config
+          author-name: pol-actions[bot]
+          author-email: github@trim21.me

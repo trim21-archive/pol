@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.3.0
+    rev: v2.4.0
     hooks:
       - id: check-case-conflict
       - id: check-ast
@@ -17,7 +17,13 @@ repos:
       - id: debug-statements
       - id: mixed-line-ending
         args: [--fix=lf]
-
+      - id: pretty-format-json
+        args:
+          - --no-ensure-ascii
+          - --no-sort-keys
+          - --indent
+          - '2'
+          - --autofix
       # check for file bigger than 500kb
       - id: end-of-file-fixer
       - id: double-quote-string-fixer
@@ -29,12 +35,6 @@ repos:
     hooks:
       - id: find-trailing-comma
 
-#  isort in pre-commit don't read config file in setup.cfg
-#  - repo: https://github.com/pre-commit/mirrors-isort
-#    rev: v4.3.21  # Use the revision sha / tag you want to point at
-#    hooks:
-#      - id: isort
-#        additional_dependencies: ['toml==0.10.0']
 
   - repo: https://github.com/asottile/pyupgrade
     rev: v1.25.2
@@ -47,18 +47,6 @@ repos:
     hooks:
       - id: doc8
         args: [ '--max-line-length', '88', '--file-encoding', 'utf-8' ]
-
-  - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.7.9  # pick a git hash / tag to point to
-    hooks:
-      - id: flake8
-        args: ['--config=setup.cfg']
-        additional_dependencies:
-          - flake8-comprehensions==3.1.4
-          - flake8-comprehensions==3.1.4
-          - flake8-bugbear==19.8.0
-          - flake8-commas==2.0.0
-          - flake8-mutable==1.2.0
 
 #  - repo: https://github.com/pre-commit/mirrors-mypy
 #    rev: '0.750'  # Use the sha / tag you want to point at
@@ -74,12 +62,12 @@ repos:
         language: system
         types: [python]
 
-#      - id: flake8
-#        name: flake8
-#        entry: flake8
-#        language: system
-#        types: [python]
-#        args: ['--config=setup.cfg']
+      - id: flake8
+        name: flake8
+        entry: flake8
+        language: system
+        types: [python]
+        args: ['--config=setup.cfg']
 
       - id: isort
         name: isort
