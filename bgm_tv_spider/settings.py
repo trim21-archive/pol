@@ -13,6 +13,8 @@ NEWSPIDER_MODULE = 'bgm_tv_spider.spiders'
 ROBOTSTXT_OBEY = False
 FEED_EXPORT_ENCODING = 'utf-8'
 
+LOGSTATS_INTERVAL = 60 * 60 * 3
+
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 CONCURRENT_REQUESTS = 16
 
