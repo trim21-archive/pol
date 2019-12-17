@@ -15,7 +15,7 @@ steps:
       key: '"pip" | "2" | "$(PY)" | poetry.lock'
       restoreKeys: |
         "pip" | "2" | "$(PY)" | poetry.lock
-        "pip" | "2" | "$(PY)"
+#        "pip" | "2" | "$(PY)"
       path: $(HOME)/.local
     displayName: Cache pip
 
