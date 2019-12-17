@@ -9,3 +9,6 @@ jobs:
     - script: make html
       displayName: Build Docs
       workingDirectory: ./docs
+
+    - publish: $(System.DefaultWorkingDirectory)/docs/build/html
+      artifact: docs
