@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - dev
+      - '*'
   schedule:
     # * is a special character in YAML so you have to quote this string
     - cron:  '0 0 1 * *'
@@ -32,7 +33,8 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install -r <(poetry export -f requirements.txt --dev)
+          pip install --user --no-deps -q -r <(poetry export -f requirements.txt --dev)
+          echo "::add-path::/$HOME/.local/bin"
 
       - name: check if pre-commit update
         run: |
