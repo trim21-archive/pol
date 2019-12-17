@@ -125,7 +125,7 @@ async def oauth_callback(
         response.set_cookie(cookie_scheme.model.name, session.api_key)
         return response
 
-    except httpx.Timeout as e:
+    except httpx.TimeoutException as e:
         return JSONResponse(
             content={'detail': f'connect to {e.request.url.host} timeout'},
             status_code=HTTP_503_SERVICE_UNAVAILABLE,
@@ -167,21 +167,19 @@ async def refresh_token(
             },
         )
         auth_time = dateutil.parser.parse(resp.headers['Date']).timestamp()
-        resp = resp.json()
-        resp['auth_time'] = auth_time
-        resp = RefreshResponse.parse_obj(resp)
+        refresh = RefreshResponse.parse_obj(resp.json())
         await db.execute(
             db_models.UserToken.upsert(
                 user_id=current_user.user_id,
-                token_type=resp.token_type,
-                scope=resp.scope or '',
+                token_type=refresh.token_type,
+                scope=refresh.scope or '',
                 auth_time=auth_time,
-                expires_in=resp.expires_in,
-                access_token=resp.access_token,
-                refresh_token=resp.refresh_token,
+                expires_in=refresh.expires_in,
+                access_token=refresh.access_token,
+                refresh_token=refresh.refresh_token,
             )
         )
-    except (httpx.Timeout, json.decoder.JSONDecodeError, ValidationError):
+    except (httpx.TimeoutException, json.decoder.JSONDecodeError, ValidationError):
         raise HTTPException(HTTP_502_BAD_GATEWAY, detail='refresh user token failure')
 
     try:
@@ -197,9 +195,9 @@ async def refresh_token(
                 usergroup=user_info.usergroup,
             )
         )
-    except (httpx.Timeout, json.JSONDecodeError, ValidationError) as e:
+    except (httpx.TimeoutException, json.JSONDecodeError, ValidationError) as e:
         logger.exception(e)
-    return resp
+    return refresh
 
 
 # @router.get(

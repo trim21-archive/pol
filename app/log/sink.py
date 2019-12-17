@@ -1,4 +1,5 @@
 from copy import deepcopy
+from typing import Any, Dict
 
 import pytz
 import redis
@@ -26,7 +27,7 @@ class Sink:
         self.client: redis.StrictRedis = client
         self.packer = msgpack.Packer(use_bin_type=True, encoding='utf-8')
         if extra is None:
-            self.extra = {}
+            self.extra: Dict[str, Any] = {}
         else:
             self.extra = extra
         self.tz = tz

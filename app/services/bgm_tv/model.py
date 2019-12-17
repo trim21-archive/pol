@@ -33,11 +33,11 @@ class EpisodeType(Enum):
 
 
 class SubjectCollection(BaseModel):
-    wish: int = None
-    collect: int = None
-    doing: int = None
-    on_hold: int = None
-    dropped: int = None
+    wish: int = 0
+    collect: int = 0
+    doing: int = 0
+    on_hold: int = 0
+    dropped: int = 0
 
 
 class StatusEnum(Enum):

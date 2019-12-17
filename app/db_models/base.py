@@ -23,7 +23,7 @@ class S:
 
         @classmethod
         def get(cls: Type[T], *query, **filters) -> T:
-            return super().get(*query, **filters)
+            return super().get(*query, **filters)  # type: ignore
 
         @classmethod
         def upsert(cls, _data=None, **kwargs) -> pw.Insert:

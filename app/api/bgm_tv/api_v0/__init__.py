@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import List, Union
 
+import peewee as pw
 from fastapi import Depends, APIRouter
 from pydantic import HttpUrl, BaseModel
 from peewee_async import Manager
@@ -202,7 +203,7 @@ async def get_all_bangumi_of_subject(
     for model in (BilibiliBangumi, IqiyiBangumi):
         try:
             bangumi_list.append(await db.get(model, subject_id=subject_id))
-        except model.DoesNotExist:
+        except pw.DoesNotExist:
             pass
     return bangumi_list
 
@@ -213,6 +214,6 @@ async def get_all_episode_player(db: Manager,
     for model in (BilibiliEpisode, IqiyiEpisode):
         try:
             episodes.append(await db.get(model, ep_id=ep_id))
-        except model.DoesNotExist:
+        except pw.DoesNotExist:
             pass
     return episodes

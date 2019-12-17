@@ -1,5 +1,6 @@
 import re
 import json
+from typing import Optional
 
 import requests
 from pydantic import ValidationError
@@ -27,7 +28,7 @@ regex = re.compile(
 )
 
 
-def get_initial_state_from_html(html: str) -> dict:
+def get_initial_state_from_html(html: str) -> Optional[dict]:
     x = regex.search(html)
     if x:
         json_text = x.group(1)
@@ -67,15 +68,15 @@ class Bilibili(BaseWebsite):
     def subject(cls, subject_id: int, url: str):
         with requests.Session() as http_client:
             r = http_client.get(url)
-            initial_state = get_initial_state_from_html(r.text)
+            initial_state_dict = get_initial_state_from_html(r.text)
 
-            if initial_state:
+            if initial_state_dict:
                 if 'ep' in url:
                     model = PlayerPageInitialState
                 else:
                     model = BangumiPageInitialState
                 try:
-                    initial_state = model.parse_obj(initial_state)
+                    initial_state = model.parse_obj(initial_state_dict)
                 except ValidationError as e:
                     print(initial_state['mainSectionList'])
                     logger.error(model.__name__)
@@ -126,9 +127,9 @@ class Bilibili(BaseWebsite):
     def ep(cls, ep_id: int, url: str):
         with requests.Session() as http_client:
             r = http_client.get(url)
-            initial_state = get_initial_state_from_html(r.text)
-            if initial_state:
-                initial_state = PlayerPageInitialState.parse_obj(initial_state)
+            initial_state_dict = get_initial_state_from_html(r.text)
+            if initial_state_dict:
+                initial_state = PlayerPageInitialState.parse_obj(initial_state_dict)
             else:
                 logger.error("can't get initial state from url {}", url)
                 return

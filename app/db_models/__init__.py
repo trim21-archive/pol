@@ -73,14 +73,6 @@ class Tag(S.BgmIpViewer):
     count = pw.IntegerField()
 
 
-class Map(S.BgmIpViewer):
-    id = pw.AutoField(primary_key=True)
-
-
-class Topic(S.BgmIpViewer):
-    id = pw.IntegerField()
-
-
 class UserToken(S.BgmIpViewer):
     user_id = pw.IntegerField(primary_key=True)
     scope = pw.CharField(default='')
@@ -185,4 +177,4 @@ if __name__ == '__main__':  # pragma: no cover
 
     with objects.allow_sync():
         for table in [IqiyiEpisode, IqiyiBangumi, BilibiliBangumi, BilibiliEpisode]:
-            table.create_table()
+            table.create_table()  # type: ignore

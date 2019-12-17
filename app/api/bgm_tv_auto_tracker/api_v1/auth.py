@@ -125,7 +125,8 @@ async def oauth_callback(
         ValidationError,
         ConnectionError,
         httpx.ConnectTimeout,
-    ):
+    ) as e:
+        print(e)
         return RedirectResponse('./auth')
 
 
@@ -161,22 +162,20 @@ async def refresh_token(
             }
         )
         auth_time = dateutil.parser.parse(resp.headers['Date']).timestamp()
-        resp = resp.json()
-        resp['auth_time'] = auth_time
-        resp = RefreshResponse.parse_obj(resp)
+        refresh_resp = RefreshResponse(auth_time=auth_time, **resp.json())
         await db.execute(
             db_models.UserToken.upsert(
                 user_id=current_user.user_id,
-                token_type=resp.token_type,
-                scope=resp.scope or '',
+                token_type=refresh_resp.token_type,
+                scope=refresh_resp.scope or '',
                 auth_time=auth_time,
-                expires_in=resp.expires_in,
-                access_token=resp.access_token,
-                refresh_token=resp.refresh_token,
+                expires_in=refresh_resp.expires_in,
+                access_token=refresh_resp.access_token,
+                refresh_token=refresh_resp.refresh_token,
             )
         )
     except (
-        httpx.ConnectTimeout,
+        httpx.TimeoutException,
         json.decoder.JSONDecodeError,
         ValidationError,
     ):
@@ -201,7 +200,7 @@ async def refresh_token(
         ValidationError,
     ) as e:
         logger.exception(e)
-    return resp
+    return refresh_resp
 
 
 class Me(AuthResponse, RefreshResponse):

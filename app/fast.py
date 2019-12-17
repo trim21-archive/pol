@@ -3,13 +3,12 @@ import threading
 
 import jinja2
 from fastapi import FastAPI
-from peewee_async import Manager
 
 from app.api import auth, bgm_tv, bgm_tv_auto_tracker
 from app.log import logger
 from app.core import config
 from app.md2bbc import router as md2bbc_router
-from app.db.redis import PickleRedis, setup_redis_pool
+from app.db.redis import setup_redis_pool
 from app.db.database import objects
 from app.deprecation import bind_deprecated_path
 from app.api.api_v1.api import api_router
@@ -25,13 +24,7 @@ template = jinja2.Template(
 """
 )
 
-
-class App(FastAPI):
-    redis_pool: PickleRedis
-    objects: Manager
-
-
-app: App = FastAPI(
+app = FastAPI(
     debug=config.DEBUG,
     title=config.APP_NAME,
     version=config.COMMIT_REV,
@@ -67,10 +60,10 @@ app.include_router(bgm_tv.router, prefix='/bgm.tv', tags=['bgm.tv'])
 
 @app.on_event('startup')
 async def startup():
-    app.objects = objects
-    app.redis_pool = await setup_redis_pool()
-    app.logger = logger
-    app.logger.bind(
+    app.state.objects = objects
+    app.state.redis_pool = await setup_redis_pool()
+    app.state.logger = logger
+    app.state.logger.bind(
         event='startup',
         kwargs={
             'pid': os.getpid(),
@@ -86,5 +79,5 @@ async def startup():
 @app.on_event('shutdown')
 async def shutdown():
     await objects.close()
-    app.redis_pool.close()
-    await app.redis_pool.wait_closed()
+    app.state.redis_pool.close()
+    await app.state.redis_pool.wait_closed()

@@ -56,18 +56,3 @@ class Tag(AsyncTag):
 
 class Map(S.BgmIpViewer):
     id = pw.AutoField(primary_key=True)
-
-
-class Topic(S.BgmIpViewer):
-    id = pw.IntegerField()
-
-
-# Subject.create_table()
-# Relation.create_table()
-# SubjectJson.create_table()
-# Tag.create_table()
-# print('init table')
-# Map.create_table()
-# Ep.create_table()
-# if __name__ == '__main__':
-# Relation.get_relation_of_subject()
