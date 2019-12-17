@@ -12,7 +12,7 @@ jobs:
         inputs:
           source: current
           artifact: docs
-          path: '$(Pipeline.Workspace)/docs/build/html'
+          path: '$(PWD)/docs/build/html'
 
       - script: touch docs/build/html/.nojekyll
         displayName: Disable jekyll builds
