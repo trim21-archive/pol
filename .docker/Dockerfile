@@ -1,7 +1,7 @@
 FROM trim21/poetry:1.0.0 as generator
 WORKDIR /src/app
 COPY poetry.lock pyproject.toml /src/app/
-RUN poetry export --format requirements.txt --dev > requirements.txt
+RUN poetry export --format requirements.txt > requirements.txt
 
 #######################################
 
