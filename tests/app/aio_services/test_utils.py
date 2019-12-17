@@ -7,7 +7,7 @@ from app.aio_services.utils import ServerConnectionError, wrap_connection_error
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize('exception', [httpx.Timeout, ConnectionError])
+@pytest.mark.parametrize('exception', [httpx.TimeoutException, ConnectionError])
 async def test_wrapper(exception: Type[Exception]):
     @wrap_connection_error
     async def exc():

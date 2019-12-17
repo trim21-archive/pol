@@ -13,7 +13,7 @@ def wrap_connection_error(func):
     async def wrapped(*args, **kwargs):
         try:
             return await func(*args, **kwargs)
-        except (httpx.Timeout, ConnectionError) as e:
+        except (httpx.TimeoutException, ConnectionError) as e:
             raise ServerConnectionError(raw_exception=e)
 
     return wrapped

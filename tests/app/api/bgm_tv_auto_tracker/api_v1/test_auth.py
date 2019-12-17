@@ -3,9 +3,7 @@ import datetime
 
 import mock
 import httpx
-import urllib3.response
 from asynctest import CoroutineMock
-from requests.structures import CaseInsensitiveDict
 from starlette.testclient import TestClient
 
 from app.core import config
@@ -15,13 +13,8 @@ from app.db.database import objects
 from app.api.bgm_tv_auto_tracker.auth import get_current_user
 
 
-def mock_response(headers, body):
-    content = body.encode()
-    r = httpx.Response(200)
-    r.raw = urllib3.response.HTTPResponse(body=content)
-    r._content = content
-    r.headers = CaseInsensitiveDict(headers)
-
+def mock_response(headers, body: str):
+    r = httpx.Response(200, content=body.encode(), headers=headers)
     return CoroutineMock(return_value=r)
 
 
