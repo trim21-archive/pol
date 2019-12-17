@@ -12,9 +12,9 @@ steps:
 
   - task: Cache@2
     inputs:
-      key: '"pip" | "2" | "$(PY)" | poetry.lock'
+      key: '"pip" | "3" | "$(PY)" | poetry.lock'
       restoreKeys: |
-        "pip" | "2" | "$(PY)" | poetry.lock
+        "pip" | "3" | "$(PY)" | poetry.lock
 #        "pip" | "2" | "$(PY)"
       path: $(HOME)/.local
     displayName: Cache pip
