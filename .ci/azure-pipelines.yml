@@ -1,41 +1,21 @@
-trigger:
-  #  batch: true
-  branches:
-    include:
-      - '*'
-    exclude:
-      - dependabot/*
-      - renovate/*
-
-schedules:
-  - cron: "0 12 * * 6"
-    displayName: Weekly Saturday build
-    branches:
-      include:
-        - master
-        - dev
-    always: true
-
 stages:
   - stage: Lint
     jobs:
-      - template: ./templates/jobs/prepare.yaml
-  - stage: Test
-    jobs:
-      - template: ./templates/jobs/test-app.yaml
-  - stage: Build
-    jobs:
-      - template: ./templates/jobs/build-docker.yaml
-      - template: ./templates/jobs/build-docs.yaml
-  - stage: Deploy
-    condition: startsWith(variables['build.sourceBranch'], 'refs/tags/v')
-    jobs:
-      - template: ./templates/jobs/deploy-docs.yaml
+      - job: 'Docs'
+        pool:
+          vmImage: 'ubuntu-16.04' # other options: 'macOS-10.13', 'vs2017-win2016'
+
+        steps:
+          - script: echo $GITHUB_TOKEN
+            displayName: Deploy docs to gh-pages branch
+            env:
+              GITHUB_TOKEN: $(GITHUB_TOKEN)
+
 
 
 
 variables:
-  - group: github-token-group
+  - group: github-token-group # define GITHUB_TOKEN to upload gh-pages
   - name: MYSQL_HOST
     value: 127.0.0.1:3307
   - name: MYSQL_USER
