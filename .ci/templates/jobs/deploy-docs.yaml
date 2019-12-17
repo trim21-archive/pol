@@ -12,7 +12,7 @@ jobs:
         inputs:
           source: current
           artifact: docs
-          path: '$(PWD)/docs/build/html'
+          path: $(System.DefaultWorkingDirectory)/docs/build/html
 
       - script: touch docs/build/html/.nojekyll
         displayName: Disable jekyll builds
