@@ -20,21 +20,21 @@ jobs:
         with:
           python-version: '3.7'
 
-#      - uses: actions/cache@v1
-#        id: cache
-#        with:
-#          path: ./node_modules
-#          key: ${{ runner.os }}-${{ matrix.node }}-${{ hashFiles('**/package-lock.json') }}
+      - uses: actions/cache@v1
+        id: cache
+        with:
+          path: ~/.local
+          key: 3.7-${{ hashFiles('**/poetry.lock') }}
 
       - name: Install Poetry
         run: |
           curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python - --version 1.0.0
           echo "::add-path::/$HOME/.poetry/bin"
+          echo "::add-path::/$HOME/.local/bin"
 
       - name: Install Dependencies
         run: |
           pip install --user --no-deps -q -r <(poetry export -f requirements.txt --dev)
-          echo "::add-path::/$HOME/.local/bin"
 
       - name: check if pre-commit update
         run: |
