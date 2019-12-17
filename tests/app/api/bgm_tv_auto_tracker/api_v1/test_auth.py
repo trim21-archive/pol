@@ -13,7 +13,7 @@ from app.db.database import objects
 from app.api.bgm_tv_auto_tracker.auth import get_current_user
 
 
-def mock_response(headers, body: str):
+def mock_response(headers, body: str) -> CoroutineMock:
     r = httpx.Response(200, content=body.encode(), headers=headers)
     return CoroutineMock(return_value=r)
 
