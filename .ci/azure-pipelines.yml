@@ -1,5 +1,5 @@
 trigger:
-  batch: true
+  #  batch: true
   branches:
     include:
       - '*'
@@ -8,43 +8,61 @@ trigger:
       - renovate/*
 
 schedules:
-- cron: "0 12 * * 6"
-  displayName: Weekly Saturday build
-  branches:
-    include:
-    - master
-    - dev
-  always: true
+  - cron: "0 12 * * 6"
+    displayName: Weekly Saturday build
+    branches:
+      include:
+        - master
+        - dev
+    always: true
 
 stages:
-- stage: Lint
-  jobs:
-    - template: ./templates/jobs/prepare.yaml
-- stage: Test
-  jobs:
-    - template: ./templates/jobs/test-app.yaml
-- stage: Build
-  jobs:
-    - template: ./templates/jobs/build-docker.yaml
-    - template: ./templates/jobs/build-docs.yaml
+  - stage: Lint
+    jobs:
+      - template: ./templates/jobs/prepare.yaml
+  - stage: Test
+    jobs:
+      - template: ./templates/jobs/test-app.yaml
+  - stage: Build
+    jobs:
+      - template: ./templates/jobs/build-docker.yaml
+      - template: ./templates/jobs/build-docs.yaml
+  - stage: Deploy
+    condition: startsWith(variables['build.sourceBranch'], 'refs/tags/v')
+    jobs:
+      - template: ./templates/jobs/deploy-docs.yaml
+
 
 
 variables:
-  MYSQL_HOST: 127.0.0.1:3307
-  MYSQL_USER: root
-  MYSQL_PASSWORD: root_password
-  MYSQL_DB: bgm_ip_viewer
-
-  REDIS_HOST: 127.0.0.1
-  REDIS_PASSWORD: redis_password
-
-  RABBITMQ_ADDR: 127.0.0.1:5672
-  RABBITMQ_USER: rabbit_user
-  RABBITMQ_PASS: rabbit_pass
-
-  VIRTUAL_HOST: 127.0.0.1:8000
-  PROTOCOL: http
-  BGM_TV_AUTO_TRACKER_APP_SECRET: 3e452da34f146314694a0e1e7f23b722
-  BGM_TV_AUTO_TRACKER_APP_ID: bgm2955b3b3050e7bf2
-  COMMIT_SHA: 'dev'
-  python_version: '3.7'
+  - group: github-token-group
+  - name: MYSQL_HOST
+    value: 127.0.0.1:3307
+  - name: MYSQL_USER
+    value: root
+  - name: MYSQL_PASSWORD
+    value: root_password
+  - name: MYSQL_DB
+    value: bgm_ip_viewer
+  - name: REDIS_HOST
+    value: 127.0.0.1
+  - name: REDIS_PASSWORD
+    value: redis_password
+  - name: RABBITMQ_ADDR
+    value: 127.0.0.1:5672
+  - name: RABBITMQ_USER
+    value: rabbit_user
+  - name: RABBITMQ_PASS
+    value: rabbit_pass
+  - name: VIRTUAL_HOST
+    value: 127.0.0.1:8000
+  - name: PROTOCOL
+    value: http
+  - name: BGM_TV_AUTO_TRACKER_APP_SECRET
+    value: 3e452da34f146314694a0e1e7f23b722
+  - name: BGM_TV_AUTO_TRACKER_APP_ID
+    value: bgm2955b3b3050e7bf2
+  - name: COMMIT_SHA
+    value: dev
+  - name: python_version
+    value: '3.7'
