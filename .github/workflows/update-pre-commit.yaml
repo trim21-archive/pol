@@ -45,7 +45,7 @@ jobs:
       - name: Install Dependencies
         run: |
           pip install --no-deps -q -r <(poetry export -f requirements.txt --dev)
-          poetry install -E docs
+          poetry install
         env:
           POETRY_VIRTUALENVS_CREATE: 'false'
           PIP_USER: '1'
