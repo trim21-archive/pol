@@ -1,6 +1,9 @@
 name: check pre-commit update
 
 on:
+  push:
+    branches:
+      - dev
   schedule:
     # monthly on github default branch
     - cron:  '0 0 1 * *'
@@ -16,26 +19,39 @@ jobs:
         with:
           python-version: '3.7'
 
+      - name: Get Latest tools version
+        id: get-version
+        run: |
+          echo "::set-output name=poetry::$(curl -sSl https://pypi.org/pypi/poetry/json | jq .info.version -r)"
+
+      - uses: actions/cache@v1
+        with:
+          path: ~/.poetry
+          key: ${{ steps.get-version.outputs.poetry }}
+
+      - name: Install Poetry
+        run: |
+          echo "::add-path::$HOME/.local/bin"
+          echo "::add-path::$HOME/.poetry/bin"
+          $HOME/.poetry/bin/poetry --version && exit 0
+          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python - --version 1.0.0
+
       - uses: actions/cache@v1
         id: cache
         with:
           path: ~/.local
           key: 3.7-${{ hashFiles('**/poetry.lock') }}
 
-      - name: Install Poetry
-        run: |
-          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python - --version 1.0.0
-          echo "::add-path::$HOME/.poetry/bin"
-          echo "::add-path::$HOME/.local/bin"
-
       - name: Install Dependencies
         run: |
-          pip install --user --no-deps -q -r <(poetry export -f requirements.txt --dev)
+          pip install --no-deps -q -r <(poetry export -f requirements.txt --dev)
+          poetry install -E docs
+        env:
+          POETRY_VIRTUALENVS_CREATE: 'false'
+          PIP_USER: '1'
 
       - name: check if pre-commit update
-        run: |
-          pre-commit autoupdate
-          git diff --exit-code
+        run: pre-commit autoupdate && git diff --exit-code
 
       - name: Create A PR
         if: failure()

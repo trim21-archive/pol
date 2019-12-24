@@ -2,6 +2,7 @@
 import datetime
 from collections import defaultdict
 
+import async_bgm_api.exceptions
 from fastapi import APIRouter, HTTPException
 from icalendar import Event, Calendar
 
@@ -27,7 +28,7 @@ router.include_router(view_ip_router, prefix='/view_ip')
 async def bgm_calendar(user_id: str):
     try:
         res = await aio_services.bgm_api.get_user_watching_subjects(user_id)
-    except aio_services.ServerConnectionError:
+    except async_bgm_api.exceptions.ServerConnectionError:
         raise HTTPException(502, 'connect to bgm.tv error')
     if res is None:
         raise HTTPException(404, "username doesn't exists")

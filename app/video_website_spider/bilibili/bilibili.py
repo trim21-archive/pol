@@ -137,6 +137,7 @@ class Bilibili(BaseWebsite):
 
             try:
                 ep = Ep.get(ep_id=ep_id)
+                print(initial_state.epInfo.title)
                 BilibiliEpisode.upsert(
                     ep_id=ep_id,
                     source_ep_id=initial_state.epInfo.ep_id,

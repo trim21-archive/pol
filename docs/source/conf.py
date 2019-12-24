@@ -49,13 +49,12 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.githubpages',
     'sphinxcontrib.httpdomain',
-    'sphinxcontrib.httpexample',
     'sphinxcontrib.openapi',
     'sphinx_issues',
 ]
 
 # Github repo
-issues_github_path = 'Trim21/personal-website'
+issues_github_path = 'Trim21/pol'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

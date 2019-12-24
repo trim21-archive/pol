@@ -3,8 +3,9 @@ from urllib import parse
 
 import peewee as pw
 import requests
-from bs4 import Tag, BeautifulSoup
+from bs4 import BeautifulSoup
 from pydantic import BaseModel
+from bs4.element import Tag
 
 from app.log import logger
 from app.services import bgm_tv

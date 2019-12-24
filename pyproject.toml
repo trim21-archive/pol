@@ -20,7 +20,7 @@ cython = "0.29.14"
 email-validator = "1.0.5"
 fastapi = "0.45.0"
 gunicorn = "20.0.4"
-httpx = "0.9.4"
+httpx = "0.9.5"
 icalendar = "4.0.4"
 jinja2 = "2.10.3"
 loguru = "0.4.0"
@@ -39,6 +39,7 @@ tqdm = "4.40.2"
 uvicorn = "0.10.8"
 beautifulsoup4 = "4.8.1"
 requests = "2.22.0"
+async-bgm-api = "^0.0.1"
 
 [tool.poetry.dev-dependencies]
 # tests
