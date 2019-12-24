@@ -87,11 +87,14 @@ description = ""
 name = "async-bgm-api"
 optional = false
 python-versions = ">=3.6.1,<4.0.0"
-version = "0.0.1"
+version = "0.0.2"
 
 [package.dependencies]
 httpx = "0.9.5"
 pydantic = ">=1.2,<2.0"
+
+[package.extras]
+docs = ["sphinx (>=2.3.1,<3.0.0)", "sphinx_rtd_theme (0.4.3)"]
 
 [[package]]
 category = "main"
@@ -1623,7 +1626,7 @@ description = "Fast, Extensible Progress Meter"
 name = "tqdm"
 optional = false
 python-versions = ">=2.6, !=3.0.*, !=3.1.*"
-version = "4.40.2"
+version = "4.41.0"
 
 [package.extras]
 dev = ["py-make (>=0.1.0)", "twine", "argopt", "pydoc-markdown"]
@@ -1704,11 +1707,11 @@ description = "The lightning-fast ASGI server."
 name = "uvicorn"
 optional = false
 python-versions = "*"
-version = "0.10.8"
+version = "0.11.1"
 
 [package.dependencies]
 click = ">=7.0.0,<8.0.0"
-h11 = ">=0.8.0,<0.9.0"
+h11 = ">=0.8,<0.10"
 httptools = "0.0.13"
 uvloop = ">=0.14.0"
 websockets = ">=8.0.0,<9.0.0"
@@ -1822,7 +1825,7 @@ test = ["zope.event"]
 testing = ["coverage", "nose", "zope.event"]
 
 [metadata]
-content-hash = "fd4be091a21ca329aeccd591a9aa9b2107f95a893486463f831f0636e377aa8c"
+content-hash = "da75963c4a089e03136af4a03f7be8a1afd4cda3958028fcf3679d0bcf06f75d"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1851,8 +1854,8 @@ apscheduler = [
     {file = "aspy.yaml-1.3.0.tar.gz", hash = "sha256:e7c742382eff2caed61f87a39d13f99109088e5e93f04d76eb8d4b28aa143f45"},
 ]
 async-bgm-api = [
-    {file = "async_bgm_api-0.0.1-py3-none-any.whl", hash = "sha256:c7a9bc3b07cad94f38581e712f899976242b2024fdd1fbc3a41f0a6b086277a5"},
-    {file = "async_bgm_api-0.0.1.tar.gz", hash = "sha256:bde99dbc5dcb8419676d88f79ecd781ad62427e83bb0eb6fff934d1ad10cf8a8"},
+    {file = "async_bgm_api-0.0.2-py3-none-any.whl", hash = "sha256:427df527f5f531fc3b5d3656212ce975a3f006e618490217ce67bcdb1b92554f"},
+    {file = "async_bgm_api-0.0.2.tar.gz", hash = "sha256:b9328628782a62eb1f48f6433dc39eb536fdc62a2041ecafa7ed4fd7a0748e7c"},
 ]
 async-timeout = [
     {file = "async-timeout-3.0.1.tar.gz", hash = "sha256:0c3c816a028d47f659d6ff5c745cb2acf1f966da1fe5c19c77a70282b25f4c5f"},
@@ -2651,8 +2654,8 @@ tornado = [
     {file = "tornado-6.0.3.tar.gz", hash = "sha256:c845db36ba616912074c5b1ee897f8e0124df269468f25e4fe21fe72f6edd7a9"},
 ]
 tqdm = [
-    {file = "tqdm-4.40.2-py2.py3-none-any.whl", hash = "sha256:7543892c59720e36e4212180274d8f58dde36803bc1f6370fd09afa20b8f5892"},
-    {file = "tqdm-4.40.2.tar.gz", hash = "sha256:f0ab01cf3ae5673d18f918700c0165e5fad0f26b5ebe4b34f62ead92686b5340"},
+    {file = "tqdm-4.41.0-py2.py3-none-any.whl", hash = "sha256:9036904496bd2afacf836a6f206c5a766ce11d3e9319d54a4e794c0f34b111dc"},
+    {file = "tqdm-4.41.0.tar.gz", hash = "sha256:166a82cdea964ae45528e0cc89436255ff2be73dc848bdf239f13c501cae5dc7"},
 ]
 twisted = [
     {file = "Twisted-19.10.0-cp27-cp27m-manylinux1_i686.whl", hash = "sha256:257dbc78e72bc69c2970035fc74df54b04573d5ddd380251a8a23f74d619db03"},
@@ -2711,7 +2714,8 @@ urllib3 = [
     {file = "urllib3-1.25.7.tar.gz", hash = "sha256:f3c5fd51747d450d4dcf6f923c81f78f811aab8205fda64b0aba34a4e48b0745"},
 ]
 uvicorn = [
-    {file = "uvicorn-0.10.8.tar.gz", hash = "sha256:f4c34642618449f55e2bab8c6b22ff7615b520d2e7e23275be2ca894254327a3"},
+    {file = "uvicorn-0.11.1-py3-none-any.whl", hash = "sha256:d07129d98440ef69e4fd3aaebf16ab9b96cbcdffd813b9889bf8ec001351f4b8"},
+    {file = "uvicorn-0.11.1.tar.gz", hash = "sha256:68a13fedeb38260ce663a1d01d367e6809b09b2dedd2a973af5d73291e010e28"},
 ]
 uvloop = [
     {file = "uvloop-0.14.0-cp35-cp35m-macosx_10_11_x86_64.whl", hash = "sha256:08b109f0213af392150e2fe6f81d33261bb5ce968a288eb698aad4f46eb711bd"},

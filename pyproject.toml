@@ -35,11 +35,11 @@ pytz = "2019.3"
 scrapy = "1.8.0"
 scrapy-redis = "0.6.8"
 sentry-sdk = "0.13.5"
-tqdm = "4.40.2"
-uvicorn = "0.10.8"
+tqdm = "4.41.0"
+uvicorn = "0.11.1"
 beautifulsoup4 = "4.8.1"
 requests = "2.22.0"
-async-bgm-api = "^0.0.1"
+async-bgm-api = "0.0.2"
 
 [tool.poetry.dev-dependencies]
 # tests
