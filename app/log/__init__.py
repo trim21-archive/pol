@@ -28,7 +28,10 @@ sink = Sink(
     client=redis.StrictRedis.from_url(config.REDIS_URI),
     key=f'{config.APP_NAME}-log',
     extra={
-        '@metadata': {'beat': 'py_logging'},
+        '@metadata': {
+            'beat': 'py_logging',
+            'version': config.COMMIT_REV,
+        },
         'version': config.COMMIT_REV,
         'platform': platform.platform(),
     },

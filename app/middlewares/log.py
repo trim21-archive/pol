@@ -18,6 +18,9 @@ class LogExceptionMiddleware(Middleware):
                     headers=self.get_headers(scope),
                     transaction=self.get_transaction(scope),
                     event='http.exception',
-                    exception=f'{exc.__module__}.{exc.__class__.__name__}',
+                    exception='{}.{}'.format(
+                        getattr(exc, '__module__', 'builtin'),
+                        exc.__class__.__name__,
+                    ),
                 ).exception('catch exception in middleware')
             raise exc from None
