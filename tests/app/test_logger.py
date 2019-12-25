@@ -36,5 +36,5 @@ def test_send_event(redis_client: redis.StrictRedis):
     data = msgpack.loads(e, raw=False)
     for key, value in bind.items():
         assert data[key] == value
-    assert data['@metadata'] == {'beat': 'py_logging'}
+    assert data['@metadata'] == {'beat': 'py_logging', 'version': 'dev'}
     assert data['msg'] == 'logger info'
