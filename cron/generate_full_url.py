@@ -1,8 +1,9 @@
 import copy
+import asyncio
 
-import redis
+import aioredis
 
-from app.core.config import REDIS_HOST, SPIDER_KEY, REDIS_PASSWORD
+from app.core.config import REDIS_URI, SPIDER_KEY
 
 
 def chunk_iter_list(raw_list, chunk_size):
@@ -13,21 +14,20 @@ def chunk_iter_list(raw_list, chunk_size):
 
 
 def generate_full_url():
-    print(generate_full_url.__qualname__, flush=True)
-    r = redis.Redis(
-        host=REDIS_HOST,
-        password=REDIS_PASSWORD,
-    )
+    async def inner():
+        print(generate_full_url.__qualname__, flush=True)
+        r = await aioredis.create_redis(REDIS_URI)
+        for chunk in chunk_iter_list(
+            list(
+                reversed([
+                    f'https://mirror.bgm.rin.cat/subject/{x}' for x in range(1, 300000)
+                ])
+            ),
+            500,
+        ):
+            await r.lpush(SPIDER_KEY, *chunk)
 
-    for chunk in chunk_iter_list(
-        list(
-            reversed([
-                f'https://mirror.bgm.rin.cat/subject/{x}' for x in range(1, 300000)
-            ])
-        ),
-        500,
-    ):
-        r.lpush(SPIDER_KEY, *chunk)
+    asyncio.run(inner())
 
 
 if __name__ == '__main__':  # pragma: no cover

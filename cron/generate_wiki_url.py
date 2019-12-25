@@ -1,37 +1,35 @@
+import asyncio
 import urllib.parse
 
-import redis
-import parsel
+import aioredis
+from lxml import etree
 
 from app.client import http_client
-from app.core.config import REDIS_HOST, SPIDER_KEY, REDIS_PASSWORD
+from app.core.config import REDIS_URI, SPIDER_KEY
 
 
 def generate_wiki_url():
-    print(generate_wiki_url.__qualname__, flush=True)
-    redis_client = redis.Redis(
-        host=REDIS_HOST,
-        password=REDIS_PASSWORD,
-    )
+    async def inner():
+        print(generate_wiki_url.__qualname__, flush=True)
+        redis_client = await aioredis.create_redis(REDIS_URI)
+        r = http_client.get('https://mirror.bgm.rin.cat/wiki')
+        await redis_client.lpush(SPIDER_KEY, *parse(r.text))
 
-    r = http_client.get('https://mirror.bgm.rin.cat/wiki')
-
-    response = parsel.Selector(r.text)
-    redis_client.lpush(SPIDER_KEY, *parse(response))
+    asyncio.run(inner())
 
 
-def parse(response: parsel.Selector):
+def parse(html: str):
     links = set()
-    for link in response.xpath('//*[@id="wikiEntryMainTab"]//li/a/@href').extract():
+    selector = etree.HTML(html)
+    for link in selector.xpath('//*[@id="wikiEntryMainTab"]//li/a/@href'):
         links.add(link)
-    for link in response.xpath('//*[@id="latestEntryMainTab"]//li/a/@href').extract():
+    for link in selector.xpath('//*[@id="latestEntryMainTab"]//li/a/@href'):
         links.add(link)
     print(len(links))
     for link in links:
         if '/subject/' in link:
             url = urllib.parse.urljoin('https://mirror.bgm.rin.cat/wiki', link)
             if url:
-                print(url)
                 yield url
 
 
