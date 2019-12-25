@@ -36,6 +36,8 @@ REDIS_URI = f'redis://{REDIS_HOST}/0'
 if REDIS_PASSWORD:
     REDIS_URI = f'redis://:{REDIS_PASSWORD}@{REDIS_HOST}/0'
 
+SPIDER_KEY = config('SPIDER_KEY', default='bgm_tv_spider:start_urls')
+
 RABBITMQ_ADDR = config('RABBITMQ_ADDR')
 RABBITMQ_USER = config('RABBITMQ_USER')
 RABBITMQ_PASS = config('RABBITMQ_PASS')

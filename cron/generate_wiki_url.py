@@ -4,20 +4,20 @@ import redis
 import parsel
 
 from app.client import http_client
-from bgm_tv_spider import settings
+from app.core.config import REDIS_HOST, SPIDER_KEY, REDIS_PASSWORD
 
 
 def generate_wiki_url():
     print(generate_wiki_url.__qualname__, flush=True)
     redis_client = redis.Redis(
-        host=settings.REDIS_HOST,
-        **settings.REDIS_PARAMS,
+        host=REDIS_HOST,
+        password=REDIS_PASSWORD,
     )
 
     r = http_client.get('https://mirror.bgm.rin.cat/wiki')
 
     response = parsel.Selector(r.text)
-    redis_client.lpush(settings.REDIS_START_URL_KEY, *parse(response))
+    redis_client.lpush(SPIDER_KEY, *parse(response))
 
 
 def parse(response: parsel.Selector):

@@ -2,8 +2,7 @@ import copy
 
 import redis
 
-import bgm_tv_spider.spiders.redis_bgm_tv
-from bgm_tv_spider import settings
+from app.core.config import REDIS_HOST, SPIDER_KEY, REDIS_PASSWORD
 
 
 def chunk_iter_list(raw_list, chunk_size):
@@ -16,20 +15,19 @@ def chunk_iter_list(raw_list, chunk_size):
 def generate_full_url():
     print(generate_full_url.__qualname__, flush=True)
     r = redis.Redis(
-        host=settings.REDIS_HOST,
-        **settings.REDIS_PARAMS,
+        host=REDIS_HOST,
+        password=REDIS_PASSWORD,
     )
 
     for chunk in chunk_iter_list(
         list(
             reversed([
-                bgm_tv_spider.spiders.redis_bgm_tv.url_from_id(x)
-                for x in range(1, 300000)
+                f'https://mirror.bgm.rin.cat/subject/{x}' for x in range(1, 300000)
             ])
         ),
         500,
     ):
-        r.lpush(settings.REDIS_START_URL_KEY, *chunk)
+        r.lpush(SPIDER_KEY, *chunk)
 
 
 if __name__ == '__main__':  # pragma: no cover
