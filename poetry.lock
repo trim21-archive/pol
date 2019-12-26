@@ -1209,7 +1209,7 @@ description = "Python documentation generator"
 name = "sphinx"
 optional = false
 python-versions = ">=3.5"
-version = "2.3.0"
+version = "2.3.1"
 
 [package.dependencies]
 Jinja2 = ">=2.3"
@@ -1232,7 +1232,7 @@ sphinxcontrib-serializinghtml = "*"
 
 [package.extras]
 docs = ["sphinxcontrib-websupport"]
-test = ["pytest", "pytest-cov", "html5lib", "flake8 (>=3.5.0)", "flake8-import-order", "mypy (>=0.750)", "docutils-stubs"]
+test = ["pytest", "pytest-cov", "html5lib", "flake8 (>=3.5.0)", "flake8-import-order", "mypy (>=0.761)", "docutils-stubs"]
 
 [[package]]
 category = "dev"
@@ -1323,7 +1323,7 @@ description = "OpenAPI (fka Swagger) spec renderer for Sphinx"
 name = "sphinxcontrib-openapi"
 optional = false
 python-versions = "*"
-version = "0.5.0"
+version = "0.6.0"
 
 [package.dependencies]
 PyYAML = ">=3.12"
@@ -1550,7 +1550,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pathlib2", "contextlib2", "unittest2"]
 
 [metadata]
-content-hash = "5776af342fca1da1f588d1711bb08f5415eba2d7abfc49d16c832aff7c1989e4"
+content-hash = "349c3918de2571a632c6ce85f1cf1248f9820a5f6359b648bafab2c31f483061"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -2220,8 +2220,8 @@ soupsieve = [
     {file = "soupsieve-1.9.5.tar.gz", hash = "sha256:e2c1c5dee4a1c36bcb790e0fabd5492d874b8ebd4617622c4f6a731701060dda"},
 ]
 sphinx = [
-    {file = "Sphinx-2.3.0-py3-none-any.whl", hash = "sha256:138e39aa10f28d52aa5759fc6d1cba2be6a4b750010974047fa7d0e31addcf63"},
-    {file = "Sphinx-2.3.0.tar.gz", hash = "sha256:0a11e2fd31fe5c7e64b4fc53c2c022946512f021d603eb41ac6ae51d5fcbb574"},
+    {file = "Sphinx-2.3.1-py3-none-any.whl", hash = "sha256:298537cb3234578b2d954ff18c5608468229e116a9757af3b831c2b2b4819159"},
+    {file = "Sphinx-2.3.1.tar.gz", hash = "sha256:e6e766b74f85f37a5f3e0773a1e1be8db3fcb799deb58ca6d18b70b0b44542a5"},
 ]
 sphinx-issues = [
     {file = "sphinx-issues-1.2.0.tar.gz", hash = "sha256:845294736c7ac4c09c706f13431f709e1164037cbb00f6bf623ae16eccf509f3"},
@@ -2252,7 +2252,7 @@ sphinxcontrib-jsmath = [
     {file = "sphinxcontrib_jsmath-1.0.1-py2.py3-none-any.whl", hash = "sha256:2ec2eaebfb78f3f2078e73666b1415417a116cc848b72e5172e596c871103178"},
 ]
 sphinxcontrib-openapi = [
-    {file = "sphinxcontrib-openapi-0.5.0.tar.gz", hash = "sha256:2a5883456c0caba0dad90f07968c75a50d5fc425a3aa06d1c538472ddf8c7e22"},
+    {file = "sphinxcontrib-openapi-0.6.0.tar.gz", hash = "sha256:d5974b779104be45b56a759b2f096234d05f3db49469c7f6dc8ecdd82bfbf30a"},
 ]
 sphinxcontrib-qthelp = [
     {file = "sphinxcontrib-qthelp-1.0.2.tar.gz", hash = "sha256:79465ce11ae5694ff165becda529a600c754f4bc459778778c7017374d4d406f"},
