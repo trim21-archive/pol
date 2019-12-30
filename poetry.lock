@@ -87,10 +87,10 @@ description = ""
 name = "async-bgm-api"
 optional = false
 python-versions = ">=3.6.1,<4.0.0"
-version = "0.0.2"
+version = "0.0.3"
 
 [package.dependencies]
-httpx = "0.9.5"
+httpx = ">=0.9.0,<0.11.0"
 pydantic = ">=1.2,<2.0"
 
 [package.extras]
@@ -542,12 +542,12 @@ description = "The next generation HTTP client."
 name = "httpx"
 optional = false
 python-versions = ">=3.6"
-version = "0.9.5"
+version = "0.10.0"
 
 [package.dependencies]
 certifi = "*"
 chardet = ">=3.0.0,<4.0.0"
-h11 = ">=0.8.0,<0.9.0"
+h11 = ">=0.8,<0.10"
 h2 = ">=3.0.0,<4.0.0"
 hstspreload = "*"
 idna = ">=2.0.0,<3.0.0"
@@ -1550,7 +1550,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pathlib2", "contextlib2", "unittest2"]
 
 [metadata]
-content-hash = "61013640e144a560fdd76920442a93ed3d41fb81b5cdbdb56ba4baec35b11e83"
+content-hash = "5fe9f903a6647b78dc4ab4f995524065914188186f3d4a421b9a63f8e84667da"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1579,8 +1579,8 @@ apscheduler = [
     {file = "aspy.yaml-1.3.0.tar.gz", hash = "sha256:e7c742382eff2caed61f87a39d13f99109088e5e93f04d76eb8d4b28aa143f45"},
 ]
 async-bgm-api = [
-    {file = "async_bgm_api-0.0.2-py3-none-any.whl", hash = "sha256:427df527f5f531fc3b5d3656212ce975a3f006e618490217ce67bcdb1b92554f"},
-    {file = "async_bgm_api-0.0.2.tar.gz", hash = "sha256:b9328628782a62eb1f48f6433dc39eb536fdc62a2041ecafa7ed4fd7a0748e7c"},
+    {file = "async_bgm_api-0.0.3-py3-none-any.whl", hash = "sha256:c50a22779baf08cc50705411df418a20e66dea813578487c7395562adc46bc09"},
+    {file = "async_bgm_api-0.0.3.tar.gz", hash = "sha256:a2201279c725f4ebda361cbb2f8aa3b871041424e267664a92078fc9af08d0d0"},
 ]
 async-timeout = [
     {file = "async-timeout-3.0.1.tar.gz", hash = "sha256:0c3c816a028d47f659d6ff5c745cb2acf1f966da1fe5c19c77a70282b25f4c5f"},
@@ -1905,8 +1905,8 @@ httptools = [
     {file = "httptools-0.0.13.tar.gz", hash = "sha256:e00cbd7ba01ff748e494248183abc6e153f49181169d8a3d41bb49132ca01dfc"},
 ]
 httpx = [
-    {file = "httpx-0.9.5-py2.py3-none-any.whl", hash = "sha256:0ea1ec7da0616eb74cadc4d4dc8e0c2cde0fcdb2d17bbc3e3d05153d52087139"},
-    {file = "httpx-0.9.5.tar.gz", hash = "sha256:3f277b2a68c5d5fd83d89f80fec811ea6eb1c3c9e47a26f7ecc294c255b10b8d"},
+    {file = "httpx-0.10.0-py2.py3-none-any.whl", hash = "sha256:af357be0c95863dc08c1be90e639180fe88e4ca6af427fc94b61277198c01930"},
+    {file = "httpx-0.10.0.tar.gz", hash = "sha256:157aea50b4ccc21f6b2715788d389b0718e2a4c0eef5501d486d425b6c760389"},
 ]
 hyperframe = [
     {file = "hyperframe-5.2.0-py2.py3-none-any.whl", hash = "sha256:5187962cb16dcc078f23cb5a4b110098d546c3f41ff2d4038a9896893bbd0b40"},
