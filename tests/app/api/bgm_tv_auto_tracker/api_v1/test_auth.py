@@ -14,7 +14,12 @@ from app.api.bgm_tv_auto_tracker.auth import get_current_user
 
 
 def mock_response(headers, body: str) -> CoroutineMock:
-    r = httpx.Response(200, content=body.encode(), headers=headers)
+    r = httpx.Response(
+        200,
+        content=body.encode(),
+        headers=headers,
+        request=httpx.Request('GET', 'https://example.com/')
+    )
     return CoroutineMock(return_value=r)
 
 

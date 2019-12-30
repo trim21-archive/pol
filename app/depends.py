@@ -10,4 +10,4 @@ async def aio_http_client() -> AsyncGenerator[httpx.Client, None]:
     try:
         yield aio_client
     finally:
-        await aio_client.close()
+        await aio_client.aclose()
