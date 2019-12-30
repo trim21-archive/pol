@@ -60,7 +60,6 @@ flake8-comprehensions = "3.1.4"
 flake8-bugbear = "19.8.0"
 flake8-commas = "2.0.0"
 flake8-mutable = "1.2.0"
-livereload = "2.6.1"
 # build docs
 sphinx = "2.3.1"
 sphinxcontrib-openapi = { version = "0.6.0", extras = ["markdown"] }
