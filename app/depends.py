@@ -1,13 +1,11 @@
-from typing import AsyncGenerator
-
-import httpx
-
-from app.core import config
+import aiohttp
+from fastapi import Depends, FastAPI
+from starlette.requests import Request
 
 
-async def aio_http_client() -> AsyncGenerator[httpx.Client, None]:
-    aio_client = httpx.Client(headers={'user-agent': config.REQUEST_SERVICE_USER_AGENT})
-    try:
-        yield aio_client
-    finally:
-        await aio_client.aclose()
+async def fastapi_app(request: Request) -> FastAPI:
+    return request.app
+
+
+async def aiohttp_session(app: FastAPI = Depends(fastapi_app)) -> aiohttp.ClientSession:
+    return app.state.client_session

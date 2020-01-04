@@ -4,7 +4,7 @@ from enum import IntEnum
 from typing import Dict, Optional
 from pathlib import Path
 
-import httpx
+import aiohttp
 import dateutil.parser
 from fastapi import Depends, APIRouter
 from pydantic import BaseModel, ValidationError
@@ -18,7 +18,7 @@ from starlette.templating import Jinja2Templates
 from app import db_models
 from app.log import logger
 from app.core import config
-from app.depends import aio_http_client
+from app.depends import aiohttp_session
 from app.db.redis import PickleRedis
 from app.db.depends import get_db, get_redis
 from app.api.bgm_tv_auto_tracker.auth import get_current_user
@@ -80,10 +80,10 @@ async def oauth_callback(
     request: Request,
     db: Manager = Depends(get_db),
     redis: PickleRedis = Depends(get_redis),
-    aio_client: httpx.Client = Depends(aio_http_client),
+    aio_client: aiohttp.ClientSession = Depends(aiohttp_session),
 ):
     try:
-        resp = await aio_client.post(
+        async with aio_client.post(
             'https://bgm.tv/oauth/access_token',
             data={
                 'code': code,
@@ -92,11 +92,13 @@ async def oauth_callback(
                 'redirect_uri': config.BgmTvAutoTracker.callback_url,
                 'client_secret': config.BgmTvAutoTracker.APP_SECRET,
             },
-        )
-        r = AuthResponse.parse_raw(resp.text)
-        auth_time = dateutil.parser.parse(resp.headers['Date']).timestamp()
-        user_info_resp = await aio_client.get(f'https://api.bgm.tv/user/{r.user_id}')
-        user_info = UserInfo.parse_raw(user_info_resp.text)
+        ) as resp:
+            r = AuthResponse.parse_raw(await resp.read())
+            auth_time = dateutil.parser.parse(resp.headers['Date']).timestamp()
+        async with aio_client.get(
+            f'https://api.bgm.tv/user/{r.user_id}'
+        ) as user_info_resp:
+            user_info = UserInfo.parse_raw(await user_info_resp.read())
         await db.execute(
             db_models.UserToken.upsert(
                 user_id=r.user_id,
@@ -123,8 +125,7 @@ async def oauth_callback(
     except (
         json.decoder.JSONDecodeError,
         ValidationError,
-        ConnectionError,
-        httpx.ConnectTimeout,
+        aiohttp.ServerTimeoutError,
     ) as e:
         print(e)
         return RedirectResponse('./auth')
@@ -148,10 +149,10 @@ class RefreshResponse(BaseModel):
 async def refresh_token(
     db: Manager = Depends(get_db),
     current_user: db_models.UserToken = Depends(get_current_user),
-    aio_client: httpx.Client = Depends(aio_http_client),
+    aio_client: aiohttp.ClientSession = Depends(aiohttp_session),
 ):
     try:
-        resp = await aio_client.post(
+        async with aio_client.post(
             'https://bgm.tv/oauth/access_token',
             data={
                 'grant_type': 'refresh_token',
@@ -160,9 +161,9 @@ async def refresh_token(
                 'redirect_uri': config.BgmTvAutoTracker.callback_url,
                 'client_secret': config.BgmTvAutoTracker.APP_SECRET,
             }
-        )
-        auth_time = dateutil.parser.parse(resp.headers['Date']).timestamp()
-        refresh_resp = RefreshResponse(auth_time=auth_time, **resp.json())
+        ) as resp:
+            auth_time = dateutil.parser.parse(resp.headers['Date']).timestamp()
+            refresh_resp = RefreshResponse(auth_time=auth_time, **await resp.json())
         await db.execute(
             db_models.UserToken.upsert(
                 user_id=current_user.user_id,
@@ -175,17 +176,17 @@ async def refresh_token(
             )
         )
     except (
-        httpx.TimeoutException,
+        aiohttp.ServerTimeoutError,
         json.decoder.JSONDecodeError,
         ValidationError,
     ):
         raise HTTPException(HTTP_502_BAD_GATEWAY, detail='refresh user token failure')
 
     try:
-        user_info_resp = await aio_client.get(
+        async with aio_client.get(
             f'https://api.bgm.tv/user/{current_user.user_id}'
-        )
-        user_info = UserInfo.parse_raw(user_info_resp.text)
+        ) as user_info_resp:
+            user_info = UserInfo.parse_raw(await user_info_resp.read())
         await db.execute(
             db_models.UserToken.upsert(
                 user_id=current_user.user_id,
@@ -195,7 +196,7 @@ async def refresh_token(
             )
         )
     except (
-        httpx.ConnectTimeout,
+        aiohttp.ServerTimeoutError,
         json.decoder.JSONDecodeError,
         ValidationError,
     ) as e:

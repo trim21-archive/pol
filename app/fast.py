@@ -2,6 +2,7 @@ import os
 import threading
 
 import jinja2
+import aiohttp
 from fastapi import FastAPI
 
 from app.api import auth, bgm_tv, bgm_tv_auto_tracker
@@ -60,6 +61,9 @@ app.include_router(bgm_tv.router, prefix='/bgm.tv', tags=['bgm.tv'])
 
 @app.on_event('startup')
 async def startup():
+    app.state.client_session = aiohttp.ClientSession(
+        headers={'user-agent': config.REQUEST_SERVICE_USER_AGENT}
+    )
     app.state.objects = objects
     app.state.redis_pool = await setup_redis_pool()
     app.state.logger = logger
@@ -81,3 +85,4 @@ async def shutdown():
     await objects.close()
     app.state.redis_pool.close()
     await app.state.redis_pool.wait_closed()
+    await app.state.client_session.close()

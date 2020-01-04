@@ -1,3 +1,6 @@
+import pytest
+from aioresponses import aioresponses
+
 from app.db_models import Ep, UserToken, BangumiSource, UserSubmitBangumi
 from app.db.database import db
 from app.db_models.iqiyi import IqiyiBangumi, IqiyiEpisode
@@ -19,3 +22,9 @@ def pytest_sessionstart(session):
     BilibiliEpisode.create_table()
     BilibiliBangumi.create_table()
     Ep.create_table()
+
+
+@pytest.fixture
+def mock_aiohttp():
+    with aioresponses() as m:
+        yield m

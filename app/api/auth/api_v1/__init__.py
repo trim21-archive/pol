@@ -1,7 +1,7 @@
 import json
 from urllib.parse import urlencode
 
-import httpx
+import aiohttp
 import dateutil.parser
 from fastapi import Depends, APIRouter
 from pydantic import ValidationError
@@ -14,7 +14,7 @@ from app import db_models
 from app.log import logger
 from app.core import config
 from app.models import ErrorDetail
-from app.depends import aio_http_client
+from app.depends import aiohttp_session
 from app.db.redis import PickleRedis
 from app.db.depends import get_db, get_redis
 from app.services.bgm_tv.model import UserInfo, AuthResponse, RefreshResponse
@@ -22,8 +22,6 @@ from app.api.auth.api_v1.models import Me, FinishAuth
 from app.api.auth.api_v1.scheme import cookie_scheme
 from app.api.auth.api_v1.depends import get_current_user
 from app.api.auth.api_v1.session import new_session
-
-__all__ = ['get_current_user', 'router']
 
 CALLBACK_URL = (
     f'{config.PROTOCOL}://{config.VIRTUAL_HOST}'
@@ -79,13 +77,13 @@ async def oauth_callback(
     code: str = None,
     db: Manager = Depends(get_db),
     redis: PickleRedis = Depends(get_redis),
-    aio_client: httpx.Client = Depends(aio_http_client),
+    aio_client: aiohttp.ClientSession = Depends(aiohttp_session),
 ):
     redirect_response = RedirectResponse('./bgm.tv_auth')
     if code is None:
         return redirect_response
     try:
-        auth_resp = await aio_client.post(
+        async with aio_client.post(
             'https://bgm.tv/oauth/access_token',
             data={
                 'code': code,
@@ -94,15 +92,13 @@ async def oauth_callback(
                 'redirect_uri': CALLBACK_URL,
                 'client_secret': config.BgmTvAutoTracker.APP_SECRET,
             },
-        )
-
-        auth_time = dateutil.parser.parse(auth_resp.headers['Date']).timestamp()
-        auth_response = AuthResponse.parse_obj(auth_resp.json())
-        user_info_resp = await aio_client.get(
+        ) as auth_resp:
+            auth_time = dateutil.parser.parse(auth_resp.headers['Date']).timestamp()
+            auth_response = AuthResponse.parse_obj(await auth_resp.json())
+        async with await aio_client.get(
             f'https://mirror.api.bgm.rin.cat/user/{auth_response.user_id}'
-        )
-
-        user_info = UserInfo.parse_obj(user_info_resp.json())
+        ) as user_info_resp:
+            user_info = UserInfo.parse_obj(await user_info_resp.json())
 
         user = Me(auth_time=auth_time, **auth_response.dict())
 
@@ -125,9 +121,9 @@ async def oauth_callback(
         response.set_cookie(cookie_scheme.model.name, session.api_key)
         return response
 
-    except httpx.TimeoutException as e:
+    except aiohttp.ServerTimeoutError:
         return JSONResponse(
-            content={'detail': f'connect to {e.request.url.host} timeout'},
+            content={'detail': f'connect to bgm.tv timeout'},
             status_code=HTTP_503_SERVICE_UNAVAILABLE,
         )
 
@@ -135,7 +131,7 @@ async def oauth_callback(
         json.decoder.JSONDecodeError,
         ValidationError,
         ConnectionError,
-        httpx.ConnectTimeout,
+        aiohttp.ServerConnectionError,
     ):
         return redirect_response
 
@@ -153,10 +149,10 @@ async def oauth_callback(
 async def refresh_token(
     db: Manager = Depends(get_db),
     current_user: db_models.UserToken = Depends(get_current_user),
-    aio_client: httpx.Client = Depends(aio_http_client),
+    aio_client: aiohttp.ClientSession = Depends(aiohttp_session),
 ):
     try:
-        resp = await aio_client.post(
+        async with aio_client.post(
             'https://bgm.tv/oauth/access_token',
             data={
                 'grant_type': 'refresh_token',
@@ -165,9 +161,9 @@ async def refresh_token(
                 'redirect_uri': config.BgmTvAutoTracker.callback_url,
                 'client_secret': config.BgmTvAutoTracker.APP_SECRET,
             },
-        )
-        auth_time = dateutil.parser.parse(resp.headers['Date']).timestamp()
-        refresh = RefreshResponse.parse_obj(resp.json())
+        ) as resp:
+            auth_time = dateutil.parser.parse(resp.headers['Date']).timestamp()
+            refresh = RefreshResponse.parse_obj(await resp.json())
         await db.execute(
             db_models.UserToken.upsert(
                 user_id=current_user.user_id,
@@ -179,14 +175,14 @@ async def refresh_token(
                 refresh_token=refresh.refresh_token,
             )
         )
-    except (httpx.TimeoutException, json.decoder.JSONDecodeError, ValidationError):
+    except (aiohttp.ServerTimeoutError, json.decoder.JSONDecodeError, ValidationError):
         raise HTTPException(HTTP_502_BAD_GATEWAY, detail='refresh user token failure')
 
     try:
-        user_info_resp = await aio_client.get(
+        async with aio_client.get(
             f'https://api.bgm.tv/user/{current_user.user_id}'
-        )
-        user_info = UserInfo.parse_obj(user_info_resp.json())
+        ) as user_info_resp:
+            user_info = UserInfo.parse_obj(await user_info_resp.json())
         await db.execute(
             db_models.UserToken.upsert(
                 user_id=current_user.user_id,
@@ -195,7 +191,7 @@ async def refresh_token(
                 usergroup=user_info.usergroup,
             )
         )
-    except (httpx.TimeoutException, json.JSONDecodeError, ValidationError) as e:
+    except (aiohttp.ServerTimeoutError, json.JSONDecodeError, ValidationError) as e:
         logger.exception(e)
     return refresh
 
