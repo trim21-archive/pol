@@ -5,7 +5,7 @@ from collections import defaultdict
 
 from pydantic import ValidationError
 
-from app.db import database
+from app.db import mysql
 from app.client import http_client
 from app.db_models.iqiyi import IqiyiBangumi
 from app.db_models.bilibili import BilibiliBangumi
@@ -103,7 +103,7 @@ def get_media_id(season_id):
 
 
 if __name__ == '__main__':  # pragma: no cover
-    with database.db.allow_sync():
+    with mysql.db.allow_sync():
         # BangumiSource.create_table()
         # MissingBangumi.create_table()
         save_bangumi_data_to_db()

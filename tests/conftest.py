@@ -1,8 +1,8 @@
 import pytest
 from aioresponses import aioresponses
 
+from app.db.mysql import db
 from app.db_models import Ep, UserToken, BangumiSource, UserSubmitBangumi
-from app.db.database import db
 from app.db_models.iqiyi import IqiyiBangumi, IqiyiEpisode
 from app.db_models.bilibili import BilibiliBangumi, BilibiliEpisode
 

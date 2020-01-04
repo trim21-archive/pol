@@ -1,6 +1,6 @@
 from app.worker import submit_ep, submit_bangumi
+from app.db.mysql import db
 from app.db_models import IqiyiBangumi, IqiyiEpisode, BilibiliBangumi, BilibiliEpisode
-from app.db.database import db
 
 
 def test_submit_bilibili_bangumi():

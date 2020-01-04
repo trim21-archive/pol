@@ -4,10 +4,10 @@ import logging
 from typing import Dict
 from collections import defaultdict
 
-import tqdm
 import peewee as pw
 
-from bgm_tv_spider.models import Subject, Relation, db
+from app.db.mysql import db
+from app.db_models import Subject, Relation
 
 CHUNK_SIZE = 5000
 
@@ -157,7 +157,7 @@ def pre_remove(subject_start, subject_end):
             Relation.source.in_(non_exists_ids) | Relation.target.in_(non_exists_ids)
         ).execute()
 
-    for i in tqdm.tqdm(range(subject_start, subject_end, CHUNK_SIZE)):
+    for i in range(subject_start, subject_end, CHUNK_SIZE):
         relation_id_need_to_remove = set()
         source_to_target: Dict[int, Dict] = defaultdict(dict)
         sources = Relation.select().where((((Relation.source >= i) &
@@ -182,7 +182,7 @@ def pre_remove(subject_start, subject_end):
 
 def first_run(subject_start, subject_end):
     subjects = {}  # type: Dict[int, Subject]
-    for i in tqdm.tqdm(range(subject_start, subject_end, CHUNK_SIZE)):
+    for i in range(subject_start, subject_end, CHUNK_SIZE):
         for sub in Subject.select().where((Subject.id >= i) &
                                           (Subject.id < i + CHUNK_SIZE) &
                                           (Subject.locked == 0) &
@@ -238,7 +238,7 @@ def first_run(subject_start, subject_end):
             for sub in subjects.values():
                 maps[sub.map].append(sub.id)
 
-            for map_id, ids in tqdm.tqdm(maps.items(), total=len(maps.keys())):
+            for map_id, ids in maps.items():
                 Subject.update(map=map_id).where(Subject.id.in_(ids)).execute()
             maps = defaultdict(set)
 
@@ -246,7 +246,7 @@ def first_run(subject_start, subject_end):
                 sub = subjects[source]
                 for x in edges:
                     maps[sub.map].add(x.id)
-            for map_id, ids in tqdm.tqdm(maps.items(), total=len(maps.keys())):
+            for map_id, ids in maps.items():
                 for chunk in chunk_iter_list(list(ids)):
                     Relation.update(map=map_id).where(Relation.id.in_(chunk)).execute()
         except Exception as e:
@@ -277,4 +277,5 @@ def re_calculate_map():
 
 
 if __name__ == '__main__':
-    re_calculate_map()
+    with db.allow_sync():
+        re_calculate_map()

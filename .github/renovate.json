@@ -5,6 +5,8 @@
     "github>Trim21/renovate-config:poetry",
     "github>Trim21/renovate-config:py-app"
   ],
+  "separateMinorPatch": false,
+  "separateMajorMinor": false,
   "baseBranches": [
     "dev"
   ],

@@ -4,7 +4,7 @@ from starlette.testclient import TestClient
 
 import app.fast
 from app.core import config
-from app.db.database import db
+from app.db.mysql import db
 
 
 @pytest.fixture()

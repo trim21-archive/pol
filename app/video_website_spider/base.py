@@ -1,7 +1,7 @@
 import abc
 import functools
 
-from app.db.database import db
+from app.db.mysql import db
 
 
 class UrlNotValidError(Exception):

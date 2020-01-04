@@ -3,7 +3,7 @@ from typing import Type, TypeVar
 import peewee as pw
 from playhouse.shortcuts import model_to_dict
 
-from app.db.database import db
+from app.db.mysql import db
 
 T = TypeVar('T')
 

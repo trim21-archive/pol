@@ -2,8 +2,8 @@ import pytest
 from starlette.testclient import TestClient
 
 from app import db_models
+from app.db.mysql import objects
 from app.db_models import UserToken, UserSubmitBangumi
-from app.db.database import objects
 from app.api.bgm_tv_auto_tracker.auth import get_current_user
 
 

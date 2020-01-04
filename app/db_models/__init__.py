@@ -173,7 +173,7 @@ __all__ = [
 ]
 
 if __name__ == '__main__':  # pragma: no cover
-    from app.db.database import objects
+    from app.db.mysql import objects
 
     with objects.allow_sync():
         for table in [IqiyiEpisode, IqiyiBangumi, BilibiliBangumi, BilibiliEpisode]:

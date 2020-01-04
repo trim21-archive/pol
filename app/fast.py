@@ -9,8 +9,8 @@ from app.api import auth, bgm_tv, bgm_tv_auto_tracker
 from app.log import logger
 from app.core import config
 from app.md2bbc import router as md2bbc_router
+from app.db.mysql import objects
 from app.db.redis import setup_redis_pool
-from app.db.database import objects
 from app.deprecation import bind_deprecated_path
 from app.api.api_v1.api import api_router
 from app.middlewares.log import LogExceptionMiddleware
