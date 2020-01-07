@@ -5,7 +5,7 @@ RUN poetry export --format requirements.txt > requirements.txt
 
 #######################################
 
-FROM python:3.7.5
+FROM python:3.7.6
 LABEL MAINTAINER="Trim21 <Trim21me@gmail.com>"
 ENV PYTHONPATH=/
 

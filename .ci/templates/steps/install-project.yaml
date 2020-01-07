@@ -21,5 +21,5 @@ steps:
 
   - bash: |
       poetry export --format requirements.txt --dev > requirements.txt
-      pip install --user --no-deps -q -r requirements.txt
+      pip install --user --no-deps -r requirements.txt
     displayName: Install Packages
