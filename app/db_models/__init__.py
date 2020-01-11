@@ -3,7 +3,6 @@ import datetime
 
 import peewee as pw
 
-from app.db_models.log import EpLog, BangumiLog
 from app.db_models.base import S
 from app.db_models.iqiyi import IqiyiBangumi, IqiyiEpisode
 from app.db_models.bilibili import BilibiliBangumi, BilibiliEpisode
@@ -158,8 +157,6 @@ __all__ = [
     'BilibiliBangumi',
     'BilibiliEpisode',
     'BgmTimeline',
-    'BangumiLog',
-    'EpLog',
     'Subject',
     'Relation',
     'Tag',

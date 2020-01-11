@@ -1,4 +1,5 @@
 import peewee_async
+from databases import Database
 
 from app.core import config
 
@@ -32,3 +33,5 @@ db = peewee_async.PooledMySQLDatabase(
 db.set_allow_sync(False)
 
 objects = peewee_async.Manager(db)
+
+database = Database(config.MYSQL_URI)

@@ -1,10 +1,9 @@
 import pytest
 from aioresponses import aioresponses
 
+import app.db.mysql
+from app.core import config
 from app.db.mysql import db
-from app.db_models import Ep, UserToken, BangumiSource, UserSubmitBangumi
-from app.db_models.iqiyi import IqiyiBangumi, IqiyiEpisode
-from app.db_models.bilibili import BilibiliBangumi, BilibiliEpisode
 
 
 def pytest_sessionstart(session):
@@ -14,14 +13,8 @@ def pytest_sessionstart(session):
     """
     'session start'
     db.set_allow_sync(True)
-    UserToken.create_table()
-    BangumiSource.create_table()
-    UserSubmitBangumi.create_table()
-    IqiyiEpisode.create_table()
-    IqiyiBangumi.create_table()
-    BilibiliEpisode.create_table()
-    BilibiliBangumi.create_table()
-    Ep.create_table()
+    if config.TEST:
+        app.db.mysql.database.options['force_rollback'] = True
 
 
 @pytest.fixture

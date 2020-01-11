@@ -33,7 +33,8 @@ class Dispatcher:
             SupportWebsite.iqiyi: iqiyi.Iqiyi,
         }
 
-    def get_website(self, url):
+    @staticmethod
+    def get_website(url):
         u: ParseResult = urlparse(url)
         if u.hostname == 'www.bilibili.com':
             return SupportWebsite.bilibili

@@ -34,28 +34,6 @@ def chunk_iter_list(raw_list, chunk_size=CHUNK_SIZE):
 blank_list = ['角色出演', '片头曲', '片尾曲', '其他', '画集', '原声集']
 
 
-def remove_relation(source, target):
-    source = int(source)
-    target = int(target)
-    Relation.update(removed=True).where((Relation.id == f'{source}-{target}') |
-                                        (Relation.id == f'{target}-{source}'))
-
-
-def rebuild_map(map_id=None, item_id=None):
-    if item_id:
-        map_id = Subject.get_by_id(item_id).map
-
-    if map_id:
-        Subject.update(map=None).where(Subject.map == map_id).execute()
-        Relation.update(map=None).where(Relation.map == map_id).execute()
-
-
-def remove_nodes(node_id):
-    Subject.delete_by_id(node_id)
-    Relation.delete().where((Relation.source == node_id) |
-                            (Relation.target == node_id)).execute()
-
-
 def nodes_need_to_remove(*node_ids):
     for node in node_ids:
         assert isinstance(node, int)

@@ -12,11 +12,15 @@ jobs:
 
       - template: /.ci/templates/steps/install-project.yaml
 
+      - script: alembic upgrade head
+        displayName: Migrate Tables
+
       - bash: |
           set -ex
           sudo apt-get install mysql-client -y
           mkdir -p ./tests_data
-          curl -sSL https://github.com/Trim21/personal-website/releases/download/test_data/mysql-1.sql -o ./tests_data/all.sql
+          curl -sSL https://github.com/Trim21/pol/releases/download/test_data/b.sql.gz -o ./tests_data/all.sql.gz
+          gunzip ./tests_data/all.sql.gz
 
           MYSQL_CLIENT_ARGS="--host=127.0.0.1 --port=3307 --database=$MYSQL_DB -u root -p$MYSQL_PASSWORD"
           mysql $MYSQL_CLIENT_ARGS -e "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'NO_AUTO_CREATE_USER',''));"

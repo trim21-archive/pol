@@ -26,7 +26,7 @@ MYSQL_HOST = config('MYSQL_HOST')
 MYSQL_USER = config('MYSQL_USER')
 MYSQL_PASSWORD = config('MYSQL_PASSWORD')
 MYSQL_DB = config('MYSQL_DB')
-DATABASE_URI = f'mysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}/{MYSQL_DB}'
+MYSQL_URI = f'mysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}/{MYSQL_DB}'
 
 REDIS_HOST = config('REDIS_HOST')
 REDIS_PASSWORD = config('REDIS_PASSWORD')
@@ -47,6 +47,8 @@ PROTOCOL = config('PROTOCOL', default='http')
 
 SECRET_KEY = (config('SECRET_KEY', default=secrets.token_hex(32)))[:32]
 assert len(SECRET_KEY) == 32
+
+TEST = config('TEST', default=False)
 
 
 class BgmTvAutoTracker:
