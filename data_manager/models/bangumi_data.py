@@ -19,6 +19,10 @@ class Item(BaseModel):
     end: str
     sites: List[Site]
 
+    @property
+    def name_cn(self):
+        return self.titleTranslate.get('zh-Hans', [self.title])[0]
+
 
 class BangumiData(BaseModel):
     items: List[Item]
