@@ -4,6 +4,7 @@ import threading
 import jinja2
 import aiohttp
 from fastapi import FastAPI
+from starlette.middleware import cors
 
 from app.api import auth, bgm_tv, bgm_tv_auto_tracker
 from app.log import logger
@@ -48,7 +49,7 @@ if config.DSN:  # pragma: no cover
         dsn=config.DSN, release=config.COMMIT_SHA, integrations=[RedisIntegration()]
     )
     app.add_middleware(SentryAsgiMiddleware)
-
+app.add_middleware(cors.CORSMiddleware, allow_origins='*')
 setup_http_middleware(app)
 app.add_middleware(LogExceptionMiddleware)
 app.include_router(auth.router, prefix='/auth', tags=['auth'])

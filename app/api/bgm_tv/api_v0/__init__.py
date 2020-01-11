@@ -12,7 +12,6 @@ from app.log import logger
 from app.api.auth import api_v1 as new_auth
 from app.db_models import IqiyiBangumi, IqiyiEpisode, BilibiliBangumi, BilibiliEpisode
 from app.db.depends import get_db
-from app.core.celery_app import celery
 from app.video_website_spider import SupportWebsite
 from app.video_website_spider.base import UrlNotValidError
 
@@ -91,7 +90,6 @@ async def submit_player_url_for_subject(
     try:
         handler.valid_subject_url(submit.url)
         worker.submit_bangumi.delay(subject_id, submit.url)
-        celery.send_task()
         logger.bind(
             event='submit.bangumi',
             kwargs={

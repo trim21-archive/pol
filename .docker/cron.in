@@ -1,3 +1,0 @@
-# include "./.docker/Dockerfile"
-
-CMD python /cron/daemon.py

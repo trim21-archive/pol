@@ -6,7 +6,6 @@ import peewee as pw
 from app.db_models.base import S
 from app.db_models.iqiyi import IqiyiBangumi, IqiyiEpisode
 from app.db_models.bilibili import BilibiliBangumi, BilibiliEpisode
-from app.db_models.timeline import BgmTimeline
 
 
 class MyJSONField(pw.TextField):
@@ -117,15 +116,6 @@ class BangumiSource(S.BgmIpViewer):
     subject_id = pw.IntegerField()
 
 
-class MissingBangumi(S.BgmIpViewer):
-    class Meta:
-        primary_key = pw.CompositeKey('source', 'bangumi_id')
-        table_name = 'missing_bangumi'
-
-    source = pw.FixedCharField()
-    bangumi_id = pw.CharField()
-
-
 class UserSubmitEpisode(S.BgmIpViewer):
     class Meta:
         table_name = 'user_submit_episode'
@@ -156,14 +146,12 @@ __all__ = [
     'IqiyiEpisode',
     'BilibiliBangumi',
     'BilibiliEpisode',
-    'BgmTimeline',
     'Subject',
     'Relation',
     'Tag',
     'UserSubmitBangumi',
     'UserSubmitEpisode',
     'UserToken',
-    'MissingBangumi',
     'BangumiSource',
     'Ep',
     'EpSource',
