@@ -8,7 +8,7 @@ from app import db_models
 from app.core import config
 from app.db.depends import get_db
 from app.video_website_spider import SupportWebsite
-from app.api.bgm_tv_auto_tracker.auth import get_current_user
+from app.api.auth.api_v1.depends import get_current_user
 
 router = APIRouter()
 

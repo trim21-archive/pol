@@ -17,8 +17,9 @@ from app.models import ErrorDetail
 from app.depends import aiohttp_session
 from app.db.redis import PickleRedis
 from app.db.depends import get_db, get_redis
-from app.services.bgm_tv.model import UserInfo, AuthResponse, RefreshResponse
-from app.api.auth.api_v1.models import Me, FinishAuth
+from app.services.bgm_tv.model import UserInfo, AuthResponse
+from app.services.bgm_tv.model import RefreshResponse as _RefreshResponse
+from app.api.auth.api_v1.models import FinishAuth
 from app.api.auth.api_v1.scheme import cookie_scheme
 from app.api.auth.api_v1.depends import get_current_user
 from app.api.auth.api_v1.session import new_session
@@ -136,16 +137,15 @@ async def oauth_callback(
         return redirect_response
 
 
-# @router.post(
-#     '/refresh',
-#     description=(
-#         "refresh access_token when it's expired. "
-#         'this method should by called by any client, '
-#         'maybe should check by server weekly'
-#     ),
-#     response_model=RefreshResponse,
-#     responses={403: {'model': ErrorDetail}},
-# )
+class RefreshResponse(_RefreshResponse):
+    auth_time: int
+
+
+@router.post(
+    '/bgm.tv_refresh',
+    description='bgm.tv OAuth Refresh, for UserScript',
+    response_model=RefreshResponse,
+)
 async def refresh_token(
     db: Manager = Depends(get_db),
     current_user: db_models.UserToken = Depends(get_current_user),
@@ -160,46 +160,58 @@ async def refresh_token(
                 'client_id': config.BgmTvAutoTracker.APP_ID,
                 'redirect_uri': config.BgmTvAutoTracker.callback_url,
                 'client_secret': config.BgmTvAutoTracker.APP_SECRET,
-            },
+            }
         ) as resp:
             auth_time = dateutil.parser.parse(resp.headers['Date']).timestamp()
-            refresh = RefreshResponse.parse_obj(await resp.json())
+            refresh_resp = RefreshResponse(auth_time=auth_time, **await resp.json())
         await db.execute(
             db_models.UserToken.upsert(
                 user_id=current_user.user_id,
-                token_type=refresh.token_type,
-                scope=refresh.scope or '',
+                token_type=refresh_resp.token_type,
+                scope=refresh_resp.scope or '',
                 auth_time=auth_time,
-                expires_in=refresh.expires_in,
-                access_token=refresh.access_token,
-                refresh_token=refresh.refresh_token,
+                expires_in=refresh_resp.expires_in,
+                access_token=refresh_resp.access_token,
+                refresh_token=refresh_resp.refresh_token,
             )
         )
-    except (aiohttp.ServerTimeoutError, json.decoder.JSONDecodeError, ValidationError):
+    except (
+        aiohttp.ServerTimeoutError,
+        json.decoder.JSONDecodeError,
+        ValidationError,
+    ):
         raise HTTPException(HTTP_502_BAD_GATEWAY, detail='refresh user token failure')
 
     try:
         async with aio_client.get(
             f'https://api.bgm.tv/user/{current_user.user_id}'
         ) as user_info_resp:
-            user_info = UserInfo.parse_obj(await user_info_resp.json())
+            user_info = UserInfo.parse_raw(await user_info_resp.read())
         await db.execute(
             db_models.UserToken.upsert(
                 user_id=current_user.user_id,
                 username=user_info.username,
                 nickname=user_info.nickname,
-                usergroup=user_info.usergroup,
+                usergroup=user_info.usergroup
             )
         )
-    except (aiohttp.ServerTimeoutError, json.JSONDecodeError, ValidationError) as e:
+    except (
+        aiohttp.ServerTimeoutError,
+        json.decoder.JSONDecodeError,
+        ValidationError,
+    ) as e:
         logger.exception(e)
-    return refresh
+    return refresh_resp
 
 
-# @router.get(
-#     '/me',
-#     response_model=Me,
-#     responses={403: {'model': ErrorDetail}},
-# )
-async def get_my_user_info(user: db_models.UserToken = Depends(get_current_user), ):
+class Me(AuthResponse, RefreshResponse):
+    pass
+
+
+@router.get(
+    '/me',
+    response_model=Me,
+    include_in_schema=config.DEBUG,
+)
+async def get_my_user_info(user: db_models.UserToken = Depends(get_current_user)):
     return user.dict()

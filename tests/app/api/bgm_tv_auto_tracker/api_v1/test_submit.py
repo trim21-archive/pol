@@ -4,7 +4,7 @@ from starlette.testclient import TestClient
 from app import db_models
 from app.db.mysql import objects
 from app.db_models import UserToken, UserSubmitBangumi
-from app.api.bgm_tv_auto_tracker.auth import get_current_user
+from app.api.auth.api_v1.depends import get_current_user
 
 
 def test_submit_subject_id_require_auth(client: TestClient):
@@ -16,7 +16,7 @@ def test_submit_subject_id_require_auth(client: TestClient):
             'subject_id': 288,
         }
     )
-    assert r.status_code == 403, 'user submit subject_id don\'t need auth'
+    assert r.status_code == 403, "user submit subject_id don't need auth"
 
 
 def test_submit_subject_id(client: TestClient):
