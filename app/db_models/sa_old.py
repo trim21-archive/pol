@@ -1,5 +1,5 @@
 from sqlalchemy import CHAR, Text, Column, String, DateTime, text
-from sqlalchemy.dialects.mysql import INTEGER, TINYINT
+from sqlalchemy.dialects.mysql import BIGINT, INTEGER, TINYINT, LONGTEXT
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -29,6 +29,15 @@ class BangumiSource(Base):
     source = Column(CHAR(255), primary_key=True, nullable=False)
     bangumi_id = Column(String(255), primary_key=True, nullable=False)
     subject_id = Column(INTEGER(11), nullable=False)
+
+
+class BgmTimeline(Base):
+    __tablename__ = 'bgm_timeline'
+
+    id = Column(BIGINT(20), primary_key=True)
+    user_name = Column(String(255), nullable=False, index=True)
+    user_id = Column(INTEGER(11), nullable=False, index=True)
+    time = Column(INTEGER(11), nullable=False, index=True)
 
 
 class Ep(Base):
@@ -66,6 +75,12 @@ class EpSource(Base):
     source_ep_id = Column(String(255), primary_key=True, nullable=False)
     bgm_ep_id = Column(INTEGER(11), nullable=False)
     episode = Column(INTEGER(11), nullable=False)
+
+
+class Map(Base):
+    __tablename__ = 'map'
+
+    id = Column(INTEGER(11), primary_key=True)
 
 
 class MissingBangumi(Base):
@@ -106,10 +121,12 @@ class Subject(Base):
     map = Column(INTEGER(11), nullable=False, index=True, server_default=text("'0'"))
     locked = Column(TINYINT(1), nullable=False)
 
-    def __str__(self):
-        return f'<Subject id={self.id} name={self.name_cn} name_cn={self.name_cn}>'
 
-    __repr__ = __str__
+class Subjectjson(Base):
+    __tablename__ = 'subjectjson'
+
+    id = Column(INTEGER(11), primary_key=True)
+    info = Column(LONGTEXT, nullable=False)
 
 
 class Tag(Base):
@@ -143,11 +160,3 @@ class Usertoken(Base):
     username = Column(String(255), nullable=False)
     nickname = Column(String(255), nullable=False)
     usergroup = Column(INTEGER(11), nullable=False)
-
-
-if __name__ == '__main__':
-    from app.core import config
-    from sqlalchemy import create_engine
-    import pymysql
-    pymysql.install_as_MySQLdb()
-    Base.metadata.create_all(create_engine(config.MYSQL_URI))
