@@ -62,8 +62,8 @@ app.include_router(bgm_tv.router, prefix='/bgm.tv', tags=['bgm.tv'])
 
 @app.on_event('startup')
 async def startup():
-    await database.connect()
     app.state.db = database
+    await database.connect()
     app.state.client_session = aiohttp.ClientSession(
         headers={'user-agent': config.REQUEST_SERVICE_USER_AGENT}
     )

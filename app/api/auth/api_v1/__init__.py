@@ -5,17 +5,18 @@ import aiohttp
 import dateutil.parser
 from fastapi import Depends, APIRouter
 from pydantic import ValidationError
-from peewee_async import Manager
+from databases import Database
 from starlette.status import HTTP_502_BAD_GATEWAY, HTTP_503_SERVICE_UNAVAILABLE
 from starlette.responses import HTMLResponse, JSONResponse, RedirectResponse
 from starlette.exceptions import HTTPException
 
-from app import db_models
 from app.log import logger
 from app.core import config
 from app.models import ErrorDetail
 from app.depends import aiohttp_session
 from app.db.redis import PickleRedis
+from app.db.utils import preserve_fields
+from app.db_models import sa
 from app.db.depends import get_db, get_redis
 from app.services.bgm_tv.model import UserInfo, AuthResponse
 from app.services.bgm_tv.model import RefreshResponse as _RefreshResponse
@@ -76,7 +77,7 @@ async def auth_redirect():
 )
 async def oauth_callback(
     code: str = None,
-    db: Manager = Depends(get_db),
+    db: Database = Depends(get_db),
     redis: PickleRedis = Depends(get_redis),
     aio_client: aiohttp.ClientSession = Depends(aiohttp_session),
 ):
@@ -103,20 +104,38 @@ async def oauth_callback(
 
         user = Me(auth_time=auth_time, **auth_response.dict())
 
-        await db.execute(
-            db_models.UserToken.upsert(
-                user_id=user.user_id,
-                token_type=user.token_type,
-                expires_in=user.expires_in,
-                auth_time=user.auth_time,
-                access_token=user.access_token,
-                refresh_token=user.refresh_token,
-                scope=auth_response.scope or '',
-                username=user_info.username,
-                nickname=user_info.nickname,
-                usergroup=user_info.usergroup,
-            )
+        insert_stmt = sa.insert(sa.UserToken)
+
+        query = insert_stmt.on_duplicate_key_update(
+            **preserve_fields(
+                insert_stmt,
+                'token_type',
+                'expires_in',
+                'auth_time',
+                'access_token',
+                'refresh_token',
+                'scope',
+                'username',
+                'nickname',
+                'usergroup',
+            ),
         )
+
+        await db.execute(
+            query, {
+                'user_id': user.user_id,
+                'token_type': user.token_type,
+                'expires_in': user.expires_in,
+                'auth_time': user.auth_time,
+                'access_token': user.access_token,
+                'refresh_token': user.refresh_token,
+                'scope': auth_response.scope or '',
+                'username': user_info.username,
+                'nickname': user_info.nickname,
+                'usergroup': user_info.usergroup.value,
+            }
+        )
+
         session = await new_session(user_id=auth_response.user_id, redis=redis)
         response = JSONResponse({'api_key': session.api_key})
         response.set_cookie(cookie_scheme.model.name, session.api_key)
@@ -147,8 +166,8 @@ class RefreshResponse(_RefreshResponse):
     response_model=RefreshResponse,
 )
 async def refresh_token(
-    db: Manager = Depends(get_db),
-    current_user: db_models.UserToken = Depends(get_current_user),
+    db: Database = Depends(get_db),
+    current_user: sa.UserToken = Depends(get_current_user),
     aio_client: aiohttp.ClientSession = Depends(aiohttp_session),
 ):
     try:
@@ -164,17 +183,20 @@ async def refresh_token(
         ) as resp:
             auth_time = dateutil.parser.parse(resp.headers['Date']).timestamp()
             refresh_resp = RefreshResponse(auth_time=auth_time, **await resp.json())
-        await db.execute(
-            db_models.UserToken.upsert(
-                user_id=current_user.user_id,
-                token_type=refresh_resp.token_type,
-                scope=refresh_resp.scope or '',
-                auth_time=auth_time,
-                expires_in=refresh_resp.expires_in,
-                access_token=refresh_resp.access_token,
-                refresh_token=refresh_resp.refresh_token,
-            )
+        query = sa.update(
+            sa.UserToken,
+            sa.UserToken.user_id == current_user.user_id,
+            values={
+                'token_type': refresh_resp.token_type,
+                'scope': refresh_resp.scope or '',
+                'auth_time': auth_time,
+                'expires_in': refresh_resp.expires_in,
+                'access_token': refresh_resp.access_token,
+                'refresh_token': refresh_resp.refresh_token,
+            }
         )
+        await db.execute(query)
+
     except (
         aiohttp.ServerTimeoutError,
         json.decoder.JSONDecodeError,
@@ -184,17 +206,19 @@ async def refresh_token(
 
     try:
         async with aio_client.get(
-            f'https://api.bgm.tv/user/{current_user.user_id}'
+            f'https://mirror.api.bgm.rin.cat/user/{current_user.user_id}'
         ) as user_info_resp:
             user_info = UserInfo.parse_raw(await user_info_resp.read())
-        await db.execute(
-            db_models.UserToken.upsert(
-                user_id=current_user.user_id,
-                username=user_info.username,
-                nickname=user_info.nickname,
-                usergroup=user_info.usergroup
-            )
+        query = sa.update(
+            sa.UserToken,
+            sa.UserToken.user_id == current_user.user_id,
+            values={
+                'username': user_info.username,
+                'nickname': user_info.nickname,
+                'usergroup': user_info.usergroup.value,
+            },
         )
+        await db.execute(query)
     except (
         aiohttp.ServerTimeoutError,
         json.decoder.JSONDecodeError,
@@ -213,5 +237,5 @@ class Me(AuthResponse, RefreshResponse):
     response_model=Me,
     include_in_schema=config.DEBUG,
 )
-async def get_my_user_info(user: db_models.UserToken = Depends(get_current_user)):
-    return user.dict()
+async def get_my_user_info(user: sa.UserToken = Depends(get_current_user)):
+    return user.__dict__

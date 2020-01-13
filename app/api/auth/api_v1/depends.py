@@ -1,11 +1,10 @@
-import peewee as pw
 from fastapi import Depends
-from peewee_async import Manager
+from databases import Database
 from starlette.status import HTTP_403_FORBIDDEN
 from starlette.exceptions import HTTPException
 
 from app.db.redis import PickleRedis
-from app.db_models import UserToken
+from app.db_models import sa
 from app.db.depends import get_db, get_redis
 
 from .scheme import API_KEY_HEADER, API_KEY_COOKIES
@@ -52,9 +51,10 @@ async def get_session(
 
 async def get_current_user(
     session: SessionValue = Depends(get_session),
-    db: Manager = Depends(get_db),
+    db: Database = Depends(get_db),
 ):
-    try:
-        return await db.get(UserToken, user_id=session.user_id)
-    except pw.DoesNotExist:
+    r = await db.fetch_one(
+        sa.select([sa.UserToken]).where(sa.UserToken.user_id == session.user_id)
+    )
+    if not r:
         raise HTTPException(403)

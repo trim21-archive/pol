@@ -51,7 +51,8 @@ async def test_decode_error(redis_client, faker: Faker):
     VALUE = faker.name()
 
     redis_client.set(KEY, VALUE)
-    await pool.get(KEY)
+    value = await pool.get(KEY)
+    assert value is None, 'redis pickle should return `None`'
     assert not await pool.exists(KEY), 'un pickle-able key should be deleted'
 
     redis_client.delete(KEY)

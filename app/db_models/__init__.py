@@ -48,20 +48,6 @@ class Subject(S.BgmIpViewer):
     __str__ = __repr__
 
 
-class Relation(S.BgmIpViewer):
-    id = pw.CharField(primary_key=True, index=True)
-    relation = pw.CharField()
-    source = pw.IntegerField()
-    target = pw.IntegerField()
-    map = pw.IntegerField(index=True, default=0)
-    removed = pw.BooleanField(default=False)
-
-    @classmethod
-    def get_relation_of_subject(cls, subject_id):
-        return cls.select().where(((cls.source == subject_id) |
-                                   (cls.target == subject_id)) & (cls.removed == 0))
-
-
 class Tag(S.BgmIpViewer):
     class Meta:
         primary_key = pw.CompositeKey('subject_id', 'text')
@@ -71,49 +57,11 @@ class Tag(S.BgmIpViewer):
     count = pw.IntegerField()
 
 
-class UserToken(S.BgmIpViewer):
-    user_id = pw.IntegerField(primary_key=True)
-    scope = pw.CharField(default='')
-    token_type = pw.CharField(default='')
-    expires_in = pw.IntegerField(default=0)
-    auth_time = pw.IntegerField(default=lambda: datetime.datetime.now().timestamp())
-    access_token = pw.FixedCharField(50, default='')
-    refresh_token = pw.FixedCharField(50, default='')
-    username = pw.CharField(default='')
-    nickname = pw.CharField(default='')
-    usergroup = pw.IntegerField(default=0)
-
-
 class Ep(S.BgmIpViewer):
     subject_id = pw.IntegerField(index=True)
     ep_id = pw.IntegerField(primary_key=True)
     name = pw.CharField(max_length=400)
     episode = pw.CharField()
-
-
-class EpSource(S.BgmIpViewer):
-    class Meta:
-        primary_key = pw.CompositeKey('source', 'source_ep_id')
-        table_name = 'ep_source'
-
-    subject_id = pw.IntegerField(index=True)
-    source = pw.FixedCharField(max_length=40)
-    source_ep_id = pw.CharField()
-    bgm_ep_id = pw.IntegerField()
-    episode = pw.IntegerField()
-
-
-class BangumiSource(S.BgmIpViewer):
-    class Meta:
-        primary_key = pw.CompositeKey('source', 'bangumi_id')
-        table_name = 'bangumi_source'
-
-    source = pw.FixedCharField()
-    bangumi_id = pw.CharField()
-    """
-    in bilibili, its __INITIAL_STATE__.mediaInfo.media_id
-    """
-    subject_id = pw.IntegerField()
 
 
 class UserSubmitEpisode(S.BgmIpViewer):
@@ -129,32 +77,14 @@ class UserSubmitEpisode(S.BgmIpViewer):
     modify_time = pw.DateTimeField(default=datetime.datetime.now)
 
 
-class UserSubmitBangumi(S.BgmIpViewer):
-    class Meta:
-        table_name = 'user_submit_bangumi'
-        primary_key = pw.CompositeKey('source', 'bangumi_id', 'user_id')
-
-    source = pw.FixedCharField(max_length=40)
-    subject_id = pw.IntegerField()
-    bangumi_id = pw.CharField()
-    user_id = pw.IntegerField()
-    modify_time = pw.DateTimeField(default=datetime.datetime.now)
-
-
 __all__ = [
     'IqiyiBangumi',
     'IqiyiEpisode',
     'BilibiliBangumi',
     'BilibiliEpisode',
     'Subject',
-    'Relation',
     'Tag',
-    'UserSubmitBangumi',
-    'UserSubmitEpisode',
-    'UserToken',
-    'BangumiSource',
     'Ep',
-    'EpSource',
 ]
 
 if __name__ == '__main__':  # pragma: no cover

@@ -2,7 +2,6 @@ import pytest
 from aioresponses import aioresponses
 
 import app.db.mysql
-from app.core import config
 from app.db.mysql import db
 
 
@@ -13,8 +12,7 @@ def pytest_sessionstart(session):
     """
     'session start'
     db.set_allow_sync(True)
-    if config.TEST:
-        app.db.mysql.database.options['force_rollback'] = True
+    app.db.mysql.database.options['force_rollback'] = True
 
 
 @pytest.fixture

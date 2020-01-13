@@ -1,5 +1,7 @@
-from sqlalchemy import CHAR, Text, Column, String, DateTime, text
-from sqlalchemy.dialects.mysql import INTEGER, TINYINT
+from sqlalchemy import (
+    CHAR, Text, Column, String, DateTime, func, join, text, select, update
+)
+from sqlalchemy.dialects.mysql import INTEGER, TINYINT, insert
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -130,7 +132,7 @@ class UserSubmitBangumi(Base):
     modify_time = Column(DateTime, nullable=False)
 
 
-class Usertoken(Base):
+class UserToken(Base):
     __tablename__ = 'usertoken'
 
     user_id = Column(INTEGER(11), primary_key=True)
@@ -145,6 +147,27 @@ class Usertoken(Base):
     usergroup = Column(INTEGER(11), nullable=False)
 
 
+__all__ = [
+    'func',
+    'update',
+    'insert',
+    'select',
+    'join',
+    'metadata',
+    'BangumiBilibili',
+    'BangumiIqiyi',
+    'BangumiSource',
+    'Ep',
+    'EpBilibili',
+    'EpIqiyi',
+    'EpSource',
+    'MissingBangumi',
+    'Relation',
+    'Subject',
+    'Tag',
+    'UserSubmitBangumi',
+    'UserToken',
+]
 if __name__ == '__main__':
     from app.core import config
     from sqlalchemy import create_engine

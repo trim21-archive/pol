@@ -22,7 +22,7 @@ class PickleRedis(Redis):
         if r:
             try:
                 return pickle.loads(r)
-            except (ImportError, pickle.UnpicklingError):
+            except (ImportError, pickle.UnpicklingError, KeyError):
                 await self.delete(key=key)
 
     async def set(self, key, value, *, expire=0, pexpire=0, exist=None):

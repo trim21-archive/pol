@@ -7,11 +7,13 @@ from pydantic import HttpUrl, BaseModel
 from peewee_async import Manager
 from starlette.exceptions import HTTPException
 
-from app import worker, db_models
+from app import worker
 from app.log import logger
-from app.api.auth import api_v1 as new_auth
-from app.db_models import IqiyiBangumi, IqiyiEpisode, BilibiliBangumi, BilibiliEpisode
-from app.db.depends import get_db
+from app.api.auth import api_v1 as auth
+from app.db_models import (
+    IqiyiBangumi, IqiyiEpisode, BilibiliBangumi, BilibiliEpisode, sa
+)
+from app.db.depends import get_objects
 from app.video_website_spider import SupportWebsite
 from app.video_website_spider.base import UrlNotValidError
 
@@ -47,7 +49,7 @@ class SubmitBody(BaseModel):
 )
 async def get_player_url_of_subject(
     subject_id: int,
-    db: Manager = Depends(get_db),
+    db: Manager = Depends(get_objects),
 ):
     return [{
         'website': x.name,
@@ -63,7 +65,7 @@ async def get_player_url_of_subject(
 )
 async def get_player_url_of_episode(
     ep_id: int,
-    db: Manager = Depends(get_db),
+    db: Manager = Depends(get_objects),
 ):
     return [{
         'website': x.name,
@@ -81,7 +83,7 @@ async def get_player_url_of_episode(
 async def submit_player_url_for_subject(
     subject_id: int,
     submit: SubmitBody,
-    current_user: db_models.UserToken = Depends(new_auth.get_current_user),
+    current_user: sa.UserToken = Depends(auth.get_current_user),
 ):
     website = worker.dispatcher.get_website(submit.url)
     if not website:
@@ -116,7 +118,7 @@ async def submit_player_url_for_subject(
 async def submit_player_url_for_episode(
     ep_id: int,
     submit: SubmitBody,
-    current_user: db_models.UserToken = Depends(new_auth.get_current_user),
+    current_user: sa.UserToken = Depends(auth.get_current_user),
 ):
     website = worker.dispatcher.get_website(submit.url)
     if not website:
@@ -165,8 +167,8 @@ class PostEpInfo(PostError):
 async def set_subject_player_url_status(
     subject_id: int,
     data: PostSubjectInfo,
-    current_user: db_models.UserToken = Depends(new_auth.get_current_user),
-    db: Manager = Depends(get_db),
+    current_user: sa.UserToken = Depends(auth.get_current_user),
+    db: Manager = Depends(get_objects),
 ):
     logger.bind(
         event='user.submit.subject.error',
@@ -184,7 +186,7 @@ async def set_subject_player_url_status(
 async def set_ep_player_url_status(
     ep_id: int,
     data: PostEpInfo,
-    current_user: db_models.UserToken = Depends(new_auth.get_current_user),
+    current_user: sa.UserToken = Depends(auth.get_current_user),
 ):
     logger.bind(
         event='user.submit.ep.error',

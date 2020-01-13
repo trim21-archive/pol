@@ -3,7 +3,7 @@ import pytest
 from starlette.testclient import TestClient
 
 import app.worker
-from app.db_models import UserToken
+from app.db_models import sa
 from app.api.auth.api_v1 import get_current_user
 
 
@@ -26,7 +26,7 @@ def test_submit_subject_id_require_auth(client: TestClient, url):
 
 def test_submit_subject_url(client: TestClient, ):
     async def mock_get_current_user():
-        return UserToken(user_id=233)
+        return sa.UserToken(user_id=233)
 
     client.app.dependency_overrides[get_current_user] = mock_get_current_user
     subject_id = 233593
@@ -40,7 +40,7 @@ def test_submit_subject_url(client: TestClient, ):
 
 def test_submit_ep_url(client: TestClient, ):
     async def mock_get_current_user():
-        return UserToken(user_id=233)
+        return sa.UserToken(user_id=233)
 
     client.app.dependency_overrides[get_current_user] = mock_get_current_user
     ep_id = 2891213
