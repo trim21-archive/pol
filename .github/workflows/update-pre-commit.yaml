@@ -62,3 +62,5 @@ jobs:
           title: update pre-commit config
           author-name: pol-actions[bot]
           author-email: github@trim21.me
+          branch: create-pull-request/pre-commit
+          branch-suffix: none

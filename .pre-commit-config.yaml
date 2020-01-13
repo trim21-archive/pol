@@ -37,10 +37,10 @@ repos:
 
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v1.25.3
+    rev: v1.26.0
     hooks:
       - id: pyupgrade
-        args: ['--py36-plus',]
+        args: ['--py37-plus',]
 
   - repo: https://github.com/PyCQA/doc8
     rev: 0.8.1rc2
