@@ -10,7 +10,6 @@ from bs4.element import Tag
 from app.log import logger
 from app.services import bgm_tv
 from app.db_models import Ep, IqiyiBangumi, IqiyiEpisode
-from app.video_website_spider.base import sync_db
 
 from .base import BaseWebsite, UrlNotValidError
 
@@ -49,7 +48,6 @@ class Iqiyi(BaseWebsite):
             raise UrlNotValidError('https://www.iqiyi.com/{bangumi_id}.html')
 
     @classmethod
-    @sync_db
     def subject(cls, subject_id: int, url: str):
         with requests.Session() as http_client:
             bangumi_id = get_bangumi_id_from_url(url)
@@ -109,7 +107,6 @@ class Iqiyi(BaseWebsite):
                         break
 
     @classmethod
-    @sync_db
     def ep(cls, ep_id: int, url: str):
         source_ep_id = get_ep_id_from_url(url)
         r = requests.get(url)

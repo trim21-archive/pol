@@ -44,8 +44,7 @@ class BilibiliEpisode(S.BgmIpViewer):
 
 
 if __name__ == '__main__':  # pragma: no cover
-    from app.db.mysql import db
+    pass
 
-    with db.allow_sync():
-        BilibiliBangumi.create_table()
-        BilibiliEpisode.create_table()
+    BilibiliBangumi.create_table()
+    BilibiliEpisode.create_table()

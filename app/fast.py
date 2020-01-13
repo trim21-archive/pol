@@ -10,7 +10,7 @@ from app.api import auth, bgm_tv, bgm_tv_auto_tracker
 from app.log import logger
 from app.core import config
 from app.md2bbc import router as md2bbc_router
-from app.db.mysql import objects, database
+from app.db.mysql import database
 from app.db.redis import setup_redis_pool
 from app.deprecation import bind_deprecated_path
 from app.api.api_v1.api import api_router
@@ -67,7 +67,6 @@ async def startup():
     app.state.client_session = aiohttp.ClientSession(
         headers={'user-agent': config.REQUEST_SERVICE_USER_AGENT}
     )
-    app.state.objects = objects
     app.state.redis_pool = await setup_redis_pool()
     app.state.logger = logger
     app.state.logger.bind(
@@ -86,7 +85,6 @@ async def startup():
 @app.on_event('shutdown')
 async def shutdown():
     await app.state.db.disconnect()
-    await objects.close()
     app.state.redis_pool.close()
     await app.state.redis_pool.wait_closed()
     await app.state.client_session.close()

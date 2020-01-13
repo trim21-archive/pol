@@ -88,8 +88,5 @@ __all__ = [
 ]
 
 if __name__ == '__main__':  # pragma: no cover
-    from app.db.mysql import objects
-
-    with objects.allow_sync():
-        for table in [IqiyiEpisode, IqiyiBangumi, BilibiliBangumi, BilibiliEpisode]:
-            table.create_table()  # type: ignore
+    for table in [IqiyiEpisode, IqiyiBangumi, BilibiliBangumi, BilibiliEpisode]:
+        table.create_table()  # type: ignore

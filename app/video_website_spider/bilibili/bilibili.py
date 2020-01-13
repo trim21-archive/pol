@@ -8,7 +8,7 @@ from pydantic import ValidationError
 from app.log import logger
 from app.services import bgm_tv
 from app.db_models import Ep, BilibiliBangumi, BilibiliEpisode
-from app.video_website_spider.base import BaseWebsite, UrlNotValidError, sync_db
+from app.video_website_spider.base import BaseWebsite, UrlNotValidError
 from app.video_website_spider.bilibili.model import (
     PlayerPageInitialState, BangumiPageInitialState, BangumiPageMainSectionList
 )
@@ -64,7 +64,6 @@ class Bilibili(BaseWebsite):
                 )
 
     @classmethod
-    @sync_db
     def subject(cls, subject_id: int, url: str):
         with requests.Session() as http_client:
             r = http_client.get(url)
@@ -123,7 +122,6 @@ class Bilibili(BaseWebsite):
                         break
 
     @classmethod
-    @sync_db
     def ep(cls, ep_id: int, url: str):
         with requests.Session() as http_client:
             r = http_client.get(url)

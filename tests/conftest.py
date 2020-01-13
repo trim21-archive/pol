@@ -1,8 +1,7 @@
 import pytest
 from aioresponses import aioresponses
 
-import app.db.mysql
-from app.db.mysql import db
+from app.db.mysql import database
 
 
 def pytest_sessionstart(session):
@@ -11,8 +10,7 @@ def pytest_sessionstart(session):
     before performing collection and entering the run test loop.
     """
     'session start'
-    db.set_allow_sync(True)
-    app.db.mysql.database.options['force_rollback'] = True
+    database.options['force_rollback'] = True
 
 
 @pytest.fixture

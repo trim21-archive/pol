@@ -39,8 +39,7 @@ class IqiyiEpisode(S.BgmIpViewer):
 
 
 if __name__ == '__main__':  # pragma: no cover
-    from app.db.mysql import db
+    pass
 
-    with db.allow_sync():
-        IqiyiEpisode.create_table()
-        IqiyiBangumi.create_table()
+    IqiyiEpisode.create_table()
+    IqiyiBangumi.create_table()

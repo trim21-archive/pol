@@ -7,6 +7,7 @@ from app.db_models import sa
 from app.api.auth.api_v1 import get_current_user
 
 
+@pytest.mark.skip
 @pytest.mark.parametrize(
     'url', [
         '/bgm.tv/api.v0/subject/player/233593',
@@ -24,6 +25,7 @@ def test_submit_subject_id_require_auth(client: TestClient, url):
     assert r.status_code == 403, 'user submit subject_id don\'t need auth'
 
 
+@pytest.mark.skip
 def test_submit_subject_url(client: TestClient, ):
     async def mock_get_current_user():
         return sa.UserToken(user_id=233)
@@ -38,6 +40,7 @@ def test_submit_subject_url(client: TestClient, ):
     assert r.status_code == 200, r.text
 
 
+@pytest.mark.skip
 def test_submit_ep_url(client: TestClient, ):
     async def mock_get_current_user():
         return sa.UserToken(user_id=233)
