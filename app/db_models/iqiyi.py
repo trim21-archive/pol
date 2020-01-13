@@ -36,10 +36,3 @@ class IqiyiEpisode(S.BgmIpViewer):
     @property
     def url(self):
         return f'https://www.iqiyi.com/{self.source_ep_id}.html'
-
-
-if __name__ == '__main__':  # pragma: no cover
-    pass
-
-    IqiyiEpisode.create_table()
-    IqiyiBangumi.create_table()

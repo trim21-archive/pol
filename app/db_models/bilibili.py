@@ -41,10 +41,3 @@ class BilibiliEpisode(S.BgmIpViewer):
     @property
     def url(self):
         return f'https://www.bilibili.com/bangumi/play/ep{self.source_ep_id}'
-
-
-if __name__ == '__main__':  # pragma: no cover
-    pass
-
-    BilibiliBangumi.create_table()
-    BilibiliEpisode.create_table()
