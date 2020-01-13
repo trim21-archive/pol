@@ -884,22 +884,6 @@ python-versions = "*"
 version = "3.13.1"
 
 [[package]]
-category = "main"
-description = "Asynchronous interface for peewee ORM powered by asyncio."
-name = "peewee-async"
-optional = false
-python-versions = "*"
-version = "0.6.3a0"
-
-[package.dependencies]
-peewee = ">=3.5.0"
-
-[package.extras]
-aiomysql = ["aiomysql (>=0.0.19)"]
-aiopg = ["aiopg (>=0.14.0)"]
-develop = ["pylint", "wheel", "aiomysql", "aiopg", "psycopg2"]
-
-[[package]]
 category = "dev"
 description = "plugin and hook calling mechanisms for python"
 name = "pluggy"
@@ -1579,7 +1563,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pathlib2", "contextlib2", "unittest2"]
 
 [metadata]
-content-hash = "4e173d9604a4fc40b3403841a55ccb40dd34b3a160ac19450edf584a9bc3e0f0"
+content-hash = "9eb9431670d098b969489f46e7c215f46ec2d14b4e8890c313fc6986bb26ee22"
 python-versions = "3.7.*"
 
 [metadata.files]
@@ -2162,10 +2146,6 @@ packaging = [
 ]
 peewee = [
     {file = "peewee-3.13.1.tar.gz", hash = "sha256:9492af4d1f8e18a7fa0e930960315b38931286ea0f1659bbd5503456cffdacde"},
-]
-peewee-async = [
-    {file = "peewee-async-0.6.3a0.tar.gz", hash = "sha256:da7b8b2f01c768a3ec272b1906bb57f4927ba7ddd23723de58f8f8d33c12f910"},
-    {file = "peewee_async-0.6.3a0-py3-none-any.whl", hash = "sha256:d337a2b91e920cb1bfdb039ace8926693a17f91233ce20a9392aedfcda7bc71d"},
 ]
 pluggy = [
     {file = "pluggy-0.13.1-py2.py3-none-any.whl", hash = "sha256:966c145cd83c96502c3c3868f50408687b38434af77734af1e9ca461a4081d2d"},
