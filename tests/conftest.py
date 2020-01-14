@@ -1,6 +1,8 @@
 import pytest
 from aioresponses import aioresponses
 
+from app.db.mysql import Session
+
 
 def pytest_sessionstart(session):
     """
@@ -14,3 +16,15 @@ def pytest_sessionstart(session):
 def mock_aiohttp():
     with aioresponses() as m:
         yield m
+
+
+@pytest.fixture
+def db_session():
+    db_session = Session()
+    try:
+        yield db_session
+    except Exception:
+        db_session.rollback()
+        raise
+    finally:
+        db_session.close()

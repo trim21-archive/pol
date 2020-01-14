@@ -9,7 +9,7 @@ from app.log import logger
 from app.db.mysql import Session
 from app.db.utils import preserve_fields
 from app.services import bgm_tv
-from app.db_models import BilibiliEpisode, sa
+from app.db_models import sa
 from app.video_website_spider.base import BaseWebsite, UrlNotValidError
 from app.video_website_spider.bilibili.model import (
     PlayerPageInitialState, BangumiPageInitialState, BangumiPageMainSectionList
@@ -37,6 +37,14 @@ def get_initial_state_from_html(html: str) -> Optional[dict]:
         if json_text:
             x = json.loads(json_text)
             return x
+
+
+def upsert_bilibili_ep(db_session: Session, values):
+    insert_stmt = sa.insert(sa.EpBilibili, values=values)
+    query = insert_stmt.on_duplicate_key_update(
+        **preserve_fields(insert_stmt, 'title', 'subject_id', 'ep_id')
+    )
+    db_session.execute(query)
 
 
 def upsert_bilibili_bangumi(db_session: Session, values):
@@ -122,14 +130,15 @@ class Bilibili(BaseWebsite):
                     if not ep.index.isdecimal():
                         continue
                     if (bgm_ep.sort - bgm_ep_start) == (int(ep.index) - ep_start):
-
-                        BilibiliEpisode.upsert(
-                            ep_id=bgm_ep.id,
-                            source_ep_id=ep.ep_id,
-                            subject_id=subject_id,
-                        ).execute()
+                        upsert_bilibili_ep(
+                            db_session, {
+                                'ep_id': bgm_ep.id,
+                                'source_ep_id': ep.ep_id,
+                                'subject_id': subject_id,
+                                'title': ep.title,
+                            }
+                        )
                         break
-
             db_session.commit()
         except Exception:
             db_session.rollback()
@@ -161,13 +170,15 @@ class Bilibili(BaseWebsite):
                         'not fount episode {} with submit url {}', ep_id, url
                     )
                     return
-                print(initial_state.epInfo.title)
-                BilibiliEpisode.upsert(
-                    ep_id=ep_id,
-                    source_ep_id=initial_state.epInfo.ep_id,
-                    subject_id=ep.subject_id,
-                    title=initial_state.epInfo.title,
-                ).execute()
+                upsert_bilibili_ep(
+                    db_session,
+                    {
+                        'ep_id': ep_id,
+                        'source_ep_id': initial_state.epInfo.ep_id,
+                        'subject_id': ep.subject_id,
+                        'title': initial_state.epInfo.title,
+                    },
+                )
                 logger.info(
                     'upsert BilibiliEpisode with kwargs {{!r}}'.format(
                         source_ep_id=ep_id,
