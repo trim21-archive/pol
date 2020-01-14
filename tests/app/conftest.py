@@ -4,7 +4,6 @@ from starlette.testclient import TestClient
 
 import app.fast
 from app.core import config
-from app.db.mysql import db
 
 
 @pytest.fixture()
@@ -18,14 +17,3 @@ def client():
 def redis_client():
     with redis.StrictRedis.from_url(config.REDIS_URI) as redis_client:
         yield redis_client
-
-
-def pytest_sessionstart(session: pytest.Session):
-    """Called after the Session object has been created and
-
-    before performing collection and entering the run test loop.
-
-    Args:
-        session: pytest Session object
-    """
-    db.set_allow_sync(True)

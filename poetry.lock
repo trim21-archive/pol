@@ -876,14 +876,6 @@ pyparsing = ">=2.0.2"
 six = "*"
 
 [[package]]
-category = "main"
-description = "a little orm"
-name = "peewee"
-optional = false
-python-versions = "*"
-version = "3.13.1"
-
-[[package]]
 category = "dev"
 description = "plugin and hook calling mechanisms for python"
 name = "pluggy"
@@ -1563,7 +1555,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pathlib2", "contextlib2", "unittest2"]
 
 [metadata]
-content-hash = "9eb9431670d098b969489f46e7c215f46ec2d14b4e8890c313fc6986bb26ee22"
+content-hash = "ad189921c444f53004ed5e28e954b6bb0d6897434080577ec589da998d36a931"
 python-versions = "3.7.*"
 
 [metadata.files]
@@ -2143,9 +2135,6 @@ nodeenv = [
 packaging = [
     {file = "packaging-20.0-py2.py3-none-any.whl", hash = "sha256:aec3fdbb8bc9e4bb65f0634b9f551ced63983a529d6a8931817d52fdd0816ddb"},
     {file = "packaging-20.0.tar.gz", hash = "sha256:fe1d8331dfa7cc0a883b49d75fc76380b2ab2734b220fbb87d774e4fd4b851f8"},
-]
-peewee = [
-    {file = "peewee-3.13.1.tar.gz", hash = "sha256:9492af4d1f8e18a7fa0e930960315b38931286ea0f1659bbd5503456cffdacde"},
 ]
 pluggy = [
     {file = "pluggy-0.13.1-py2.py3-none-any.whl", hash = "sha256:966c145cd83c96502c3c3868f50408687b38434af77734af1e9ca461a4081d2d"},
