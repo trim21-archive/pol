@@ -173,4 +173,5 @@ if __name__ == '__main__':
     from sqlalchemy import create_engine
     import pymysql
     pymysql.install_as_MySQLdb()
-    Base.metadata.create_all(create_engine(config.MYSQL_URI))
+    engine = create_engine(config.MYSQL_URI)
+    Base.metadata.create_all(engine)

@@ -27,6 +27,9 @@ jobs:
           mysql $MYSQL_CLIENT_ARGS < ./tests_data/all.sql
         displayName: Download Test Data
 
+      - script: coverage run -m python ./data_manager/save_patch_and_bangumi_data_to_db.py
+        displayName: Save Patch And Bangumi-Data to db
+
       - script: coverage run -m pytest --junitxml=junit/test_report.xml
         displayName: Unittest
 
