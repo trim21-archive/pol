@@ -130,6 +130,7 @@ class Bilibili(BaseWebsite):
                         ).execute()
                         break
 
+            db_session.commit()
         except Exception:
             db_session.rollback()
             logger.exception(
@@ -196,6 +197,8 @@ class Bilibili(BaseWebsite):
                             'title': initial_state.mediaInfo.title,
                         }
                     )
+
+            db_session.commit()
         except Exception:
             db_session.rollback()
             logger.exception(
