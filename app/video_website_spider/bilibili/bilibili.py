@@ -132,6 +132,9 @@ class Bilibili(BaseWebsite):
 
         except Exception:
             db_session.rollback()
+            logger.exception(
+                f"can't get media info for subject_id {subject_id}, url <{url}>"
+            )
             raise
         finally:
             db_session.close()
@@ -195,10 +198,9 @@ class Bilibili(BaseWebsite):
                     )
         except Exception:
             db_session.rollback()
+            logger.exception(
+                f"can't get media info for subject_id {ep_id}, url <{url}>"
+            )
             raise
         finally:
             db_session.close()
-
-
-if __name__ == '__main__':  # pragma: no cover
-    Bilibili.subject(271724, 'https://www.bilibili.com/bangumi/media/md28221412')
