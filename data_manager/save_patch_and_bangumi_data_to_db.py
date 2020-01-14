@@ -138,7 +138,7 @@ async def main():
         password=config.REDIS_PASSWORD,
     )
     await database.connect()
-    await asyncio.gather(save_bangumi_data_to_db(redis_client, ), save_patch_to_db())
+    await asyncio.gather(save_bangumi_data_to_db(redis_client), save_patch_to_db())
     await database.disconnect()
 
 

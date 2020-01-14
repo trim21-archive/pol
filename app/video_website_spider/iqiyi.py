@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from bs4.element import Tag
 
 from app.log import logger
+from app.db.mysql import Session
 from app.services import bgm_tv
 from app.db_models import Ep, IqiyiBangumi, IqiyiEpisode
 
@@ -49,8 +50,10 @@ class Iqiyi(BaseWebsite):
 
     @classmethod
     def subject(cls, subject_id: int, url: str):
+        Session()
         with requests.Session() as http_client:
             bangumi_id = get_bangumi_id_from_url(url)
+            # db_session.query(sa.BangumiIqiyi).update()
             IqiyiBangumi.upsert(
                 subject_id=subject_id,
                 bangumi_id=bangumi_id,

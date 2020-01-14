@@ -48,7 +48,7 @@ PROTOCOL = config('PROTOCOL', default='http')
 SECRET_KEY = (config('SECRET_KEY', default=secrets.token_hex(32)))[:32]
 assert len(SECRET_KEY) == 32
 
-TEST = config('TEST', default=False)
+TESTING = config('TESTING', default=False)
 
 
 class BgmTvAutoTracker:

@@ -11,16 +11,16 @@ metadata = Base.metadata
 class BangumiBilibili(Base):
     __tablename__ = 'bangumi_bilibili'
 
-    subject_id = Column(INTEGER(11), primary_key=True)
+    subject_id = Column(INTEGER(11), primary_key=True, autoincrement=False)
     media_id = Column(INTEGER(11), nullable=False, index=True)
-    season_id = Column(INTEGER(11), nullable=False)
+    season_id = Column(INTEGER(11), nullable=False, index=True)
     title = Column(String(255), nullable=False)
 
 
 class BangumiIqiyi(Base):
     __tablename__ = 'bangumi_iqiyi'
 
-    subject_id = Column(INTEGER(11), primary_key=True)
+    subject_id = Column(INTEGER(11), primary_key=True, autoincrement=False)
     bangumi_id = Column(String(255), nullable=False, index=True)
     title = Column(String(255), nullable=False)
 
@@ -36,7 +36,7 @@ class BangumiSource(Base):
 class Ep(Base):
     __tablename__ = 'ep'
 
-    ep_id = Column(INTEGER(11), primary_key=True)
+    ep_id = Column(INTEGER(11), primary_key=True, autoincrement=False)
     subject_id = Column(INTEGER(11), nullable=False, index=True)
     name = Column(String(400), nullable=False)
     episode = Column(String(255), nullable=False)
@@ -45,7 +45,7 @@ class Ep(Base):
 class EpBilibili(Base):
     __tablename__ = 'ep_bilibili'
 
-    source_ep_id = Column(INTEGER(11), primary_key=True)
+    source_ep_id = Column(INTEGER(11), primary_key=True, autoincrement=False)
     ep_id = Column(INTEGER(11), nullable=False)
     subject_id = Column(INTEGER(11), nullable=False)
     title = Column(String(255), nullable=False)
@@ -54,7 +54,7 @@ class EpBilibili(Base):
 class EpIqiyi(Base):
     __tablename__ = 'ep_iqiyi'
 
-    source_ep_id = Column(String(255), primary_key=True)
+    source_ep_id = Column(String(255), primary_key=True, autoincrement=False)
     ep_id = Column(INTEGER(11), nullable=False)
     subject_id = Column(INTEGER(11), nullable=False)
     title = Column(String(255), nullable=False)
@@ -63,7 +63,7 @@ class EpIqiyi(Base):
 class EpSource(Base):
     __tablename__ = 'ep_source'
 
-    subject_id = Column(INTEGER(11), nullable=False, index=True)
+    subject_id = Column(INTEGER(11), nullable=False, index=True, autoincrement=False)
     source = Column(CHAR(40), primary_key=True, nullable=False)
     source_ep_id = Column(String(255), primary_key=True, nullable=False)
     bgm_ep_id = Column(INTEGER(11), nullable=False)
@@ -91,7 +91,7 @@ class Relation(Base):
 class Subject(Base):
     __tablename__ = 'subject'
 
-    id = Column(INTEGER(11), primary_key=True)
+    id = Column(INTEGER(11), primary_key=True, autoincrement=False)
     name = Column(String(255), nullable=False)
     image = Column(String(255), nullable=False)
     subject_type = Column(String(255), nullable=False)
@@ -135,7 +135,7 @@ class UserSubmitBangumi(Base):
 class UserToken(Base):
     __tablename__ = 'usertoken'
 
-    user_id = Column(INTEGER(11), primary_key=True)
+    user_id = Column(INTEGER(11), primary_key=True, autoincrement=False)
     scope = Column(String(255), nullable=False)
     token_type = Column(String(255), nullable=False)
     expires_in = Column(INTEGER(11), nullable=False)
@@ -171,7 +171,8 @@ __all__ = [
 if __name__ == '__main__':
     from app.core import config
     from sqlalchemy import create_engine
-    import pymysql
-    pymysql.install_as_MySQLdb()
-    engine = create_engine(config.MYSQL_URI)
+    from databases import DatabaseURL
+    engine = create_engine(
+        str(DatabaseURL(config.MYSQL_URI).replace(dialect='mysql+pymysql'))
+    )
     Base.metadata.create_all(engine)

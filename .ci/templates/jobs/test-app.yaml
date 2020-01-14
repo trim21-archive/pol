@@ -19,16 +19,13 @@ jobs:
           set -ex
           sudo apt-get install mysql-client -y
           mkdir -p ./tests_data
-          curl -sSL https://github.com/Trim21/pol/releases/download/test_data/b.sql.gz -o ./tests_data/all.sql.gz
+          curl -sSL https://github.com/Trim21/pol/releases/download/test_data/test-1.sql.gz -o ./tests_data/all.sql.gz
           gunzip ./tests_data/all.sql.gz
 
           MYSQL_CLIENT_ARGS="--host=127.0.0.1 --port=3307 --database=$MYSQL_DB -u root -p$MYSQL_PASSWORD"
           mysql $MYSQL_CLIENT_ARGS -e "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'NO_AUTO_CREATE_USER',''));"
           mysql $MYSQL_CLIENT_ARGS < ./tests_data/all.sql
         displayName: Download Test Data
-
-      - script: coverage run ./data_manager/save_patch_and_bangumi_data_to_db.py
-        displayName: Save Patch And Bangumi-Data to db
 
       - script: coverage run -m pytest --junitxml=junit/test_report.xml
         displayName: Unittest

@@ -19,7 +19,3 @@ __all__ = [
     'BilibiliEpisode',
     'Ep',
 ]
-
-if __name__ == '__main__':  # pragma: no cover
-    for table in [IqiyiEpisode, IqiyiBangumi, BilibiliBangumi, BilibiliEpisode]:
-        table.create_table()  # type: ignore

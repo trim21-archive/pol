@@ -17,13 +17,13 @@ def test_query_subject_id_bilibili(client: TestClient):
     r = client.get(
         '/bgm-tv-auto-tracker/api.v1/subject_id',
         params={
-            'bangumi_id': '1375',
+            'bangumi_id': '25210',
             'source': 'bilibili',
         }
     )
     assert r.status_code == 200
     assert r.json(
-    )['subject_id'] == 274, 'bilibili bangumi subject_id not match ' + r.text
+    )['subject_id'] == 290, 'bilibili bangumi subject_id not match ' + r.text
 
 
 def test_query_subject_id_error(client: TestClient):
