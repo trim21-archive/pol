@@ -68,3 +68,5 @@ variables:
     value: '3.7'
   - name: vm_image
     value: ubuntu-18.04
+  - name: PYTHONPATH
+    value: '.'

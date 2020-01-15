@@ -1,7 +1,4 @@
 import abc
-import functools
-
-from app.db.mysql import db
 
 
 class UrlNotValidError(Exception):
@@ -57,12 +54,3 @@ class BaseWebsite(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def ep(cls, ep_id: int, url: str):  # pragma: no cover
         raise NotImplementedError(cls.__name__, 'subject')
-
-
-def sync_db(func):
-    @functools.wraps(func)
-    def wrapped(*args, **kwargs):
-        with db.allow_sync():
-            return func(*args, **kwargs)
-
-    return wrapped

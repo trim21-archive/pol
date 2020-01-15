@@ -4,12 +4,13 @@ import threading
 import jinja2
 import aiohttp
 from fastapi import FastAPI
+from starlette.middleware import cors
 
 from app.api import auth, bgm_tv, bgm_tv_auto_tracker
 from app.log import logger
 from app.core import config
 from app.md2bbc import router as md2bbc_router
-from app.db.mysql import objects
+from app.db.mysql import database
 from app.db.redis import setup_redis_pool
 from app.deprecation import bind_deprecated_path
 from app.api.api_v1.api import api_router
@@ -48,7 +49,7 @@ if config.DSN:  # pragma: no cover
         dsn=config.DSN, release=config.COMMIT_SHA, integrations=[RedisIntegration()]
     )
     app.add_middleware(SentryAsgiMiddleware)
-
+app.add_middleware(cors.CORSMiddleware, allow_origins='*')
 setup_http_middleware(app)
 app.add_middleware(LogExceptionMiddleware)
 app.include_router(auth.router, prefix='/auth', tags=['auth'])
@@ -61,10 +62,11 @@ app.include_router(bgm_tv.router, prefix='/bgm.tv', tags=['bgm.tv'])
 
 @app.on_event('startup')
 async def startup():
+    app.state.db = database
+    await database.connect()
     app.state.client_session = aiohttp.ClientSession(
         headers={'user-agent': config.REQUEST_SERVICE_USER_AGENT}
     )
-    app.state.objects = objects
     app.state.redis_pool = await setup_redis_pool()
     app.state.logger = logger
     app.state.logger.bind(
@@ -82,7 +84,7 @@ async def startup():
 
 @app.on_event('shutdown')
 async def shutdown():
-    await objects.close()
+    await app.state.db.disconnect()
     app.state.redis_pool.close()
     await app.state.redis_pool.wait_closed()
     await app.state.client_session.close()

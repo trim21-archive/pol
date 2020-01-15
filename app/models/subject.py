@@ -1,6 +1,6 @@
 from enum import IntEnum
 
-from pydantic import BaseModel
+from pydantic import Json, BaseModel
 
 from app.models.subject_type import SubjectTypeEnum
 
@@ -19,8 +19,8 @@ class Subject(BaseModel):
     locked: bool
 
     # tags: str
-    info: dict
-    score_details: dict
+    info: Json
+    score_details: Json
 
     score: str
     wishes: int

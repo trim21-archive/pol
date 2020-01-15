@@ -1,18 +1,18 @@
 import re
 from urllib import parse
 
-import peewee as pw
 import requests
 from bs4 import BeautifulSoup
 from pydantic import BaseModel
 from bs4.element import Tag
 
 from app.log import logger
+from app.db.mysql import Session
 from app.services import bgm_tv
-from app.db_models import Ep, IqiyiBangumi, IqiyiEpisode
-from app.video_website_spider.base import sync_db
+from app.db_models import sa
 
 from .base import BaseWebsite, UrlNotValidError
+from ..db.utils import preserve_fields
 
 
 def get_ep_id_from_url(url: str):
@@ -49,28 +49,21 @@ class Iqiyi(BaseWebsite):
             raise UrlNotValidError('https://www.iqiyi.com/{bangumi_id}.html')
 
     @classmethod
-    @sync_db
     def subject(cls, subject_id: int, url: str):
+        db_session = Session()
+        title = ''
+
         with requests.Session() as http_client:
             bangumi_id = get_bangumi_id_from_url(url)
-            IqiyiBangumi.upsert(
-                subject_id=subject_id,
-                bangumi_id=bangumi_id,
-            ).execute()
-
             album_id = http_client.get(url).text
             s = cls.alb_regex.search(album_id)
             if not s or not s.groups():
                 logger.info("can't find albumId in {}", url)
                 return
             soup = BeautifulSoup(album_id, 'lxml')
-            title = soup.find('a', class_='info-intro-title')
-            if title:
-                title = title.attrs['title']
-                IqiyiBangumi.update(
-                    title=title
-                ).where((IqiyiBangumi.subject_id == subject_id) &
-                        (IqiyiBangumi.bangumi_id == bangumi_id), ).execute()
+            title_el = soup.find('a', class_='info-intro-title')
+            if title_el:
+                title = title_el.attrs['title']
 
             album_id = s.groups()[0]
             r = http_client.get(
@@ -89,6 +82,19 @@ class Iqiyi(BaseWebsite):
                 }
             )
             list_info = r.json()
+
+        try:
+            insert_stmt = sa.insert(
+                sa.BangumiIqiyi,
+                values={
+                    'subject_id': subject_id, 'bangumi_id': bangumi_id, 'title': title
+                }
+            )
+            query = insert_stmt.on_duplicate_key_update(
+                **preserve_fields(insert_stmt, 'title', 'bangumi_id')
+            )
+            db_session.execute(query)
+
             if list_info['data'] == '参数错误':
                 logger.error('参数错误 with album id {}', album_id)
                 return
@@ -100,32 +106,54 @@ class Iqiyi(BaseWebsite):
             for ep in eps:
                 for bgm_ep in bgm_eps:
                     if (bgm_ep.sort - bgm_ep_start) == (ep.order - ep_start):
-                        IqiyiEpisode.upsert(
-                            ep_id=bgm_ep.id,
-                            source_ep_id=ep.ep_id,
-                            subject_id=subject_id,
-                            title=ep.title,
-                        ).execute()
+                        upsert_ep_iqiyi(
+                            db_session, {
+                                'ep_id': bgm_ep.id,
+                                'source_ep_id': ep.ep_id,
+                                'subject_id': subject_id,
+                                'title': ep.title,
+                            }
+                        )
                         break
+            db_session.commit()
+        except Exception:
+            db_session.rollback()
+            raise
+        finally:
+            db_session.close()
 
     @classmethod
-    @sync_db
     def ep(cls, ep_id: int, url: str):
+        db_session = Session()
         source_ep_id = get_ep_id_from_url(url)
         r = requests.get(url)
         r.encoding = 'utf8'
         soup = BeautifulSoup(r.text, 'lxml')
         t: Tag = soup.find('meta', attrs={'name': 'irTitle'})
         try:
-            ep = Ep.get(ep_id=ep_id)
-        except pw.DoesNotExist:
-            return
-        IqiyiEpisode.upsert(
-            subject_id=ep.subject_id,
-            ep_id=ep_id,
-            source_ep_id=source_ep_id,
-            title=t.attrs['content'] if t else '',
-        ).execute()
+            ep = db_session.query(sa.Ep).filter_by(ep_id=ep_id).one()
+            upsert_ep_iqiyi(
+                db_session, {
+                    'subject_id': ep.subject_id,
+                    'ep_id': ep_id,
+                    'source_ep_id': source_ep_id,
+                    'title': t.attrs['content'] if t else '',
+                }
+            )
+            db_session.commit()
+        except Exception:
+            db_session.rollback()
+            raise
+        finally:
+            db_session.close()
+
+
+def upsert_ep_iqiyi(db_session: Session, values):
+    insert_stmt = sa.insert(sa.EpIqiyi, values=values)
+    query = insert_stmt.on_duplicate_key_update(
+        **preserve_fields(insert_stmt, 'title', 'subject_id', 'ep_id')
+    )
+    db_session.execute(query)
 
 
 class ApiResult(BaseModel):

@@ -1,34 +1,15 @@
-import peewee_async
+from databases import Database, DatabaseURL
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 from app.core import config
 
-
-class AsyncMySQLConnection(peewee_async.AsyncMySQLConnection):
-    """Asynchronous database connection pool.
-    """
-    def __init__(self, *, database=None, loop=None, timeout=None, **kwargs):
-        self.pool = None
-        self.loop = loop
-        self.database = database
-        self.timeout = timeout
-        kwargs.setdefault('pool_recycle', 360)
-        self.connect_params = kwargs
-
-
-if ':' in config.MYSQL_HOST:
-    host, port = config.MYSQL_HOST.split(':')
+if config.TESTING:
+    database = Database(config.MYSQL_URI, force_rollback=True)
 else:
-    host, port = config.MYSQL_HOST, 3306
-db = peewee_async.PooledMySQLDatabase(
-    config.MYSQL_DB,
-    host=host,
-    port=int(port),
-    user=config.MYSQL_USER,
-    password=config.MYSQL_PASSWORD,
-    charset='utf8mb4',
-    async_conn=AsyncMySQLConnection,
+    database = Database(config.MYSQL_URI)
+
+engine = create_engine(
+    str(DatabaseURL(config.MYSQL_URI).replace(dialect='mysql+pymysql'))
 )
-
-db.set_allow_sync(False)
-
-objects = peewee_async.Manager(db)
+Session = sessionmaker(bind=engine)

@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import Dict, List, Union
 
 from pydantic import BaseModel
 
@@ -131,3 +131,37 @@ class BangumiPageInitialState(BaseModel):
     @property
     def epList(self):
         return self.mainSectionList.episodes
+
+
+class UnLoginPlayerPageSeason(BaseModel):
+    is_new: int
+    media_id: int
+    season_id: int
+    season_title: str
+    title: str
+    type: int
+
+
+class UnLoginPlayerPageMediaInfo(BaseModel):
+    param: Dict[str, str]
+    seasons: List[UnLoginPlayerPageSeason]
+
+    @property
+    def season_id(self):
+        return self.param['season_id']
+
+    @property
+    def media_id(self):
+        for item in self.seasons:
+            if item.season_id == self.season_id:
+                return item.media_id
+
+    @property
+    def title(self):
+        for item in self.seasons:
+            if item.season_id == self.season_id:
+                return item.title
+
+
+class UnLoginPlayerPageInitialState(BaseModel):
+    mediaInfo: UnLoginPlayerPageMediaInfo

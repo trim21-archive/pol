@@ -5,20 +5,22 @@ import aiohttp
 import dateutil.parser
 from fastapi import Depends, APIRouter
 from pydantic import ValidationError
-from peewee_async import Manager
+from databases import Database
 from starlette.status import HTTP_502_BAD_GATEWAY, HTTP_503_SERVICE_UNAVAILABLE
 from starlette.responses import HTMLResponse, JSONResponse, RedirectResponse
 from starlette.exceptions import HTTPException
 
-from app import db_models
 from app.log import logger
 from app.core import config
 from app.models import ErrorDetail
 from app.depends import aiohttp_session
 from app.db.redis import PickleRedis
+from app.db.utils import preserve_fields
+from app.db_models import sa
 from app.db.depends import get_db, get_redis
-from app.services.bgm_tv.model import UserInfo, AuthResponse, RefreshResponse
-from app.api.auth.api_v1.models import Me, FinishAuth
+from app.services.bgm_tv.model import UserInfo, AuthResponse
+from app.services.bgm_tv.model import RefreshResponse as _RefreshResponse
+from app.api.auth.api_v1.models import FinishAuth
 from app.api.auth.api_v1.scheme import cookie_scheme
 from app.api.auth.api_v1.depends import get_current_user
 from app.api.auth.api_v1.session import new_session
@@ -75,7 +77,7 @@ async def auth_redirect():
 )
 async def oauth_callback(
     code: str = None,
-    db: Manager = Depends(get_db),
+    db: Database = Depends(get_db),
     redis: PickleRedis = Depends(get_redis),
     aio_client: aiohttp.ClientSession = Depends(aiohttp_session),
 ):
@@ -102,20 +104,38 @@ async def oauth_callback(
 
         user = Me(auth_time=auth_time, **auth_response.dict())
 
-        await db.execute(
-            db_models.UserToken.upsert(
-                user_id=user.user_id,
-                token_type=user.token_type,
-                expires_in=user.expires_in,
-                auth_time=user.auth_time,
-                access_token=user.access_token,
-                refresh_token=user.refresh_token,
-                scope=auth_response.scope or '',
-                username=user_info.username,
-                nickname=user_info.nickname,
-                usergroup=user_info.usergroup,
-            )
+        insert_stmt = sa.insert(sa.UserToken)
+
+        query = insert_stmt.on_duplicate_key_update(
+            **preserve_fields(
+                insert_stmt,
+                'token_type',
+                'expires_in',
+                'auth_time',
+                'access_token',
+                'refresh_token',
+                'scope',
+                'username',
+                'nickname',
+                'usergroup',
+            ),
         )
+
+        await db.execute(
+            query, {
+                'user_id': user.user_id,
+                'token_type': user.token_type,
+                'expires_in': user.expires_in,
+                'auth_time': user.auth_time,
+                'access_token': user.access_token,
+                'refresh_token': user.refresh_token,
+                'scope': auth_response.scope or '',
+                'username': user_info.username,
+                'nickname': user_info.nickname,
+                'usergroup': user_info.usergroup.value,
+            }
+        )
+
         session = await new_session(user_id=auth_response.user_id, redis=redis)
         response = JSONResponse({'api_key': session.api_key})
         response.set_cookie(cookie_scheme.model.name, session.api_key)
@@ -136,19 +156,18 @@ async def oauth_callback(
         return redirect_response
 
 
-# @router.post(
-#     '/refresh',
-#     description=(
-#         "refresh access_token when it's expired. "
-#         'this method should by called by any client, '
-#         'maybe should check by server weekly'
-#     ),
-#     response_model=RefreshResponse,
-#     responses={403: {'model': ErrorDetail}},
-# )
+class RefreshResponse(_RefreshResponse):
+    auth_time: int
+
+
+@router.post(
+    '/bgm.tv_refresh',
+    description='bgm.tv OAuth Refresh, for UserScript',
+    response_model=RefreshResponse,
+)
 async def refresh_token(
-    db: Manager = Depends(get_db),
-    current_user: db_models.UserToken = Depends(get_current_user),
+    db: Database = Depends(get_db),
+    current_user: sa.UserToken = Depends(get_current_user),
     aio_client: aiohttp.ClientSession = Depends(aiohttp_session),
 ):
     try:
@@ -160,46 +179,63 @@ async def refresh_token(
                 'client_id': config.BgmTvAutoTracker.APP_ID,
                 'redirect_uri': config.BgmTvAutoTracker.callback_url,
                 'client_secret': config.BgmTvAutoTracker.APP_SECRET,
-            },
+            }
         ) as resp:
             auth_time = dateutil.parser.parse(resp.headers['Date']).timestamp()
-            refresh = RefreshResponse.parse_obj(await resp.json())
-        await db.execute(
-            db_models.UserToken.upsert(
-                user_id=current_user.user_id,
-                token_type=refresh.token_type,
-                scope=refresh.scope or '',
-                auth_time=auth_time,
-                expires_in=refresh.expires_in,
-                access_token=refresh.access_token,
-                refresh_token=refresh.refresh_token,
-            )
+            refresh_resp = RefreshResponse(auth_time=auth_time, **await resp.json())
+        query = sa.update(
+            sa.UserToken,
+            sa.UserToken.user_id == current_user.user_id,
+            values={
+                'token_type': refresh_resp.token_type,
+                'scope': refresh_resp.scope or '',
+                'auth_time': auth_time,
+                'expires_in': refresh_resp.expires_in,
+                'access_token': refresh_resp.access_token,
+                'refresh_token': refresh_resp.refresh_token,
+            }
         )
-    except (aiohttp.ServerTimeoutError, json.decoder.JSONDecodeError, ValidationError):
+        await db.execute(query)
+
+    except (
+        aiohttp.ServerTimeoutError,
+        json.decoder.JSONDecodeError,
+        ValidationError,
+    ):
         raise HTTPException(HTTP_502_BAD_GATEWAY, detail='refresh user token failure')
 
     try:
         async with aio_client.get(
-            f'https://api.bgm.tv/user/{current_user.user_id}'
+            f'https://mirror.api.bgm.rin.cat/user/{current_user.user_id}'
         ) as user_info_resp:
-            user_info = UserInfo.parse_obj(await user_info_resp.json())
-        await db.execute(
-            db_models.UserToken.upsert(
-                user_id=current_user.user_id,
-                username=user_info.username,
-                nickname=user_info.nickname,
-                usergroup=user_info.usergroup,
-            )
+            user_info = UserInfo.parse_raw(await user_info_resp.read())
+        query = sa.update(
+            sa.UserToken,
+            sa.UserToken.user_id == current_user.user_id,
+            values={
+                'username': user_info.username,
+                'nickname': user_info.nickname,
+                'usergroup': user_info.usergroup.value,
+            },
         )
-    except (aiohttp.ServerTimeoutError, json.JSONDecodeError, ValidationError) as e:
+        await db.execute(query)
+    except (
+        aiohttp.ServerTimeoutError,
+        json.decoder.JSONDecodeError,
+        ValidationError,
+    ) as e:
         logger.exception(e)
-    return refresh
+    return refresh_resp
 
 
-# @router.get(
-#     '/me',
-#     response_model=Me,
-#     responses={403: {'model': ErrorDetail}},
-# )
-async def get_my_user_info(user: db_models.UserToken = Depends(get_current_user), ):
-    return user.dict()
+class Me(AuthResponse, RefreshResponse):
+    pass
+
+
+@router.get(
+    '/me',
+    response_model=Me,
+    include_in_schema=config.DEBUG,
+)
+async def get_my_user_info(user: sa.UserToken = Depends(get_current_user)):
+    return user.__dict__

@@ -1,4 +1,4 @@
-from enum import Enum, IntEnum
+from enum import Enum
 from typing import Dict, List, Optional
 
 from pydantic import BaseModel
@@ -83,7 +83,7 @@ class AuthResponse(BaseModel):
     refresh_token: str
 
 
-class UserGroupEnum(IntEnum):
+class UserGroupEnum(int, Enum):
     admin = 1
     bangumi_admin = 2
     window_admin = 3
