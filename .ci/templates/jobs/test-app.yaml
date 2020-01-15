@@ -12,9 +12,6 @@ jobs:
 
       - template: /.ci/templates/steps/install-project.yaml
 
-      - script: alembic upgrade head
-        displayName: Migrate Tables
-
       - bash: |
           set -ex
           sudo apt-get install mysql-client -y

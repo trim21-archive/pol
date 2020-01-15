@@ -1,18 +1,19 @@
 from logging.config import fileConfig
 
-import pymysql
 from alembic import context
+from databases import DatabaseURL
 from sqlalchemy import pool, engine_from_config
 
 from app.core.config import MYSQL_URI
 from app.db_models.sa import metadata
 
-pymysql.install_as_MySQLdb()
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
-config.set_main_option('sqlalchemy.url', str(MYSQL_URI))
+config.set_main_option(
+    'sqlalchemy.url', str(DatabaseURL(MYSQL_URI).replace(dialect='mysql+pymysql'))
+)
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 fileConfig(config.config_file_name)
