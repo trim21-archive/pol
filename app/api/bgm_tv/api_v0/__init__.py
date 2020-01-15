@@ -1,65 +1,32 @@
-# from enum import Enum
-# from typing import List, Union
-#
-# import peewee as pw
-from fastapi import APIRouter
+from enum import Enum
+from typing import List, Union
 
-# from fastapi import Depends
-# from pydantic import HttpUrl, BaseModel
-# from peewee_async import Manager
-# from starlette.exceptions import HTTPException
-#
-# from app import worker
-# from app.log import logger
-# from app.api.auth import api_v1 as auth
-# from app.db_models import (
-#     IqiyiBangumi, IqiyiEpisode, BilibiliBangumi, BilibiliEpisode, sa
-# )
-# from app.db.depends import get_objects
-# from app.video_website_spider import SupportWebsite
-# from app.video_website_spider.base import UrlNotValidError
-#
-router = APIRouter()
-#
-#
-# class SubmitResult(BaseModel):
-#     website: SupportWebsite
-#     url: str
-#
-#
-# class PlayerEpisode(BaseModel):
-#     url: str
-#     subject_id: int
-#     source_ep_id: str
-#     website: SupportWebsite
-#
-#
-# class PlayerSubject(BaseModel):
-#     website: SupportWebsite
-#     url: str
-#     bangumi_id: str
-#
-#
-# class SubmitBody(BaseModel):
-#     url: HttpUrl
-#
-#
-# @router.get(
-#     '/subject/player/{subject_id}',
-#     description='**unstable**\n\n针对bgm.tv的条目获取视频网站播放地址.',
-#     response_model=List[PlayerSubject],
-# )
-# async def get_player_url_of_subject(
-#     subject_id: int,
-#     db: Manager = Depends(get_objects),
-# ):
-#     return [{
-#         'website': x.name,
-#         'bangumi_id': x.bangumi_id,
-#         'url': x.url,
-#     } for x in await get_all_bangumi_of_subject(db, subject_id)]
-#
-#
+from fastapi import Depends
+from pydantic import HttpUrl, BaseModel
+from databases import Database
+
+from app.log import logger
+from app.api.auth import api_v1 as auth
+from app.db_models import sa
+from app.video_website_spider import SupportWebsite
+
+
+class SubmitResult(BaseModel):
+    website: SupportWebsite
+    url: str
+
+
+class PlayerEpisode(BaseModel):
+    url: str
+    subject_id: int
+    source_ep_id: str
+    website: SupportWebsite
+
+
+class SubmitBody(BaseModel):
+    url: HttpUrl
+
+
 # @router.get(
 #     '/ep/player/{ep_id}',
 #     description='**unstable**\n\n提交条目对应的视频网站合集地址.',
@@ -67,7 +34,7 @@ router = APIRouter()
 # )
 # async def get_player_url_of_episode(
 #     ep_id: int,
-#     db: Manager = Depends(get_objects),
+#     db: Database = Depends(get_db),
 # ):
 #     return [{
 #         'website': x.name,
@@ -75,7 +42,7 @@ router = APIRouter()
 #         'subject_id': x.subject_id,
 #         'source_ep_id': x.source_ep_id,
 #     } for x in await get_all_episode_player(db, ep_id)]
-#
+
 #
 # @router.put(
 #     '/subject/player/{subject_id}',
@@ -109,12 +76,10 @@ router = APIRouter()
 #         return {'website': website, 'url': submit.url}
 #     except UrlNotValidError as e:
 #         raise HTTPException(422, 'url not correct, should match ' + e.pattern)
-#
-#
+
 # @router.put(
 #     '/ep/player/{ep_id}',
-#     description='**unstable**\n\n'
-#     '针对bgm.tv的单集获取视频网站播放地址.\n\n',
+#     description='针对bgm.tv的单集获取视频网站播放地址.\n\n',
 #     response_model=SubmitResult,
 # )
 # async def submit_player_url_for_episode(
@@ -143,34 +108,34 @@ router = APIRouter()
 #         return {'website': website, 'url': submit.url}
 #     except UrlNotValidError as e:
 #         raise HTTPException(422, 'url not correct, should match ' + e.pattern)
-#
-#
-# class ErrorTypeEnum(str, Enum):
-#     subject = 'subject'
-#     sort = 'sort'
-#
-#
-# class PostError(BaseModel):
-#     url: HttpUrl
-#     error: ErrorTypeEnum
-#
-#
-# class PostSubjectInfo(PostError):
-#     subject_id: int
-#
-#
-# class PostEpInfo(PostError):
-#     ep_id: int
-#
-#
-# # @router.post(
-# #     '/subject/player/{subject_id}',
-# # )
+
+
+class ErrorTypeEnum(str, Enum):
+    subject = 'subject'
+    sort = 'sort'
+
+
+class PostError(BaseModel):
+    url: HttpUrl
+    error: ErrorTypeEnum
+
+
+class PostSubjectInfo(PostError):
+    subject_id: int
+
+
+class PostEpInfo(PostError):
+    ep_id: int
+
+
+# @router.post(
+#     '/subject/player/{subject_id}',
+# )
 # async def set_subject_player_url_status(
 #     subject_id: int,
 #     data: PostSubjectInfo,
 #     current_user: sa.UserToken = Depends(auth.get_current_user),
-#     db: Manager = Depends(get_objects),
+#     db: Database = Depends(get_db),
 # ):
 #     logger.bind(
 #         event='user.submit.subject.error',
@@ -180,44 +145,33 @@ router = APIRouter()
 #             'url': data.url,
 #         },
 #     ).info('user {} submit error {}', current_user.user_id, subject_id)
-#
-#
-# # @router.post(
-# #     '/subject/ep/{ep_id}',
-# # )
-# async def set_ep_player_url_status(
-#     ep_id: int,
-#     data: PostEpInfo,
-#     current_user: sa.UserToken = Depends(auth.get_current_user),
-# ):
-#     logger.bind(
-#         event='user.submit.ep.error',
-#         kwargs={
-#             'user_id': current_user.user_id,
-#             'subject_id': ep_id,
-#             'url': data.url,
-#         },
-#     ).info('')
-#
-#
-# async def get_all_bangumi_of_subject(
-#     db: Manager, subject_id
-# ) -> List[Union[BilibiliBangumi, IqiyiBangumi]]:
-#     bangumi_list = []
-#     for model in (BilibiliBangumi, IqiyiBangumi):
-#         try:
-#             bangumi_list.append(await db.get(model, subject_id=subject_id))
-#         except pw.DoesNotExist:
-#             pass
-#     return bangumi_list
-#
-#
-# async def get_all_episode_player(db: Manager,
-#                                  ep_id) -> List[Union[BilibiliEpisode, IqiyiEpisode]]:
-#     episodes = []
-#     for model in (BilibiliEpisode, IqiyiEpisode):
-#         try:
-#             episodes.append(await db.get(model, ep_id=ep_id))
-#         except pw.DoesNotExist:
-#             pass
-#     return episodes
+
+
+# @router.post(
+#     '/subject/ep/{ep_id}',
+# )
+async def set_ep_player_url_status(
+    ep_id: int,
+    data: PostEpInfo,
+    current_user: sa.UserToken = Depends(auth.get_current_user),
+):
+    logger.bind(
+        event='user.submit.ep.error',
+        kwargs={
+            'user_id': current_user.user_id,
+            'subject_id': ep_id,
+            'url': data.url,
+        },
+    ).info('')
+
+
+async def get_all_episode_player(
+    db: Database,
+    ep_id: int,
+) -> List[Union[sa.EpBilibili, sa.EpIqiyi]]:
+    episodes = []
+    for model in (sa.EpBilibili, sa.EpIqiyi):
+        r = await db.fetch_one(sa.select([model]).where(model.ep_id == ep_id))
+        if r:
+            episodes.append(model(**r))
+    return episodes

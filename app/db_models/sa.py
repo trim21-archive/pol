@@ -9,6 +9,7 @@ metadata = Base.metadata
 
 
 class BangumiBilibili(Base):
+    name = 'bilibili'
     __tablename__ = 'bangumi_bilibili'
 
     subject_id = Column(INTEGER(11), primary_key=True, autoincrement=False)
@@ -16,13 +17,34 @@ class BangumiBilibili(Base):
     season_id = Column(INTEGER(11), nullable=False, index=True)
     title = Column(String(255), nullable=False)
 
+    @property
+    def url(self):
+        return f'https://www.bilibili.com/bangumi/media/md{self.media_id}/'
+
+    # @property
+    # def name(self):
+    #     return self.title
+
+    @property
+    def bangumi_id(self):
+        return self.season_id
+
 
 class BangumiIqiyi(Base):
+    name = 'iqiyi'
     __tablename__ = 'bangumi_iqiyi'
 
     subject_id = Column(INTEGER(11), primary_key=True, autoincrement=False)
     bangumi_id = Column(String(255), nullable=False, index=True)
     title = Column(String(255), nullable=False)
+
+    @property
+    def url(self):
+        return f'https://www.iqiyi.com/{self.bangumi_id}.html'
+
+    # @property
+    # def name(self):
+    #     return self.title
 
 
 class BangumiSource(Base):

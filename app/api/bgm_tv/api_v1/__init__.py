@@ -9,9 +9,11 @@ from sqlalchemy.sql.expression import Select, and_
 from app import models
 from app.db_models import sa
 from app.db.depends import get_db
+from app.api.bgm_tv.api_v1 import player
 from app.models.subject_type import SubjectTypeEnum
 
 router = APIRouter()
+router.include_router(player.router)
 
 
 class SubjectSearch(BaseModel):
