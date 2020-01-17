@@ -1,5 +1,5 @@
 # pylint: disable=C0103
-import datetime
+from datetime import datetime, timedelta
 from collections import defaultdict
 
 import async_bgm_api.exceptions
@@ -28,10 +28,10 @@ router.include_router(view_ip_router, prefix='/view_ip')
 async def bgm_calendar(user_id: str):
     try:
         res = await aio_services.bgm_api.get_user_watching_subjects(user_id)
+    except async_bgm_api.exceptions.RecordNotFound:
+        raise HTTPException(404, "username doesn't exists")
     except async_bgm_api.exceptions.ServerConnectionError:
         raise HTTPException(502, 'connect to bgm.tv error')
-    if res is None:
-        raise HTTPException(404, "username doesn't exists")
 
     cal = Calendar()
     cal.add('prodid', '-//trim21//www.trim21.cn//')
@@ -44,20 +44,14 @@ async def bgm_calendar(user_id: str):
     for item in res:
         bangumi[item.subject.air_weekday].append(item)
 
-    weekday = datetime.datetime.now().weekday()
+    weekday = datetime.now().weekday()
     for i, k in enumerate(range(weekday, weekday + 7)):
         if k % 7 in bangumi:
             for item in bangumi[k % 7]:
                 event = Event()
                 event.add('summary', item.name)
-                event.add(
-                    'dtstart',
-                    datetime.datetime.now().date() + datetime.timedelta(i - 1)
-                )
-                event.add(
-                    'dtend',
-                    datetime.datetime.now().date() + datetime.timedelta(i - 1)
-                )
+                event.add('dtstart', datetime.now().date() + timedelta(i - 1))
+                event.add('dtend', datetime.now().date() + timedelta(i - 1))
                 cal.add_component(event)
 
     return cal.to_ical().decode('utf8')
