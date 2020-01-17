@@ -44,6 +44,7 @@ pytest-faker = "2.0.0"
 asynctest = "0.13.0"
 pytest-rerunfailures = "7.0"
 mock = "3.0.5"
+aioresponses = "0.6.1"
 coverage = "5.0.1"
 # linter and formatter
 pre-commit = "1.21.0"
@@ -56,13 +57,13 @@ flake8-comprehensions = "3.1.4"
 flake8-bugbear = "20.1.0"
 flake8-commas = "2.0.0"
 flake8-mutable = "1.2.0"
+flake8-broken-line = "0.1.1"
 # build docs
 sphinx = "2.3.1"
 sphinxcontrib-openapi = { version = "0.6.0", extras = ["markdown"] }
 sphinx-issues = "1.2.0"
 sphinx-rtd-theme = "0.4.3"
 mypy = "0.750"
-aioresponses = "0.6.1"
 
 [tool.isort]
 length_sort = true
