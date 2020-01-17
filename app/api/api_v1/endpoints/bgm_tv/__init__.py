@@ -27,7 +27,7 @@ router.include_router(view_ip_router, prefix='/view_ip')
 )
 async def bgm_calendar(user_id: str):
     try:
-        res = await aio_services.bgm_api.get_user_watching_subjects(user_id)
+        res = await aio_services.bgm_api_mirror.get_user_watching_subjects(user_id)
     except async_bgm_api.exceptions.RecordNotFound:
         raise HTTPException(404, "username doesn't exists")
     except async_bgm_api.exceptions.ServerConnectionError:
