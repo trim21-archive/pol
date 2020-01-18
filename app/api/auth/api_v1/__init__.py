@@ -10,6 +10,7 @@ from starlette.status import HTTP_502_BAD_GATEWAY, HTTP_503_SERVICE_UNAVAILABLE
 from starlette.responses import HTMLResponse, JSONResponse, RedirectResponse
 from starlette.exceptions import HTTPException
 
+from app import res
 from app.log import logger
 from app.core import config
 from app.models import ErrorDetail
@@ -62,17 +63,18 @@ async def auth_redirect():
     response_model=FinishAuth,
     response_description='授权成功时, 会设置cookies. 在对应cookies存在的情况下不需要把返回的`api_key`放在请求头中',
     responses={
-        200: {
-            'headers': {
-                'set-cookies': {'description': '会设置cookies, 后续请求会自动通过认证.'},
+        200: res.response(
+            headers={
+                'set-cookies': res.header(str, '会设置cookies, 后续请求会自动通过认证.'),
             },
-        },
-        302: {'description': ('如果授权不成功, 如服务器返回502等, '
-                              '会将用户转跳会bgm.tv重新进行授权')},
-        HTTP_503_SERVICE_UNAVAILABLE: {
-            'model': ErrorDetail,
-            'description': 'bgm.tv超时',
-        },
+        ),
+        302: res.response(
+            cls=JSONResponse,
+            description='如果授权不成功, 如服务器返回502等, 会将用户转跳会bgm.tv重新进行授权',
+        ),
+        503: res.response(
+            model=ErrorDetail, description='bgm.tv unreachable', cls=JSONResponse
+        ),
     },
 )
 async def oauth_callback(
@@ -238,4 +240,4 @@ class Me(AuthResponse, RefreshResponse):
     include_in_schema=config.DEBUG,
 )
 async def get_my_user_info(user: sa.UserToken = Depends(get_current_user)):
-    return user.__dict__
+    return user.dict()

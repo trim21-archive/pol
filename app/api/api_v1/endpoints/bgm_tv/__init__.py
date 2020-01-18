@@ -1,4 +1,3 @@
-# pylint: disable=C0103
 from datetime import datetime, timedelta
 from collections import defaultdict
 
@@ -7,7 +6,7 @@ from fastapi import APIRouter, HTTPException
 from icalendar import Event, Calendar
 
 from app import aio_services
-from app.responses import CalendarResponse
+from app.res import CalendarResponse, response
 from app.models.errors import ErrorDetail
 
 from .view_ip import router as view_ip_router
@@ -21,8 +20,10 @@ router.include_router(view_ip_router, prefix='/view_ip')
     summary='iCalendar for watching bangumi',
     response_class=CalendarResponse,
     responses={
-        502: {'model': ErrorDetail},
-        404: {'model': ErrorDetail},
+        404: response(model=ErrorDetail, description='user not existing'),
+        502: response(
+            model=ErrorDetail, description='bgm.tv mirror site not reachable'
+        ),
     }
 )
 async def bgm_calendar(user_id: str):
@@ -31,7 +32,7 @@ async def bgm_calendar(user_id: str):
     except async_bgm_api.exceptions.RecordNotFound:
         raise HTTPException(404, "username doesn't exists")
     except async_bgm_api.exceptions.ServerConnectionError:
-        raise HTTPException(502, 'connect to bgm.tv error')
+        raise HTTPException(502, 'could not fetch user data from bgm.tv')
 
     cal = Calendar()
     cal.add('prodid', '-//trim21//www.trim21.cn//')

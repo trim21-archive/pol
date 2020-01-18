@@ -4,6 +4,7 @@ from databases import Database
 from starlette.responses import JSONResponse
 from starlette.exceptions import HTTPException
 
+from app import res
 from app.db_models import sa
 from app.db.depends import get_db
 from app.video_website_spider import SupportWebsite
@@ -21,8 +22,8 @@ class SubjectIdResponse(BaseModel):
     '/subject_id',
     response_model=SubjectIdResponse,
     responses={
-        200: {'response_class': JSONResponse},
-        404: {'response_class': JSONResponse, 'description': 'not found'},
+        200: res.response(cls=JSONResponse),
+        404: res.response(cls=JSONResponse),
     }
 )
 async def get_subject_id(

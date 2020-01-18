@@ -659,7 +659,7 @@ requirements = ["pipreqs", "pip-api"]
 xdg_home = ["appdirs (>=1.4.0)"]
 
 [[package]]
-category = "main"
+category = "dev"
 description = "A very fast and expressive template engine."
 name = "jinja2"
 optional = false
@@ -1565,7 +1565,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pathlib2", "contextlib2", "unittest2"]
 
 [metadata]
-content-hash = "57efa1860020eef0a3e8f54c67294d94bfd8604f5850cda38ba6e185436e0051"
+content-hash = "d825f10fad0cde590aebb340f1d420fc3d818d618a89c07a555bf8e2585fbefb"
 python-versions = "3.7.*"
 
 [metadata.files]

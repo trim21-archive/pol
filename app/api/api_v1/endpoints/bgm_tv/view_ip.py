@@ -2,11 +2,12 @@ from fastapi import Depends, APIRouter, HTTPException
 from databases import Database
 from starlette.responses import JSONResponse
 
-from app import curd
+from app import res, curd
 from app.core import config
 from app.db.redis import PickleRedis
 from app.db.depends import get_db, get_redis
 from app.models.map import Map
+from app.models.errors import ErrorDetail
 from app.models.subject import Subject
 from app.curd.exceptions import NotFoundError
 
@@ -23,10 +24,20 @@ async def bgm_calendar(subject_id: int, db: Database = Depends(get_db)):
         s = await curd.subject.get_by_id(db, subject_id)
     except NotFoundError:
         raise HTTPException(404)
-    return s.__dict__
+    return s.dict()
 
 
-@router.get('/subject/{subject_id}', response_model=Map)
+@router.get(
+    '/subject/{subject_id}',
+    response_class=JSONResponse,
+    response_model=Map,
+    responses={
+        404: res.response(
+            model=ErrorDetail,
+            description="subject is locked or is hard to find relations"
+        ),
+    }
+)
 async def bgm_ip_map(
     subject_id: int,
     db: Database = Depends(get_db),
@@ -39,7 +50,7 @@ async def bgm_ip_map(
     try:
         nodes, edges = await curd.map.get_by_subject_id(db, subject_id)
     except NotFoundError:
-        return JSONResponse({'detail': 'subject not found'}, 404)
+        raise HTTPException(404, detail="subject not found or it's locked")
 
     rd = format_data(nodes, edges)
     await redis.set(f'map-subject-{subject_id}', rd, expire=60 * 60 * 2)

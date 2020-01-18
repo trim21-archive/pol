@@ -4,7 +4,7 @@ import pytz
 import icalendar
 from fastapi import APIRouter
 
-from app.responses import CalendarResponse
+from app.res import CalendarResponse
 
 router = APIRouter()
 UTC_TZ = pytz.timezone('UTC')

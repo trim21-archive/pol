@@ -1,7 +1,6 @@
 import os
 import threading
 
-import jinja2
 import aiohttp
 from fastapi import FastAPI
 from starlette.middleware import cors
@@ -17,14 +16,12 @@ from app.api.api_v1.api import api_router
 from app.middlewares.log import LogExceptionMiddleware
 from app.middlewares.http import setup_http_middleware
 
-template = jinja2.Template(
-    """出于兴趣写的一些api，源码见[GitHub](https://github.com/Trim21/pol)
+template = f"""出于兴趣写的一些api，源码见[GitHub](https://github.com/Trim21/pol)
 
-当前版本[{{config.COMMIT_REV}}](https://github.com/Trim21/pol/tree/{{config.COMMIT_REV}})
+当前版本[{config.COMMIT_REV}](https://github.com/Trim21/pol/tree/{config.COMMIT_REV})
 
 更详细的文档见 [github pages](https://trim21.github.io/pol/)
 """
-)
 
 app = FastAPI(
     debug=config.DEBUG,
@@ -34,7 +31,7 @@ app = FastAPI(
     redoc_url=None,
     swagger_ui_oauth2_redirect_url=None,
     openapi_url='/openapi.json',
-    description=template.render(config=config),
+    description=template,
 )
 
 if config.DSN:  # pragma: no cover
@@ -49,6 +46,7 @@ if config.DSN:  # pragma: no cover
         dsn=config.DSN, release=config.COMMIT_SHA, integrations=[RedisIntegration()]
     )
     app.add_middleware(SentryAsgiMiddleware)
+
 app.add_middleware(cors.CORSMiddleware, allow_origins='*')
 setup_http_middleware(app)
 app.add_middleware(LogExceptionMiddleware)
