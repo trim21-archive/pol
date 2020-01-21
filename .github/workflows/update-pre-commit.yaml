@@ -23,6 +23,7 @@ jobs:
         id: get-version
         run: |
           echo "::set-output name=poetry::$(curl -sSl https://pypi.org/pypi/poetry/json | jq .info.version -r)"
+          echo "::set-output name=python::$(python -V)"
 
       - uses: actions/cache@v1
         with:
@@ -34,13 +35,14 @@ jobs:
           echo "::add-path::$HOME/.local/bin"
           echo "::add-path::$HOME/.poetry/bin"
           $HOME/.poetry/bin/poetry --version && exit 0
-          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python - --version 1.0.0
+          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python - --version 1.0.1
+#          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python - --version ${{ steps.get-version.outputs.poetry }}
 
       - uses: actions/cache@v1
         id: cache
         with:
           path: ~/.local
-          key: 3.7-${{ hashFiles('**/poetry.lock') }}
+          key: ${{ steps.get-version.outputs.python }}-${{ hashFiles('**/poetry.lock') }}
 
       - name: Install Dependencies
         run: |
