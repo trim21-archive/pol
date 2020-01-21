@@ -47,15 +47,15 @@ async def test_get_key(redis_client, faker: Faker):
 @pytest.mark.asyncio
 async def test_decode_error(redis_client, faker: Faker):
     pool = await setup_redis_pool()
-    KEY = faker.name()
-    VALUE = faker.name()
+    key = 'unpickle-able key'
+    value = '23333-123s'
 
-    redis_client.set(KEY, VALUE)
-    value = await pool.get(KEY)
+    redis_client.set(key, value)
+    value = await pool.get(key)
     assert value is None, 'unpickle-able key should return `None`'
-    assert not await pool.exists(KEY), 'unpickle-able key should be deleted'
+    assert not await pool.exists(key), 'unpickle-able key should be deleted'
 
-    redis_client.delete(KEY)
+    redis_client.delete(key)
     await close(pool)
 
 
