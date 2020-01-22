@@ -3,11 +3,8 @@ from celery import Celery
 
 from app.core import config
 
-celery = Celery(
-    'worker',
-    broker=f'amqp://{config.RABBITMQ_USER}:{config.RABBITMQ_PASS}'
-    f'@{config.RABBITMQ_ADDR}//'
-)
+broker = f'amqp://{config.RABBITMQ_USER}:{config.RABBITMQ_PASS}@{config.RABBITMQ_ADDR}/'
+celery = Celery('worker', broker=broker)
 
 celery.conf.task_routes = {'app.worker.*': 'celery-www-tasks'}
 celery.conf.update(

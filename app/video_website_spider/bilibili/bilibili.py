@@ -56,8 +56,9 @@ def upsert_bilibili_bangumi(db_session: Session, values):
 
 
 class Bilibili(BaseWebsite):
-    bangumi_regex = re.compile(r'https?://www\.bilibili\.com/bangumi/media/md\d+/?.*')
-    episode_regex = re.compile(r'https?://www\.bilibili\.com/bangumi/play/ep\d+/?.*')
+    bangumi_regex = re.compile(r'https?://www\.bilibili\.com/bangumi/media/md(\d+)/?.*')
+    ss_regex = re.compile(r'https?://www\.bilibili\.com/bangumi/play/ss(\d+)/?.*')
+    episode_regex = re.compile(r'https?://www\.bilibili\.com/bangumi/play/ep(\d+)/?.*')
 
     @classmethod
     def valid_ep_url(cls, url: str):
@@ -70,11 +71,13 @@ class Bilibili(BaseWebsite):
     @classmethod
     def valid_subject_url(cls, url):
         if not cls.bangumi_regex.match(url):
-            if not cls.episode_regex.match(url):
-                raise UrlNotValidError(
-                    'https://www.bilibili.com/bangumi/media/md{media_id} '
-                    'or https://www.bilibili.com/bangumi/play/ep{episode_id}'
-                )
+            if not cls.ss_regex.match(url):
+                if not cls.episode_regex.match(url):
+                    raise UrlNotValidError(
+                        'https://www.bilibili.com/bangumi/media/md{media_id} '
+                        'or https://www.bilibili.com/bangumi/play/ep{episode_id} '
+                        'or https://www.bilibili.com/bangumi/play/ss{season_id}'
+                    )
 
     @classmethod
     def subject(cls, subject_id: int, url: str):
@@ -84,15 +87,16 @@ class Bilibili(BaseWebsite):
             if initial_state_dict:
                 if 'ep' in url:
                     model = PlayerPageInitialState
+                elif 'play/ss' in url:
+                    model = PlayerPageInitialState
                 else:
                     model = BangumiPageInitialState
                 try:
                     initial_state = model.parse_obj(initial_state_dict)
                 except ValidationError as e:
-                    print(initial_state['mainSectionList'])
                     logger.error(model.__name__)
                     logger.error(str(e))
-                    logger.error(repr(initial_state))
+                    logger.error(repr(initial_state_dict))
                     return
             else:
                 logger.error("can't get initial state from url {}", url)
@@ -109,7 +113,6 @@ class Bilibili(BaseWebsite):
                 )
 
         db_session = Session()
-
         try:
             upsert_bilibili_bangumi(
                 db_session, {
@@ -120,32 +123,37 @@ class Bilibili(BaseWebsite):
                 }
             )
 
-            bgm_eps = bgm_tv.mirror.subject_eps(subject_id).eps
+            o = db_session.query(
+                sa.EpBilibili
+            ).filter(sa.EpBilibili.subject_id == subject_id).first()
+            if o is None:
+                bgm_eps = bgm_tv.mirror.subject_eps(subject_id).eps
 
-            bgm_ep_start = min(x.sort for x in bgm_eps)
-            ep_start = int(min(x.index for x in initial_state.epList))
+                bgm_ep_start = min(x.sort for x in bgm_eps)
+                ep_start = int(min(x.index for x in initial_state.epList))
 
-            for bgm_ep in bgm_eps:
-                for ep in initial_state.epList:
-                    if not ep.index.isdecimal():
-                        continue
-                    if (bgm_ep.sort - bgm_ep_start) == (int(ep.index) - ep_start):
-                        upsert_bilibili_ep(
-                            db_session, {
-                                'ep_id': bgm_ep.id,
-                                'source_ep_id': ep.ep_id,
-                                'subject_id': subject_id,
-                                'title': ep.title,
-                            }
-                        )
-                        break
-            db_session.commit()
+                for bgm_ep in bgm_eps:
+                    for ep in initial_state.epList:
+                        if not str(ep.index).isdecimal():
+                            continue
+                        if (bgm_ep.sort - bgm_ep_start) == (int(ep.index) - ep_start):
+                            upsert_bilibili_ep(
+                                db_session, {
+                                    'ep_id': bgm_ep.id,
+                                    'source_ep_id': ep.ep_id,
+                                    'subject_id': subject_id,
+                                    'title': ep.title,
+                                }
+                            )
+                            break
         except Exception:
             db_session.rollback()
             logger.exception(
                 f"can't get media info for subject_id {subject_id}, url <{url}>"
             )
             raise
+        else:
+            db_session.commit()
         finally:
             db_session.close()
 
@@ -153,7 +161,6 @@ class Bilibili(BaseWebsite):
     def ep(cls, ep_id: int, url: str):
         db_session = Session()
         try:
-
             with requests.Session() as http_client:
                 r = http_client.get(url)
                 initial_state_dict = get_initial_state_from_html(r.text)
@@ -162,7 +169,6 @@ class Bilibili(BaseWebsite):
                 else:
                     logger.error("can't get initial state from url {}", url)
                     return
-                # source_ep_id = video_website_spider.bilibili.get_ep_id_from_url(url)
 
                 ep = db_session.query(sa.Ep).filter(sa.Ep.ep_id == ep_id).first()
                 if ep is None:
@@ -186,8 +192,9 @@ class Bilibili(BaseWebsite):
                         subject_id=ep.subject_id,
                     )
                 )
+
                 season_id = initial_state.mediaInfo.season_id
-                o = db_session.query(sa.BangumiBilibili, ).filter(
+                o = db_session.query(sa.BangumiBilibili).filter(
                     sa.BangumiBilibili.season_id == season_id,
                     sa.BangumiBilibili.subject_id == ep.subject_id,
                     sa.BangumiBilibili.media_id == initial_state.mediaInfo.media_id,
@@ -208,13 +215,13 @@ class Bilibili(BaseWebsite):
                             'title': initial_state.mediaInfo.title,
                         }
                     )
-
-            db_session.commit()
         except Exception:
             db_session.rollback()
             logger.exception(
                 f"can't get media info for subject_id {ep_id}, url <{url}>"
             )
             raise
+        else:
+            db_session.commit()
         finally:
             db_session.close()

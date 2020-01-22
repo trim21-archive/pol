@@ -1,4 +1,5 @@
 import asyncio
+from typing import Callable
 
 from loguru import logger
 
@@ -29,11 +30,9 @@ def submit_ep(ep_id: int, url: str):
     dispatcher.ep(ep_id, url)
 
 
-async def submit_task(func_name, args=None, kwargs=None):
-    if callable(func_name):
-        func_name = func_name.__name__
+async def submit_task(func: Callable, args=None, kwargs=None):
     asyncio.create_task(
         asyncio.get_event_loop().run_in_executor(
-            None, lambda: celery.send_task(func_name, args, kwargs)
+            None, lambda: celery.send_task(func.__name__, args, kwargs)
         )
     )

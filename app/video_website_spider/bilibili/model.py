@@ -165,3 +165,22 @@ class UnLoginPlayerPageMediaInfo(BaseModel):
 
 class UnLoginPlayerPageInitialState(BaseModel):
     mediaInfo: UnLoginPlayerPageMediaInfo
+
+
+class SSPlayerPageMediaInfo(BaseModel):
+    id: int
+    ssId: int
+    title: str
+
+    @property
+    def media_id(self):
+        return self.id
+
+    @property
+    def season_id(self):
+        return self.ssId
+
+
+class SSPlayerPageInitialState(BaseModel):
+    h1Title: str
+    epList: List[dict]

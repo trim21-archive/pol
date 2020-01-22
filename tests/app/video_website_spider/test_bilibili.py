@@ -1,3 +1,4 @@
+from app.worker import submit_bangumi
 from app.db.mysql import Session
 from app.db_models import sa
 from app.video_website_spider.bilibili import Bilibili
@@ -7,12 +8,11 @@ def test_init():
     Bilibili()
 
 
-def test_valid_ep_url():
-    pass
+# def test_valid_ep_url():
+#     pass
 
-
-def test_valid_subject_url():
-    pass
+# def test_valid_subject_url():
+#     pass
 
 
 def test_submit_ep():
@@ -39,7 +39,30 @@ def test_submit_ep():
         db_session.close()
 
 
-def test_submit_bangumi():
+def test_submit_bangumi_play_ss():
+    db_session = Session()
+    submit_bangumi(
+        subject_id=278683, url='https://www.bilibili.com/bangumi/play/ss29372'
+    )
+
+    try:
+        db_session.query(sa.BangumiBilibili).filter_by(
+            subject_id=262939,
+            media_id=28224153,
+            season_id=29372,
+        ).one()
+        db_session.query(sa.EpBilibili).filter_by(
+            source_ep_id=307957,
+            ep_id=869447,
+            subject_id=278683,
+        ).one()
+    except Exception:
+        raise
+    finally:
+        db_session.close()
+
+
+def test_submit_bangumi_md():
     db_session = Session()
     Bilibili.subject(
         subject_id=262939,
