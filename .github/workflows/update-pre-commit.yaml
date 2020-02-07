@@ -15,6 +15,9 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
+      - name: Checkout branch
+        run: git checkout "${GITHUB_REF:11}"
+
       - uses: actions/setup-python@v1
         with:
           python-version: '3.7'
@@ -57,12 +60,10 @@ jobs:
 
       - name: Create A PR
         if: failure()
-        uses: peter-evans/create-pull-request@v1
+        uses: peter-evans/create-pull-request@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: 'chore: update pre-commit config'
-          title: update pre-commit config
-          author-name: pol-actions[bot]
-          author-email: github@trim21.me
+          title: 'chore: update pre-commit config'
+          author: 'Trim21[bot] <github@trim21.me>'
           branch: create-pull-request/pre-commit
-          branch-suffix: none
