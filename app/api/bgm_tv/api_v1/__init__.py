@@ -58,13 +58,12 @@ async def search_by_tag(
                 and_(alias.subject_id == sa.Subject.id, alias.text == t),
             )
         )
-
-    return SubjectSearch(
-        limit=limit,
-        offset=offset,
-        count=0,
-        subjects=[models.Subject.parse_obj(x) async for x in db.iterate(query)],
-    )
+    return {
+        'limit': limit,
+        'offset': offset,
+        'count': 0,
+        'subjects': [x async for x in db.iterate(query)],
+    }
 
 
 # class ListTags(BaseModel):
