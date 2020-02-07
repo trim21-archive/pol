@@ -62,7 +62,7 @@ async def search_by_tag(
         'limit': limit,
         'offset': offset,
         'count': 0,
-        'subjects': [x async for x in db.iterate(query)],
+        'subjects': await db.fetch_all(query),
     }
 
 
