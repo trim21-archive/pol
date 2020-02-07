@@ -15,6 +15,7 @@ from app.deprecation import bind_deprecated_path
 from app.api.api_v1.api import api_router
 from app.middlewares.log import LogExceptionMiddleware
 from app.middlewares.http import setup_http_middleware
+from app.middlewares.sentry import setup_sentry
 
 template = f"""出于兴趣写的一些api，源码见[GitHub](https://github.com/Trim21/pol)
 
@@ -34,19 +35,7 @@ app = FastAPI(
     description=template,
 )
 
-if config.DSN:  # pragma: no cover
-    import sentry_sdk
-    from sentry_sdk.integrations.logging import ignore_logger
-    from sentry_sdk.integrations.redis import RedisIntegration
-    from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
-
-    ignore_logger('asyncio')
-    logger.debug('setup sentry')
-    sentry_sdk.init(
-        dsn=config.DSN, release=config.COMMIT_SHA, integrations=[RedisIntegration()]
-    )
-    app.add_middleware(SentryAsgiMiddleware)
-
+setup_sentry(app)
 app.add_middleware(cors.CORSMiddleware, allow_origins='*')
 setup_http_middleware(app)
 app.add_middleware(LogExceptionMiddleware)
