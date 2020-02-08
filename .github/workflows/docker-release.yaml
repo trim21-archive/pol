@@ -19,9 +19,14 @@ jobs:
       - name: Get Latest tools version
         id: version
         run: |
-          echo "::set-env name=SLUG::${GITHUB_REF:11}-${GITHUB_SHA:0:7}"
+          if [[ ! $GITHUB_REF == refs/tags* ]]; then
+            echo "::set-env name=REF::${GITHUB_REF:10}"
+            echo "::set-env name=SLUG::${GITHUB_REF:10}"
+          else
+            echo "::set-env name=REF::${GITHUB_REF:11}"
+            echo "::set-env name=SLUG::${GITHUB_REF:11}-${GITHUB_SHA:0:7}"
+          fi
           echo "::set-env name=SHA::${GITHUB_SHA:0:7}"
-          echo "::set-env name=REF::${GITHUB_REF:11}"
 
       - name: Build Docker
         run: |
@@ -29,7 +34,7 @@ jobs:
             -t trim21/pol:$SLUG \
             -t trim21/pol:$REF \
             --build-arg "COMMIT_SHA=$SHA" \
-            --build-arg "COMMIT_TAG=$(git describe --abbrev=0 --tags)" \
+            --build-arg "COMMIT_REF=$REF" \
             .
 
       - name: Docker Login
@@ -40,6 +45,4 @@ jobs:
       - name: Publish Docker
         run: |
           docker push trim21/pol:$REF
-          if [[ ! $REG == v* ]]; then
-            docker push trim21/pol:$SLUG
-          fi
+          docker push trim21/pol:$SLUG
