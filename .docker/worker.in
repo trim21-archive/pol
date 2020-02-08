@@ -1,3 +1,0 @@
-# include "./.docker/Dockerfile"
-
-CMD python -m celery worker -A app.worker -l info -c 5

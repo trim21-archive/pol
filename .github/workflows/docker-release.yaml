@@ -1,0 +1,48 @@
+name: Build and Relesae Docker
+
+on:
+  push:
+    branches:
+      - dev
+      - master
+      - test-build-docker
+  create:
+    tags:
+      - v*
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Get Latest tools version
+        id: version
+        run: |
+          if [[ ${GITHUB_REF} == refs/tags* ]]; then
+            echo "::set-env name=REF::${GITHUB_REF:10}"
+            echo "::set-env name=SLUG::${GITHUB_REF:10}"
+          else
+            echo "::set-env name=REF::${GITHUB_REF:11}"
+            echo "::set-env name=SLUG::${GITHUB_REF:11}-${GITHUB_SHA:0:7}"
+          fi
+          echo "::set-env name=SHA::${GITHUB_SHA:0:7}"
+
+      - name: Build Docker
+        run: |
+          docker build \
+            -t trim21/pol:$SLUG \
+            -t trim21/pol:$REF \
+            --build-arg "COMMIT_SHA=$SHA" \
+            --build-arg "COMMIT_REF=$REF" \
+            .
+
+      - name: Docker Login
+        run: docker login --username trim21 --password $DOCKER_PASS
+        env:
+          DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+
+      - name: Publish Docker
+        run: |
+          docker push trim21/pol:$REF
+          docker push trim21/pol:$SLUG
