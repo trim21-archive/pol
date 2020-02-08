@@ -14,17 +14,27 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - name: Checkout branch
-        run: git checkout "${GITHUB_REF:11}"
+      - name: Get Latest tools version
+        id: version
+        run: |
+          echo "::set-output name=slug::${GITHUB_REF:11}-${GITHUB_SHA:0:7}"
+          echo "::set-output name=branch::${GITHUB_REF:11}"
 
       - name: Build Docker
         run: |
           docker build \
-            -t pol:latest-build \
+            -t trim21/pol:${{ steps.version.outputs.slug }} \
+            -t trim21/pol:${{ steps.version.outputs.branch }} \
             --build-arg "DAO_COMMIT_SHA=${GITHUB_SHA:0:7}" \
             --build-arg "DAO_COMMIT_TAG=$(git describe --abbrev=0 --tags)" \
             -f .docker/Dockerfile \
             .
 
-      - name: Tag Docker
-        run: docker tag pol:latest-build "pol:${GITHUB_REF:11}"
+      - name: Docker Login
+        run: docker login --username trim21 --password $DOCKER_PASS
+        env:
+          DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+      - name: Publish Docker
+        run: |
+          docker push trim21/pol:${{ steps.version.outputs.slug }} \
+            trim21/pol:${{ steps.version.outputs.branch }}
