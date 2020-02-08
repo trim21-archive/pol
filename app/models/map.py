@@ -1,6 +1,6 @@
 from typing import List
 
-from pydantic import BaseModel
+from pydantic import Json, BaseModel
 
 from app.models.subject_type import SubjectTypeEnum
 
@@ -20,7 +20,7 @@ class Nodes(BaseModel):
     name_cn: str
     image: str = 'lain.bgm.tv/img/no_icon_subject.png'
     subject_type: SubjectTypeEnum
-    info: dict
+    info: Json
     map: int
 
 
