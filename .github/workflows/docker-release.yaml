@@ -19,7 +19,7 @@ jobs:
       - name: Get Latest tools version
         id: version
         run: |
-          if [[ ! ${GITHUB_REF} == refs/tags* ]]; then
+          if [[ ${GITHUB_REF} == refs/tags* ]]; then
             echo "::set-env name=REF::${GITHUB_REF:10}"
             echo "::set-env name=SLUG::${GITHUB_REF:10}"
           else
