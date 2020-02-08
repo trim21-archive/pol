@@ -25,6 +25,7 @@ jobs:
 
       - name: Build Docker
         run: |
+          docker pull pol:$REF || true
           docker build \
             -t trim21/pol:$SLUG \
             -t trim21/pol:$REF \
