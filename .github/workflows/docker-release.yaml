@@ -25,13 +25,11 @@ jobs:
 
       - name: Build Docker
         run: |
-          docker pull pol:$REF || true
           docker build \
             -t trim21/pol:$SLUG \
             -t trim21/pol:$REF \
             --build-arg "DAO_COMMIT_SHA=$SHA" \
             --build-arg "DAO_COMMIT_TAG=$(git describe --abbrev=0 --tags)" \
-            -f .docker/Dockerfile \
             .
 
       - name: Docker Login

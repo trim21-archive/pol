@@ -26,3 +26,16 @@ todo:
 - [ ] qq
 - [ ] youku
 - [ ] acfun
+
+
+Start worker:
+
+```bash
+python -m celery worker -A app.worker -l info -c 5
+```
+
+Start Server:
+
+```bash
+gunicorn -c /etc/gunicorn.py app.fast:app
+```
