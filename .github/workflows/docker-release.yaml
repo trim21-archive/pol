@@ -36,5 +36,5 @@ jobs:
           DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
       - name: Publish Docker
         run: |
-          docker push trim21/pol:${{ steps.version.outputs.slug }} \
-            trim21/pol:${{ steps.version.outputs.branch }}
+          docker push trim21/pol:${{ steps.version.outputs.slug }}
+          docker push trim21/pol:${{ steps.version.outputs.branch }}
