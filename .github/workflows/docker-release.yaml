@@ -1,4 +1,4 @@
-name: check pre-commit update
+name: Build and Relesae Docker
 
 on:
   push:
@@ -23,6 +23,7 @@ jobs:
             -t pol:latest-build \
             --build-arg "DAO_COMMIT_SHA=${GITHUB_SHA:0:7}" \
             --build-arg "DAO_COMMIT_TAG=$(git describe --abbrev=0 --tags)" \
+            -f .docker/Dockerfile \
             .
 
       - name: Tag Docker
