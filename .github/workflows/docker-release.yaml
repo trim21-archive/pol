@@ -6,35 +6,43 @@ on:
       - dev
       - master
       - test-build-docker
-
+  create:
+    tags:
+      - v*
 jobs:
   build:
     runs-on: ubuntu-18.04
 
     steps:
-      - uses: actions/checkout@v1
-
-      - name: Get Latest tools version
-        id: version
+#      - uses: actions/checkout@v1
+      - name: Set env
+        run: echo ::set-env name=RELEASE_VERSION::${GITHUB_REF}
+      - name: Test
         run: |
-          echo "::set-output name=slug::${GITHUB_REF:11}-${GITHUB_SHA:0:7}"
-          echo "::set-output name=branch::${GITHUB_REF:11}"
+          echo $RELEASE_VERSION
+          echo ${{ env.RELEASE_VERSION }}
 
-      - name: Build Docker
-        run: |
-          docker build \
-            -t trim21/pol:${{ steps.version.outputs.slug }} \
-            -t trim21/pol:${{ steps.version.outputs.branch }} \
-            --build-arg "DAO_COMMIT_SHA=${GITHUB_SHA:0:7}" \
-            --build-arg "DAO_COMMIT_TAG=$(git describe --abbrev=0 --tags)" \
-            -f .docker/Dockerfile \
-            .
-
-      - name: Docker Login
-        run: docker login --username trim21 --password $DOCKER_PASS
-        env:
-          DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
-      - name: Publish Docker
-        run: |
-          docker push trim21/pol:${{ steps.version.outputs.slug }}
-          docker push trim21/pol:${{ steps.version.outputs.branch }}
+#      - name: Get Latest tools version
+#        id: version
+#        run: |
+#          echo "::set-output name=slug::${GITHUB_REF:11}-${GITHUB_SHA:0:7}"
+#          echo "::set-output name=branch::${GITHUB_REF:11}"
+#
+#      - name: Build Docker
+#        run: |
+#          docker build \
+#            -t trim21/pol:${{ steps.version.outputs.slug }} \
+#            -t trim21/pol:${{ steps.version.outputs.branch }} \
+#            --build-arg "DAO_COMMIT_SHA=${GITHUB_SHA:0:7}" \
+#            --build-arg "DAO_COMMIT_TAG=$(git describe --abbrev=0 --tags)" \
+#            -f .docker/Dockerfile \
+#            .
+#
+#      - name: Docker Login
+#        run: docker login --username trim21 --password $DOCKER_PASS
+#        env:
+#          DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+#      - name: Publish Docker
+#        run: |
+#          docker push trim21/pol:${{ steps.version.outputs.slug }}
+#          docker push trim21/pol:${{ steps.version.outputs.branch }}
