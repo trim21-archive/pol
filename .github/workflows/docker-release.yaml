@@ -21,7 +21,7 @@ jobs:
         run: |
           if [[ ${GITHUB_REF} == refs/tags* ]]; then
             echo "::set-env name=REF::${GITHUB_REF:10}"
-            echo "::set-env name=SLUG::${GITHUB_REF:10}"
+            echo "::set-env name=SLUG::latest"
           else
             echo "::set-env name=REF::${GITHUB_REF:11}"
             echo "::set-env name=SLUG::${GITHUB_REF:11}-${GITHUB_SHA:0:7}"
