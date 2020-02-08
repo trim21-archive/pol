@@ -19,7 +19,7 @@ from app.middlewares.sentry import setup_sentry
 
 template = f"""出于兴趣写的一些api，源码见[GitHub](https://github.com/Trim21/pol)
 
-当前版本[{config.COMMIT_REV}](https://github.com/Trim21/pol/tree/{config.COMMIT_REV})
+当前版本[{config.COMMIT_REF}](https://github.com/Trim21/pol/tree/{config.COMMIT_REF})
 
 更详细的文档见 [github pages](https://trim21.github.io/pol/)
 """
@@ -27,7 +27,7 @@ template = f"""出于兴趣写的一些api，源码见[GitHub](https://github.co
 app = FastAPI(
     debug=config.DEBUG,
     title=config.APP_NAME,
-    version=config.COMMIT_REV,
+    version=config.COMMIT_REF,
     docs_url='/',
     redoc_url=None,
     swagger_ui_oauth2_redirect_url=None,

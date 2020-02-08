@@ -30,9 +30,9 @@ sink = Sink(
     extra={
         '@metadata': {
             'beat': 'py_logging',
-            'version': config.COMMIT_REV,
+            'version': config.COMMIT_REF,
         },
-        'version': config.COMMIT_REV,
+        'version': config.COMMIT_REF,
         'platform': platform.platform(),
     },
     tz=config.TIMEZONE,

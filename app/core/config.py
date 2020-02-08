@@ -17,7 +17,7 @@ DEBUG = config('DEBUG', cast=bool, default=False)
 DSN = config('DSN', default=None)
 
 COMMIT_SHA = config('COMMIT_SHA', default='None')
-COMMIT_REV = config('COMMIT_REV', default='dev')
+COMMIT_REF = config('COMMIT_REF', default='dev')
 
 TIMEZONE = pytz.timezone('Etc/GMT-8')
 
@@ -65,7 +65,7 @@ class BgmTvAutoTracker:
 
 
 REQUEST_SERVICE_USER_AGENT = (
-    f'app/{COMMIT_REV} ({COMMIT_SHA})'
+    f'app/{COMMIT_REF} ({COMMIT_SHA})'
     'https://github.com/trim21/pol'
 )
 
