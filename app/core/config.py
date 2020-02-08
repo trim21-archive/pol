@@ -16,9 +16,8 @@ DEBUG = config('DEBUG', cast=bool, default=False)
 
 DSN = config('DSN', default=None)
 
-COMMIT_TAG = config('COMMIT_TAG', default=None)
-COMMIT_SHA = config('COMMIT_SHA', default='None')[:8]
-COMMIT_REV = COMMIT_TAG or COMMIT_SHA or ''
+COMMIT_SHA = config('COMMIT_SHA', default='None')
+COMMIT_REV = config('COMMIT_REV', default='dev')
 
 TIMEZONE = pytz.timezone('Etc/GMT-8')
 

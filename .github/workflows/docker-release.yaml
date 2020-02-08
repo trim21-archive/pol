@@ -28,8 +28,8 @@ jobs:
           docker build \
             -t trim21/pol:$SLUG \
             -t trim21/pol:$REF \
-            --build-arg "DAO_COMMIT_SHA=$SHA" \
-            --build-arg "DAO_COMMIT_TAG=$(git describe --abbrev=0 --tags)" \
+            --build-arg "COMMIT_SHA=$SHA" \
+            --build-arg "COMMIT_TAG=$(git describe --abbrev=0 --tags)" \
             .
 
       - name: Docker Login

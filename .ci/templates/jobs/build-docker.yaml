@@ -9,4 +9,3 @@ jobs:
     inputs:
       buildContext: '$(Build.Repository.LocalPath)'
       command: build
-      Dockerfile: .docker/Dockerfile
