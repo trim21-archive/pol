@@ -1,0 +1,29 @@
+name: check pre-commit update
+
+on:
+  push:
+    branches:
+      - dev
+      - master
+      - test-build-docker
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Checkout branch
+        run: git checkout "${GITHUB_REF:11}"
+
+      - name: Build Docker
+        run: |
+          docker build \
+            -t pol:latest-build \
+            --build-arg "DAO_COMMIT_SHA=${GITHUB_SHA:0:7}" \
+            --build-arg "DAO_COMMIT_TAG=$(git describe --abbrev=0 --tags)" \
+            .
+
+      - name: Tag Docker
+        run: docker tag pol:latest-build "pol:${GITHUB_REF:11}"
