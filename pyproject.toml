@@ -35,6 +35,7 @@ redis = "3.3.11"
 aiohttp = {version = "3.6.2", extras = ["speedups"]}
 databases = {version = "0.2.6", extras = ["mysql"]}
 alembic = "1.4.0"
+graphql-core = "3.0.3"
 
 [tool.poetry.dev-dependencies]
 # tests

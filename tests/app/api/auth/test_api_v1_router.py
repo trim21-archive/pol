@@ -40,7 +40,7 @@ def test_oauth_refresh_token(client: TestClient):
     with aioresponses() as m:
         mock_bgm_auth_app(m, refresh_token='refresh token 233')
 
-        async def mock_get_current_user(api_key=Header('api-key')):
+        async def mock_get_current_user(api_key=Header(None)):
             assert api_key == 'user access token'
             return sa.UserToken(
                 user_id=233,
