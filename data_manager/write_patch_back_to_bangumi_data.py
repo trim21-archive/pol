@@ -12,7 +12,7 @@ server_dir = project_dir / 'server'
 data_dir = project_dir / 'bangumi-data'
 sys.path.append(server_dir)
 
-with open(server_dir / 'patch.json', 'r', encoding='utf8') as f:
+with open(server_dir / 'patch.json', encoding='utf8') as f:
     data = json.load(f)
 
 file_list = glob.glob(str(data_dir / 'data' / 'items' / '*' / '*.json'))
@@ -53,7 +53,7 @@ def get_subject_id(d: dict):
 class MatchedSubjectFile():
     subject_to_file_map = {}
     for file in file_list:
-        with open(file, 'r', encoding='utf8') as f:
+        with open(file, encoding='utf8') as f:
             j = json.load(f)
             for item in j:
                 s = get_subject_id(item)

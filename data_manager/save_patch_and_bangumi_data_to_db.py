@@ -75,7 +75,7 @@ async def save_bangumi_data_to_db(redis):
 
 
 async def save_patch_to_db():
-    with open(base_dir / 'patch.json', 'r', encoding='utf-8') as f:
+    with open(base_dir / 'patch.json', encoding='utf-8') as f:
         d = json.load(f)
 
     await insert_bilibili_bangumi(
