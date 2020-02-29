@@ -1,10 +1,16 @@
 import pickle
+import random
+import string
 
 import pytest
-from faker import Faker
 
 from app.core import config
 from app.db.redis import PickleRedis, setup_redis_pool
+
+
+def random_str(length: int = 8):
+    all_char = string.ascii_letters + string.digits + string.punctuation
+    return ''.join(random.choice(all_char) for i in range(length))
 
 
 async def close(r: PickleRedis):
@@ -20,32 +26,32 @@ async def test_setup_redis_pool():
 
 
 @pytest.mark.asyncio
-async def test_set_key(redis_client, faker: Faker):
+async def test_set_key(redis_client):
     pool = await setup_redis_pool()
-    KEY = faker.name()
-    VALUE = faker.name()
+    key = random_str()
+    value = random_str()
 
-    await pool.set(KEY, VALUE)
-    assert redis_client.get(KEY) == pickle.dumps(VALUE), 'redis value are not pickled'
+    await pool.set(key, value)
+    assert redis_client.get(key) == pickle.dumps(value), 'redis value are not pickled'
 
-    redis_client.delete(KEY)
+    redis_client.delete(key)
     await close(pool)
 
 
 @pytest.mark.asyncio
-async def test_get_key(redis_client, faker: Faker):
+async def test_get_key(redis_client):
     pool = await setup_redis_pool()
-    KEY = faker.name()
-    VALUE = faker.name()
+    key = random_str()
+    value = random_str()
 
-    redis_client.set(KEY, pickle.dumps(VALUE))
-    assert VALUE == await pool.get(KEY), 'redis value are not pickled'
-    redis_client.delete(KEY)
+    redis_client.set(key, pickle.dumps(value))
+    assert value == await pool.get(key), 'redis value are not pickled'
+    redis_client.delete(key)
     await close(pool)
 
 
 @pytest.mark.asyncio
-async def test_decode_error(redis_client, faker: Faker):
+async def test_decode_error(redis_client):
     pool = await setup_redis_pool()
     key = 'unpickle-able key'
     value = '23333-123s'
