@@ -71,7 +71,7 @@ description = "Mock out requests made by ClientSession from aiohttp package"
 name = "aioresponses"
 optional = false
 python-versions = "*"
-version = "0.6.2"
+version = "0.6.3"
 
 [package.dependencies]
 aiohttp = ">=2.0.0,<4.0.0"
@@ -108,17 +108,6 @@ version = "2.5.2"
 
 [package.dependencies]
 vine = ">=1.1.3,<5.0.0a1"
-
-[[package]]
-category = "dev"
-description = "A few extensions to pyyaml."
-name = "aspy.yaml"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "1.3.0"
-
-[package.dependencies]
-pyyaml = "*"
 
 [[package]]
 category = "main"
@@ -810,11 +799,8 @@ category = "dev"
 description = "Rolling backport of unittest.mock for all Pythons"
 name = "mock"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "3.0.5"
-
-[package.dependencies]
-six = "*"
+python-versions = ">=3.6"
+version = "4.0.1"
 
 [package.extras]
 build = ["twine", "wheel", "blurb"]
@@ -911,14 +897,13 @@ description = "A framework for managing and maintaining multi-language pre-commi
 name = "pre-commit"
 optional = false
 python-versions = ">=3.6"
-version = "2.0.1"
+version = "2.1.1"
 
 [package.dependencies]
-"aspy.yaml" = "*"
 cfgv = ">=2.0.0"
 identify = ">=1.0.0"
 nodeenv = ">=0.11.1"
-pyyaml = "*"
+pyyaml = ">=5.1"
 toml = "*"
 virtualenv = ">=15.2"
 
@@ -1127,8 +1112,8 @@ category = "dev"
 description = "A tool to automatically upgrade syntax for newer versions."
 name = "pyupgrade"
 optional = false
-python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
-version = "1.26.2"
+python-versions = ">=3.6.1"
+version = "2.1.0"
 
 [package.dependencies]
 tokenize-rt = ">=3.2.0"
@@ -1226,7 +1211,7 @@ description = "Python documentation generator"
 name = "sphinx"
 optional = false
 python-versions = ">=3.5"
-version = "2.3.1"
+version = "2.4.3"
 
 [package.dependencies]
 Jinja2 = ">=2.3"
@@ -1249,7 +1234,7 @@ sphinxcontrib-serializinghtml = "*"
 
 [package.extras]
 docs = ["sphinxcontrib-websupport"]
-test = ["pytest", "pytest-cov", "html5lib", "flake8 (>=3.5.0)", "flake8-import-order", "mypy (>=0.761)", "docutils-stubs"]
+test = ["pytest (<5.3.3)", "pytest-cov", "html5lib", "flake8 (>=3.5.0)", "flake8-import-order", "mypy (>=0.761)", "docutils-stubs"]
 
 [[package]]
 category = "dev"
@@ -1566,7 +1551,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools"]
 
 [metadata]
-content-hash = "1c5879782c18064d5ac09612a16ecbff46cbbf9748a66ac15dad63a65b04a652"
+content-hash = "a3b16aed975378e1b7ad858b54afce781afc2ef37b641a1f5fed8408d76a500d"
 python-versions = "3.7.*"
 
 [metadata.files]
@@ -1597,8 +1582,8 @@ aioredis = [
     {file = "aioredis-1.3.1.tar.gz", hash = "sha256:15f8af30b044c771aee6787e5ec24694c048184c7b9e54c3b60c750a4b93273a"},
 ]
 aioresponses = [
-    {file = "aioresponses-0.6.2-py2.py3-none-any.whl", hash = "sha256:57354fdec291f07ae50f89da71504966542a57363d6a1ad3a6222520a7d1bd84"},
-    {file = "aioresponses-0.6.2.tar.gz", hash = "sha256:4606becb52dd8ea7f0aebdbfb8e24b1efb0ed22a3698d0708b233ad77b5f386b"},
+    {file = "aioresponses-0.6.3-py2.py3-none-any.whl", hash = "sha256:6ccc18d766adb0f3c814f674c50e48f73fb291d29a66a60a9fa088c3e8087d8e"},
+    {file = "aioresponses-0.6.3.tar.gz", hash = "sha256:7b636f2148444cf46b19c2a1ae077a6fdfd93f65cde13f6130481f907d2c811b"},
 ]
 alabaster = [
     {file = "alabaster-0.7.12-py2.py3-none-any.whl", hash = "sha256:446438bdcca0e05bd45ea2de1668c1d9b032e1a9154c2c259092d77031ddd359"},
@@ -1610,10 +1595,6 @@ alembic = [
 amqp = [
     {file = "amqp-2.5.2-py2.py3-none-any.whl", hash = "sha256:6e649ca13a7df3faacdc8bbb280aa9a6602d22fd9d545336077e573a1f4ff3b8"},
     {file = "amqp-2.5.2.tar.gz", hash = "sha256:77f1aef9410698d20eaeac5b73a87817365f457a507d82edf292e12cbb83b08d"},
-]
-"aspy.yaml" = [
-    {file = "aspy.yaml-1.3.0-py2.py3-none-any.whl", hash = "sha256:463372c043f70160a9ec950c3f1e4c3a82db5fca01d334b6bc89c7164d744bdc"},
-    {file = "aspy.yaml-1.3.0.tar.gz", hash = "sha256:e7c742382eff2caed61f87a39d13f99109088e5e93f04d76eb8d4b28aa143f45"},
 ]
 async-bgm-api = [
     {file = "async_bgm_api-0.0.4-py3-none-any.whl", hash = "sha256:a0d13ac266edbbbe45f7cdd16bb163c525ea568dd54e21a8e4b369f0eedee8f9"},
@@ -2059,6 +2040,11 @@ markupsafe = [
     {file = "MarkupSafe-1.1.1-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:ba59edeaa2fc6114428f1637ffff42da1e311e29382d81b339c1817d37ec93c6"},
     {file = "MarkupSafe-1.1.1-cp37-cp37m-win32.whl", hash = "sha256:b00c1de48212e4cc9603895652c5c410df699856a2853135b3967591e4beebc2"},
     {file = "MarkupSafe-1.1.1-cp37-cp37m-win_amd64.whl", hash = "sha256:9bf40443012702a1d2070043cb6291650a0841ece432556f784f004937f0f32c"},
+    {file = "MarkupSafe-1.1.1-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:6788b695d50a51edb699cb55e35487e430fa21f1ed838122d722e0ff0ac5ba15"},
+    {file = "MarkupSafe-1.1.1-cp38-cp38-manylinux1_i686.whl", hash = "sha256:cdb132fc825c38e1aeec2c8aa9338310d29d337bebbd7baa06889d09a60a1fa2"},
+    {file = "MarkupSafe-1.1.1-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:13d3144e1e340870b25e7b10b98d779608c02016d5184cfb9927a9f10c689f42"},
+    {file = "MarkupSafe-1.1.1-cp38-cp38-win32.whl", hash = "sha256:596510de112c685489095da617b5bcbbac7dd6384aeebeda4df6025d0256a81b"},
+    {file = "MarkupSafe-1.1.1-cp38-cp38-win_amd64.whl", hash = "sha256:e8313f01ba26fbbe36c7be1966a7b7424942f670f38e666995b88d012765b9be"},
     {file = "MarkupSafe-1.1.1.tar.gz", hash = "sha256:29872e92839765e546828bb7754a68c418d927cd064fd4708fab9fe9c8bb116b"},
 ]
 mccabe = [
@@ -2070,8 +2056,8 @@ mistune = [
     {file = "mistune-0.8.4.tar.gz", hash = "sha256:59a3429db53c50b5c6bcc8a07f8848cb00d7dc8bdb431a4ab41920d201d4756e"},
 ]
 mock = [
-    {file = "mock-3.0.5-py2.py3-none-any.whl", hash = "sha256:d157e52d4e5b938c550f39eb2fd15610db062441a9c2747d3dbfa9298211d0f8"},
-    {file = "mock-3.0.5.tar.gz", hash = "sha256:83657d894c90d5681d62155c82bda9c1187827525880eda8ff5df4ec813437c3"},
+    {file = "mock-4.0.1-py3-none-any.whl", hash = "sha256:5e48d216809f6f393987ed56920305d8f3c647e6ed35407c1ff2ecb88a9e1151"},
+    {file = "mock-4.0.1.tar.gz", hash = "sha256:2a572b715f09dd2f0a583d8aeb5bb67d7ed7a8fd31d193cf1227a99c16a67bc3"},
 ]
 more-itertools = [
     {file = "more-itertools-8.2.0.tar.gz", hash = "sha256:b1ddb932186d8a6ac451e1d95844b382f55e12686d51ca0c68b6f61f2ab7a507"},
@@ -2151,8 +2137,8 @@ pluggy = [
     {file = "pluggy-0.13.1.tar.gz", hash = "sha256:15b2acde666561e1298d71b523007ed7364de07029219b604cf808bfa1c765b0"},
 ]
 pre-commit = [
-    {file = "pre_commit-2.0.1-py2.py3-none-any.whl", hash = "sha256:0385479a0fe0765b1d32241f6b5358668cb4b6496a09aaf9c79acc6530489dbb"},
-    {file = "pre_commit-2.0.1.tar.gz", hash = "sha256:bf80d9dd58bea4f45d5d71845456fdcb78c1027eda9ed562db6fa2bd7a680c3a"},
+    {file = "pre_commit-2.1.1-py2.py3-none-any.whl", hash = "sha256:09ebe467f43ce24377f8c2f200fe3cd2570d328eb2ce0568c8e96ce19da45fa6"},
+    {file = "pre_commit-2.1.1.tar.gz", hash = "sha256:f8d555e31e2051892c7f7b3ad9f620bd2c09271d87e9eedb2ad831737d6211eb"},
 ]
 py = [
     {file = "py-1.8.1-py2.py3-none-any.whl", hash = "sha256:c20fdd83a5dbc0af9efd622bee9a5564e278f6380fffcacc43ba6f43db2813b0"},
@@ -2265,8 +2251,8 @@ pytz = [
     {file = "pytz-2019.3.tar.gz", hash = "sha256:b02c06db6cf09c12dd25137e563b31700d3b80fcc4ad23abb7a315f2789819be"},
 ]
 pyupgrade = [
-    {file = "pyupgrade-1.26.2-py2.py3-none-any.whl", hash = "sha256:2e15ee41e0c9f267033face1128a0e50701cb6945c4fbc82364dd1392b98a800"},
-    {file = "pyupgrade-1.26.2.tar.gz", hash = "sha256:62e651d8ce309a5b43b196d0953d1f3190f6b4e789641c4c4b344949a309b9e0"},
+    {file = "pyupgrade-2.1.0-py2.py3-none-any.whl", hash = "sha256:a58bcfc534cad819961ecbb1955119a86625d7f055c88d8b780f578b19423b41"},
+    {file = "pyupgrade-2.1.0.tar.gz", hash = "sha256:e4acc3a56185378374736d0f14b3ac3ec0967f3763a322e3adadf3104bf0e9be"},
 ]
 pyyaml = [
     {file = "PyYAML-5.3-cp27-cp27m-win32.whl", hash = "sha256:940532b111b1952befd7db542c370887a8611660d2b9becff75d39355303d82d"},
@@ -2306,8 +2292,8 @@ soupsieve = [
     {file = "soupsieve-1.9.5.tar.gz", hash = "sha256:e2c1c5dee4a1c36bcb790e0fabd5492d874b8ebd4617622c4f6a731701060dda"},
 ]
 sphinx = [
-    {file = "Sphinx-2.3.1-py3-none-any.whl", hash = "sha256:298537cb3234578b2d954ff18c5608468229e116a9757af3b831c2b2b4819159"},
-    {file = "Sphinx-2.3.1.tar.gz", hash = "sha256:e6e766b74f85f37a5f3e0773a1e1be8db3fcb799deb58ca6d18b70b0b44542a5"},
+    {file = "Sphinx-2.4.3-py3-none-any.whl", hash = "sha256:776ff8333181138fae52df65be733127539623bb46cc692e7fa0fcfc80d7aa88"},
+    {file = "Sphinx-2.4.3.tar.gz", hash = "sha256:ca762da97c3b5107cbf0ab9e11d3ec7ab8d3c31377266fd613b962ed971df709"},
 ]
 sphinx-issues = [
     {file = "sphinx-issues-1.2.0.tar.gz", hash = "sha256:845294736c7ac4c09c706f13431f709e1164037cbb00f6bf623ae16eccf509f3"},
@@ -2424,6 +2410,7 @@ virtualenv = [
 ]
 wcwidth = [
     {file = "wcwidth-0.1.8-py2.py3-none-any.whl", hash = "sha256:8fd29383f539be45b20bd4df0dc29c20ba48654a41e661925e612311e9f3c603"},
+    {file = "wcwidth-0.1.8.tar.gz", hash = "sha256:f28b3e8a6483e5d49e7f8949ac1a78314e740333ae305b4ba5defd3e74fb37a8"},
 ]
 websockets = [
     {file = "websockets-8.1-cp36-cp36m-macosx_10_6_intel.whl", hash = "sha256:3762791ab8b38948f0c4d281c8b2ddfa99b7e510e46bd8dfa942a5fff621068c"},
