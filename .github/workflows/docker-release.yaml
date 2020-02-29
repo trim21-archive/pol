@@ -5,10 +5,9 @@ on:
     branches:
       - dev
       - master
-      - test-build-docker
-  create:
     tags:
       - v*
+
 jobs:
   build:
     runs-on: ubuntu-18.04
