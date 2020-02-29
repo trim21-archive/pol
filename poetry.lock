@@ -433,18 +433,6 @@ python-versions = ">=2.7"
 version = "0.3"
 
 [[package]]
-category = "dev"
-description = "Faker is a Python package that generates fake data for you."
-name = "faker"
-optional = false
-python-versions = ">=3.4"
-version = "4.0.0"
-
-[package.dependencies]
-python-dateutil = ">=2.4"
-text-unidecode = "1.3"
-
-[[package]]
 category = "main"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
 name = "fastapi"
@@ -1052,17 +1040,6 @@ testing = ["async-generator (>=1.3)", "coverage", "hypothesis (>=3.64)"]
 
 [[package]]
 category = "dev"
-description = "Faker integration with the pytest framework."
-name = "pytest-faker"
-optional = false
-python-versions = "*"
-version = "2.0.0"
-
-[package.dependencies]
-Faker = ">=0.7.3"
-
-[[package]]
-category = "dev"
 description = "pytest plugin to re-run tests to eliminate flaky failures"
 name = "pytest-rerunfailures"
 optional = false
@@ -1386,14 +1363,6 @@ full = ["aiofiles", "graphene", "itsdangerous", "jinja2", "python-multipart", "p
 
 [[package]]
 category = "dev"
-description = "The most basic Text::Unidecode port"
-name = "text-unidecode"
-optional = false
-python-versions = "*"
-version = "1.3"
-
-[[package]]
-category = "dev"
 description = "Python Library for Tom's Obvious, Minimal Language"
 name = "toml"
 optional = false
@@ -1535,7 +1504,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools"]
 
 [metadata]
-content-hash = "230cf5083e749c2a4dbc712b3e57c0eb38bf65a6b8d70d1b21c5b05e10b24297"
+content-hash = "70082093ddff5c95fc2fe0008d0226a063095981a829293eeddf66dfe24d3d40"
 python-versions = "3.7.*"
 
 [metadata.files]
@@ -1836,10 +1805,6 @@ entrypoints = [
     {file = "entrypoints-0.3-py2.py3-none-any.whl", hash = "sha256:589f874b313739ad35be6e0cd7efde2a4e9b6fea91edcc34e58ecbb8dbe56d19"},
     {file = "entrypoints-0.3.tar.gz", hash = "sha256:c70dd71abe5a8c85e55e12c19bd91ccfeec11a6e99044204511f9ed547d48451"},
 ]
-faker = [
-    {file = "Faker-4.0.0-py3-none-any.whl", hash = "sha256:047d4d1791bfb3756264da670d99df13d799bb36e7d88774b1585a82d05dbaec"},
-    {file = "Faker-4.0.0.tar.gz", hash = "sha256:1b1a58961683b30c574520d0c739c4443e0ef6a185c04382e8cc888273dbebed"},
-]
 fastapi = [
     {file = "fastapi-0.49.2-py3-none-any.whl", hash = "sha256:e3b479c61d8a02ec6c80ebbc2ee2d621a32855ffffedd55fd5f2993c6dbdcc1e"},
     {file = "fastapi-0.49.2.tar.gz", hash = "sha256:68395725aac4342896b4f9aa335c7e7fb773b565df7f96e964e24bffb84dc5a3"},
@@ -2035,11 +2000,6 @@ markupsafe = [
     {file = "MarkupSafe-1.1.1-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:ba59edeaa2fc6114428f1637ffff42da1e311e29382d81b339c1817d37ec93c6"},
     {file = "MarkupSafe-1.1.1-cp37-cp37m-win32.whl", hash = "sha256:b00c1de48212e4cc9603895652c5c410df699856a2853135b3967591e4beebc2"},
     {file = "MarkupSafe-1.1.1-cp37-cp37m-win_amd64.whl", hash = "sha256:9bf40443012702a1d2070043cb6291650a0841ece432556f784f004937f0f32c"},
-    {file = "MarkupSafe-1.1.1-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:6788b695d50a51edb699cb55e35487e430fa21f1ed838122d722e0ff0ac5ba15"},
-    {file = "MarkupSafe-1.1.1-cp38-cp38-manylinux1_i686.whl", hash = "sha256:cdb132fc825c38e1aeec2c8aa9338310d29d337bebbd7baa06889d09a60a1fa2"},
-    {file = "MarkupSafe-1.1.1-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:13d3144e1e340870b25e7b10b98d779608c02016d5184cfb9927a9f10c689f42"},
-    {file = "MarkupSafe-1.1.1-cp38-cp38-win32.whl", hash = "sha256:596510de112c685489095da617b5bcbbac7dd6384aeebeda4df6025d0256a81b"},
-    {file = "MarkupSafe-1.1.1-cp38-cp38-win_amd64.whl", hash = "sha256:e8313f01ba26fbbe36c7be1966a7b7424942f670f38e666995b88d012765b9be"},
     {file = "MarkupSafe-1.1.1.tar.gz", hash = "sha256:29872e92839765e546828bb7754a68c418d927cd064fd4708fab9fe9c8bb116b"},
 ]
 mccabe = [
@@ -2217,9 +2177,6 @@ pytest-asyncio = [
     {file = "pytest-asyncio-0.10.0.tar.gz", hash = "sha256:9fac5100fd716cbecf6ef89233e8590a4ad61d729d1732e0a96b84182df1daaf"},
     {file = "pytest_asyncio-0.10.0-py3-none-any.whl", hash = "sha256:d734718e25cfc32d2bf78d346e99d33724deeba774cc4afdf491530c6184b63b"},
 ]
-pytest-faker = [
-    {file = "pytest-faker-2.0.0.tar.gz", hash = "sha256:6b37bb89d94f96552bfa51f8e8b89d32addded8ddb58a331488299ef0137d9b6"},
-]
 pytest-rerunfailures = [
     {file = "pytest-rerunfailures-7.0.tar.gz", hash = "sha256:f3c9cf31339bf87b048c09dadb633a81156fa4899527fffc55cde105d04ed5fd"},
     {file = "pytest_rerunfailures-7.0-py2.py3-none-any.whl", hash = "sha256:1180a0f98975e1e1a2e055c87c1159cbd3bace8ceb71b1e7ffe4ace6121e7801"},
@@ -2328,10 +2285,6 @@ sqlalchemy = [
 starlette = [
     {file = "starlette-0.12.9.tar.gz", hash = "sha256:c2ac9a42e0e0328ad20fe444115ac5e3760c1ee2ac1ff8cdb5ec915c4a453411"},
 ]
-text-unidecode = [
-    {file = "text-unidecode-1.3.tar.gz", hash = "sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93"},
-    {file = "text_unidecode-1.3-py2.py3-none-any.whl", hash = "sha256:1311f10e8b895935241623731c2ba64f4c455287888b18189350b67134a822e8"},
-]
 toml = [
     {file = "toml-0.10.0-py2.7.egg", hash = "sha256:f1db651f9657708513243e61e6cc67d101a39bad662eaa9b5546f789338e07a3"},
     {file = "toml-0.10.0-py2.py3-none-any.whl", hash = "sha256:235682dd292d5899d361a811df37e04a8828a5b1da3115886b73cf81ebc9100e"},
@@ -2394,7 +2347,6 @@ virtualenv = [
 ]
 wcwidth = [
     {file = "wcwidth-0.1.8-py2.py3-none-any.whl", hash = "sha256:8fd29383f539be45b20bd4df0dc29c20ba48654a41e661925e612311e9f3c603"},
-    {file = "wcwidth-0.1.8.tar.gz", hash = "sha256:f28b3e8a6483e5d49e7f8949ac1a78314e740333ae305b4ba5defd3e74fb37a8"},
 ]
 websockets = [
     {file = "websockets-8.1-cp36-cp36m-macosx_10_6_intel.whl", hash = "sha256:3762791ab8b38948f0c4d281c8b2ddfa99b7e510e46bd8dfa942a5fff621068c"},
