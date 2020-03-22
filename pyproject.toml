@@ -13,12 +13,12 @@ python = "3.7.*"
 
 aioredis = "1.3.1"
 async-bgm-api = "0.0.4"
-celery = "4.4.0"
+celery = "4.4.2"
 cython = "0.29.15"
 email-validator = "1.0.5"
-fastapi = "0.49.2"
+fastapi = "0.52.0"
 gunicorn = "20.0.4"
-icalendar = "4.0.4"
+icalendar = "4.0.5"
 loguru = "0.4.1"
 lxml = "4.5.0"
 mistune = "0.8.4"
@@ -27,14 +27,14 @@ pydantic = "1.3"
 python-dateutil = "2.8.1"
 python-multipart = "0.0.5"
 pytz = "2019.3"
-sentry-sdk = "0.14.2"
+sentry-sdk = "0.14.3"
 uvicorn = "0.11.3"
 beautifulsoup4 = "4.8.2"
 requests = "2.23.0"
 redis = "3.3.11"
 aiohttp = {version = "3.6.2", extras = ["speedups"]}
 databases = {version = "0.2.6", extras = ["mysql"]}
-alembic = "1.4.0"
+alembic = "1.4.2"
 
 [tool.poetry.dev-dependencies]
 # tests
