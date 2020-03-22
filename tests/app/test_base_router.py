@@ -13,12 +13,6 @@ def test_openapi_json(client: TestClient):
     assert response.headers['content-type'] == 'application/json'
 
 
-def test_deprecated_calendar(client: TestClient):
-    response = client.get('/calendar/any-auth')
-    assert response.status_code == 200
-    assert response.text
-
-
 def test_bgm_tv_user_calendar(client: TestClient):
     response = client.get('/api.v1/calendar/bgm.tv/1')
     assert 'text/calendar' in response.headers['content-type'], response.text
