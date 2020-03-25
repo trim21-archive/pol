@@ -19,7 +19,7 @@ jobs:
 
       - name: Run renovate cli
         run: |
-          VERSION=$(echo $GITHUB_SHA|cut - -c -7)
+          VERSION=${GITHUB_SHA::7}
 
           sentry-cli releases new -p pol $VERSION
           sentry-cli releases set-commits --commit $GITHUB_SHA $VERSION
