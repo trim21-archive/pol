@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from collections import defaultdict
 
+import async_bgm_api.models
 import async_bgm_api.exceptions
 from fastapi import APIRouter, HTTPException
 from icalendar import Event, Calendar
@@ -28,7 +29,9 @@ router.include_router(view_ip_router, prefix='/view_ip')
 )
 async def bgm_calendar(user_id: str):
     try:
-        res = await aio_services.bgm_api_mirror.get_user_watching_subjects(user_id)
+        res = await aio_services.bgm_api_mirror.get_user_collection(
+            user_id, async_bgm_api.models.CollectionCat.watching
+        )
     except async_bgm_api.exceptions.RecordNotFound:
         raise HTTPException(404, "username doesn't exists")
     except async_bgm_api.exceptions.ServerConnectionError:
