@@ -1,0 +1,30 @@
+name: sentry
+
+on: ['push']
+
+jobs:
+  main:
+    strategy:
+      matrix:
+        repo:
+          - Trim21/BGmi
+
+    runs-on: ubuntu-16.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Sentry cli
+        run: curl -sL https://sentry.io/get-cli/ | bash
+
+      - name: Run renovate cli
+        run: |
+          VERSION=$(echo $GITHUB_SHA|cut - -c -7)
+
+          sentry-cli releases new -p pol $VERSION
+          sentry-cli releases set-commits --commit $GITHUB_SHA $VERSION
+          sentry-cli releases finalize "$VERSION"
+
+        env:
+          SENTRY_ORG: trim21
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
