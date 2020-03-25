@@ -35,19 +35,13 @@ def test_submit_ep(db_session: Session):
 
 def test_submit_bangumi_play_ss(db_session: Session):
     submit_bangumi(
-        subject_id=278683, url='https://www.bilibili.com/bangumi/play/ss29372'
+        subject_id=278683, url='https://www.bilibili.com/bangumi/play/ss29310'
     )
 
     db_session.query(sa.BangumiBilibili).filter_by(
-        subject_id=278683,
-        media_id=28224153,
-        season_id=29372,
-    ).one()
-
-    db_session.query(sa.EpBilibili).filter_by(
-        source_ep_id=307957,
-        ep_id=869447,
-        subject_id=278683,
+        subject_id=285776,
+        media_id=28224080,
+        season_id=29310,
     ).one()
 
 
