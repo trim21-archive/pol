@@ -1,6 +1,10 @@
 name: sentry
 
-on: ['push']
+on:
+  push:
+    branches:
+      - dev
+      - master
 
 jobs:
   main:
@@ -17,7 +21,7 @@ jobs:
       - name: Install Sentry cli
         run: curl -sL https://sentry.io/get-cli/ | bash
 
-      - name: Run renovate cli
+      - name: Run Sentry Cli
         run: |
           VERSION=pol@${GITHUB_SHA::7}
 
