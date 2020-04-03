@@ -19,7 +19,7 @@ jobs:
 
       - name: Run Sentry Cli
         run: |
-          VERSION=${GITHUB_SHA::8}
+          VERSION=${GITHUB_SHA:0:7}
 
           sentry-cli releases new -p pol $VERSION
           sentry-cli releases set-commits --auto $VERSION
