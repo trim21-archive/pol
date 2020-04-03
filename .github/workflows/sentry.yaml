@@ -8,10 +8,6 @@ on:
 
 jobs:
   main:
-    strategy:
-      matrix:
-        repo:
-          - Trim21/BGmi
 
     runs-on: ubuntu-16.04
 
@@ -23,7 +19,7 @@ jobs:
 
       - name: Run Sentry Cli
         run: |
-          VERSION=pol@${GITHUB_SHA::7}
+          VERSION={GITHUB_SHA::7}
 
           sentry-cli releases new -p pol $VERSION
           sentry-cli releases set-commits --auto $VERSION
