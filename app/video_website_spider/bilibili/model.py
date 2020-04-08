@@ -71,6 +71,7 @@ class PlayerPageEpInfo(BaseModel):
     schema of new player page
     don't have enough time to implement
     """
+
     id: int
     """
     ``epInfo.ep_id``
@@ -84,7 +85,7 @@ class PlayerPageEpInfo(BaseModel):
 
     @property
     def title(self):
-        return self.titleFormat + ' ' + self.longTitle
+        return self.titleFormat + " " + self.longTitle
 
     @property
     def ep_id(self):
@@ -148,7 +149,7 @@ class UnLoginPlayerPageMediaInfo(BaseModel):
 
     @property
     def season_id(self):
-        return self.param['season_id']
+        return self.param["season_id"]
 
     @property
     def media_id(self):

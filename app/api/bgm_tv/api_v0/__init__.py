@@ -111,8 +111,8 @@ class SubmitBody(BaseModel):
 
 
 class ErrorTypeEnum(str, Enum):
-    subject = 'subject'
-    sort = 'sort'
+    subject = "subject"
+    sort = "sort"
 
 
 class PostError(BaseModel):
@@ -156,18 +156,13 @@ async def set_ep_player_url_status(
     current_user: sa.UserToken = Depends(auth.get_current_user),
 ):
     logger.bind(
-        event='user.submit.ep.error',
-        kwargs={
-            'user_id': current_user.user_id,
-            'subject_id': ep_id,
-            'url': data.url,
-        },
-    ).info('')
+        event="user.submit.ep.error",
+        kwargs={"user_id": current_user.user_id, "subject_id": ep_id, "url": data.url,},
+    ).info("")
 
 
 async def get_all_episode_player(
-    db: Database,
-    ep_id: int,
+    db: Database, ep_id: int,
 ) -> List[Union[sa.EpBilibili, sa.EpIqiyi]]:
     episodes = []
     for model in (sa.EpBilibili, sa.EpIqiyi):

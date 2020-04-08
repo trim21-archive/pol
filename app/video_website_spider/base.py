@@ -24,7 +24,7 @@ class BaseWebsite(metaclass=abc.ABCMeta):
         ------
             UrlNotValidError
         """
-        raise NotImplementedError(cls.__name__, 'valid_ep_url')
+        raise NotImplementedError(cls.__name__, "valid_ep_url")
 
     @classmethod
     @abc.abstractmethod
@@ -43,14 +43,14 @@ class BaseWebsite(metaclass=abc.ABCMeta):
         ------
             UrlNotValidError
         """
-        raise NotImplementedError(cls.__name__, 'valid_subject_url')
+        raise NotImplementedError(cls.__name__, "valid_subject_url")
 
     @classmethod
     @abc.abstractmethod
     def subject(cls, subject_id: int, url: str):  # pragma: no cover
-        raise NotImplementedError(cls.__name__, 'subject')
+        raise NotImplementedError(cls.__name__, "subject")
 
     @classmethod
     @abc.abstractmethod
     def ep(cls, ep_id: int, url: str):  # pragma: no cover
-        raise NotImplementedError(cls.__name__, 'subject')
+        raise NotImplementedError(cls.__name__, "subject")

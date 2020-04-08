@@ -41,9 +41,9 @@ class SubjectCollection(BaseModel):
 
 
 class StatusEnum(Enum):
-    Air = 'Air'
-    Today = 'Today'
-    NA = 'NA'
+    Air = "Air"
+    Today = "Today"
+    NA = "NA"
 
 
 class Episode(BaseModel):
@@ -109,7 +109,7 @@ class RefreshResponse(BaseModel):
     access_token: str
     expires_in: int
     token_type: str
-    scope: Optional[str] = ''
+    scope: Optional[str] = ""
     refresh_token: str
 
 

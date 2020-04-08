@@ -19,35 +19,31 @@ class SubjectIdResponse(BaseModel):
 
 
 @router.get(
-    '/subject_id',
+    "/subject_id",
     response_model=SubjectIdResponse,
     responses={
         200: res.response(cls=JSONResponse),
         404: res.response(cls=JSONResponse),
-    }
+    },
 )
 async def get_subject_id(
-    bangumi_id: str,
-    source: SupportWebsite,
-    db: Database = Depends(get_db),
+    bangumi_id: str, source: SupportWebsite, db: Database = Depends(get_db),
 ):
     if source == SupportWebsite.bilibili.value:
         r = await db.fetch_one(
-            sa.select(
-                [sa.BangumiBilibili]
-            ).where(sa.BangumiBilibili.season_id == bangumi_id)
+            sa.select([sa.BangumiBilibili]).where(
+                sa.BangumiBilibili.season_id == bangumi_id
+            )
         )
     else:
         r = await db.fetch_one(
-            sa.select(
-                [sa.BangumiIqiyi]
-            ).where(sa.BangumiIqiyi.bangumi_id == bangumi_id)
+            sa.select([sa.BangumiIqiyi]).where(sa.BangumiIqiyi.bangumi_id == bangumi_id)
         )
     if not r:
         raise HTTPException(404)
     resp = {
-        'source': source,
-        'bangumi_id': bangumi_id,
+        "source": source,
+        "bangumi_id": bangumi_id,
         **r,
     }
     return resp

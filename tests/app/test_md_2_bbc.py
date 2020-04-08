@@ -7,6 +7,6 @@ client = TestClient(app.fast.app)
 
 
 def test_html_view():
-    response = client.get('/md2bbc')
+    response = client.get("/md2bbc")
     assert response.status_code == 200
-    assert 'text/html' in response.headers['content-type']
+    assert "text/html" in response.headers["content-type"]

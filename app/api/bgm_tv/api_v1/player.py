@@ -18,19 +18,17 @@ class PlayerSubject(BaseModel):
 
 
 @router.get(
-    '/subject/player/{subject_id}',
-    description='针对bgm.tv的条目获取视频网站播放地址.',
+    "/subject/player/{subject_id}",
+    description="针对bgm.tv的条目获取视频网站播放地址.",
     response_model=List[PlayerSubject],
 )
 async def get_player_url_of_subject(
-    subject_id: int,
-    db: Database = Depends(get_db),
+    subject_id: int, db: Database = Depends(get_db),
 ):
-    return [{
-        'website': x.name,
-        'bangumi_id': x.bangumi_id,
-        'url': x.url,
-    } for x in await get_all_bangumi_of_subject(db, subject_id)]
+    return [
+        {"website": x.name, "bangumi_id": x.bangumi_id, "url": x.url,}
+        for x in await get_all_bangumi_of_subject(db, subject_id)
+    ]
 
 
 async def get_all_bangumi_of_subject(

@@ -2,7 +2,16 @@ from typing import TypeVar
 
 import sqlalchemy.ext.declarative.api
 from sqlalchemy import (
-    CHAR, Text, Column, String, DateTime, func, join, text, select, update
+    CHAR,
+    Text,
+    Column,
+    String,
+    DateTime,
+    func,
+    join,
+    text,
+    select,
+    update,
 )
 from sqlalchemy.dialects.mysql import INTEGER, TINYINT, insert
 from sqlalchemy.ext.declarative import declarative_base
@@ -23,8 +32,8 @@ metadata = Base.metadata
 
 
 class BangumiBilibili(Base, ORMMixin):
-    name = 'bilibili'
-    __tablename__ = 'bangumi_bilibili'
+    name = "bilibili"
+    __tablename__ = "bangumi_bilibili"
 
     subject_id = Column(INTEGER(11), primary_key=True, autoincrement=False)
     media_id = Column(INTEGER(11), nullable=False, index=True)
@@ -33,7 +42,7 @@ class BangumiBilibili(Base, ORMMixin):
 
     @property
     def url(self):
-        return f'https://www.bilibili.com/bangumi/media/md{self.media_id}/'
+        return f"https://www.bilibili.com/bangumi/media/md{self.media_id}/"
 
     @property
     def bangumi_id(self):
@@ -41,8 +50,8 @@ class BangumiBilibili(Base, ORMMixin):
 
 
 class BangumiIqiyi(Base, ORMMixin):
-    name = 'iqiyi'
-    __tablename__ = 'bangumi_iqiyi'
+    name = "iqiyi"
+    __tablename__ = "bangumi_iqiyi"
 
     subject_id = Column(INTEGER(11), primary_key=True, autoincrement=False)
     bangumi_id = Column(String(255), nullable=False, index=True)
@@ -50,11 +59,11 @@ class BangumiIqiyi(Base, ORMMixin):
 
     @property
     def url(self):
-        return f'https://www.iqiyi.com/{self.bangumi_id}.html'
+        return f"https://www.iqiyi.com/{self.bangumi_id}.html"
 
 
 class BangumiSource(Base, ORMMixin):
-    __tablename__ = 'bangumi_source'
+    __tablename__ = "bangumi_source"
 
     source = Column(CHAR(255), primary_key=True, nullable=False)
     bangumi_id = Column(String(255), primary_key=True, nullable=False)
@@ -62,7 +71,7 @@ class BangumiSource(Base, ORMMixin):
 
 
 class Ep(Base, ORMMixin):
-    __tablename__ = 'ep'
+    __tablename__ = "ep"
 
     ep_id = Column(INTEGER(11), primary_key=True, autoincrement=False)
     subject_id = Column(INTEGER(11), nullable=False, index=True)
@@ -71,7 +80,7 @@ class Ep(Base, ORMMixin):
 
 
 class EpBilibili(Base, ORMMixin):
-    __tablename__ = 'ep_bilibili'
+    __tablename__ = "ep_bilibili"
 
     source_ep_id = Column(INTEGER(11), primary_key=True, autoincrement=False)
     ep_id = Column(INTEGER(11), nullable=False)
@@ -80,7 +89,7 @@ class EpBilibili(Base, ORMMixin):
 
 
 class EpIqiyi(Base, ORMMixin):
-    __tablename__ = 'ep_iqiyi'
+    __tablename__ = "ep_iqiyi"
 
     source_ep_id = Column(String(255), primary_key=True, autoincrement=False)
     ep_id = Column(INTEGER(11), nullable=False)
@@ -89,7 +98,7 @@ class EpIqiyi(Base, ORMMixin):
 
 
 class EpSource(Base, ORMMixin):
-    __tablename__ = 'ep_source'
+    __tablename__ = "ep_source"
 
     subject_id = Column(INTEGER(11), nullable=False, index=True, autoincrement=False)
     source = Column(CHAR(40), primary_key=True, nullable=False)
@@ -99,14 +108,14 @@ class EpSource(Base, ORMMixin):
 
 
 class MissingBangumi(Base, ORMMixin):
-    __tablename__ = 'missing_bangumi'
+    __tablename__ = "missing_bangumi"
 
     source = Column(CHAR(255), primary_key=True, nullable=False)
     bangumi_id = Column(String(255), primary_key=True, nullable=False)
 
 
 class Relation(Base, ORMMixin):
-    __tablename__ = 'relation'
+    __tablename__ = "relation"
 
     id = Column(String(255), primary_key=True)
     relation = Column(String(255), nullable=False)
@@ -117,7 +126,7 @@ class Relation(Base, ORMMixin):
 
 
 class Subject(Base, ORMMixin):
-    __tablename__ = 'subject'
+    __tablename__ = "subject"
 
     id = Column(INTEGER(11), primary_key=True, autoincrement=False)
     name = Column(String(255), nullable=False)
@@ -137,13 +146,13 @@ class Subject(Base, ORMMixin):
     locked = Column(TINYINT(1), nullable=False)
 
     def __str__(self):
-        return f'<Subject id={self.id} name={self.name_cn} name_cn={self.name_cn}>'
+        return f"<Subject id={self.id} name={self.name_cn} name_cn={self.name_cn}>"
 
     __repr__ = __str__
 
 
 class Tag(Base, ORMMixin):
-    __tablename__ = 'tag'
+    __tablename__ = "tag"
 
     subject_id = Column(INTEGER(11), primary_key=True, nullable=False)
     text = Column(CHAR(32), primary_key=True, nullable=False, index=True)
@@ -151,7 +160,7 @@ class Tag(Base, ORMMixin):
 
 
 class UserSubmitBangumi(Base, ORMMixin):
-    __tablename__ = 'user_submit_bangumi'
+    __tablename__ = "user_submit_bangumi"
 
     source = Column(CHAR(40), primary_key=True, nullable=False)
     subject_id = Column(INTEGER(11), nullable=False)
@@ -161,7 +170,7 @@ class UserSubmitBangumi(Base, ORMMixin):
 
 
 class UserToken(Base, ORMMixin):
-    __tablename__ = 'usertoken'
+    __tablename__ = "usertoken"
 
     user_id = Column(INTEGER(11), primary_key=True, autoincrement=False)
     scope = Column(String(255), nullable=False)
@@ -176,31 +185,32 @@ class UserToken(Base, ORMMixin):
 
 
 __all__ = [
-    'func',
-    'update',
-    'insert',
-    'select',
-    'join',
-    'metadata',
-    'BangumiBilibili',
-    'BangumiIqiyi',
-    'BangumiSource',
-    'Ep',
-    'EpBilibili',
-    'EpIqiyi',
-    'EpSource',
-    'MissingBangumi',
-    'Relation',
-    'Subject',
-    'Tag',
-    'UserSubmitBangumi',
-    'UserToken',
+    "func",
+    "update",
+    "insert",
+    "select",
+    "join",
+    "metadata",
+    "BangumiBilibili",
+    "BangumiIqiyi",
+    "BangumiSource",
+    "Ep",
+    "EpBilibili",
+    "EpIqiyi",
+    "EpSource",
+    "MissingBangumi",
+    "Relation",
+    "Subject",
+    "Tag",
+    "UserSubmitBangumi",
+    "UserToken",
 ]
-if __name__ == '__main__':
+if __name__ == "__main__":
     from app.core import config
     from sqlalchemy import create_engine
     from databases import DatabaseURL
+
     engine = create_engine(
-        str(DatabaseURL(config.MYSQL_URI).replace(dialect='mysql+pymysql'))
+        str(DatabaseURL(config.MYSQL_URI).replace(dialect="mysql+pymysql"))
     )
     Base.metadata.create_all(engine)

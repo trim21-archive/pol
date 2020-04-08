@@ -9,7 +9,7 @@ def pytest_sessionstart(session):
     Called after the Session object has been created and
     before performing collection and entering the run test loop.
     """
-    'session start'
+    "session start"
 
 
 @pytest.fixture

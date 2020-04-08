@@ -20,9 +20,9 @@ async def get_api_key(
             raise HTTPException(
                 status_code=HTTP_403_FORBIDDEN,
                 detail=(
-                    'try to auth with both http headers and cookies, '
-                    'but different api_key'
-                )
+                    "try to auth with both http headers and cookies, "
+                    "but different api_key"
+                ),
             )
     if api_key_cookie:
         return api_key_cookie
@@ -31,27 +31,25 @@ async def get_api_key(
     raise HTTPException(
         status_code=HTTP_403_FORBIDDEN,
         detail=(
-            'You need to auth with api_key in header or cookies, '
-            'see https://www.trim21.cn/#/auth for more details'
-        )
+            "You need to auth with api_key in header or cookies, "
+            "see https://www.trim21.cn/#/auth for more details"
+        ),
     )
 
 
 async def get_session(
-    token: str = Depends(get_api_key),
-    redis: PickleRedis = Depends(get_redis),
+    token: str = Depends(get_api_key), redis: PickleRedis = Depends(get_redis),
 ) -> SessionValue:
     token = token
     key = KEY_PREFIX + token
     r = await redis.get_session_and_extend_ttl(key, DEFAULT_TIMEOUT)
     if not r:
-        raise HTTPException(403, 'api_key error or session expired')
+        raise HTTPException(403, "api_key error or session expired")
     return r
 
 
 async def get_current_user(
-    session: SessionValue = Depends(get_session),
-    db: Database = Depends(get_db),
+    session: SessionValue = Depends(get_session), db: Database = Depends(get_db),
 ):
     r = await db.fetch_one(
         sa.select([sa.UserToken]).where(sa.UserToken.user_id == session.user_id)
