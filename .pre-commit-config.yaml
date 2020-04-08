@@ -47,6 +47,10 @@ repos:
       - id: doc8
         args: [ '--max-line-length', '88', '--file-encoding', 'utf-8' ]
 
+  - repo: https://github.com/Trim21/poetry-check-lock
+    rev: v0.0.1
+    hooks:
+      - id: poetry-check-lock
 #  - repo: https://github.com/pre-commit/mirrors-mypy
 #    rev: '0.750'  # Use the sha / tag you want to point at
 #    hooks:
