@@ -22,7 +22,7 @@ repos:
           - --no-ensure-ascii
           - --no-sort-keys
           - --indent
-          - '2'
+          - "2"
           - --autofix
       # check for file bigger than 500kb
       - id: end-of-file-fixer
@@ -34,18 +34,17 @@ repos:
     hooks:
       - id: find-trailing-comma
 
-
   - repo: https://github.com/asottile/pyupgrade
     rev: v2.1.0
     hooks:
       - id: pyupgrade
-        args: ['--py37-plus',]
+        args: ["--py37-plus"]
 
   - repo: https://github.com/PyCQA/doc8
     rev: 0.8.1rc3
     hooks:
       - id: doc8
-        args: [ '--max-line-length', '88', '--file-encoding', 'utf-8' ]
+        args: ["--max-line-length", "88", "--file-encoding", "utf-8"]
 
   - repo: https://github.com/Trim21/poetry-check-lock
     rev: v0.0.2
@@ -62,10 +61,13 @@ repos:
     hooks:
       - id: autoflake
         require_serial: true
-        args: ['--in-place',
-               '--remove-unused-variables',
-               '--remove-all-unused-imports',
-               '--expand-star-imports']
+        args:
+          [
+            "--in-place",
+            "--remove-unused-variables",
+            "--remove-all-unused-imports",
+            "--expand-star-imports",
+          ]
 
   - repo: local
     hooks:
@@ -82,4 +84,4 @@ repos:
         entry: flake8
         language: system
         types: [python]
-        args: ['--config=setup.cfg']
+        args: ["--config=setup.cfg"]
