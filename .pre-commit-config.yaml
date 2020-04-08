@@ -48,7 +48,7 @@ repos:
         args: [ '--max-line-length', '88', '--file-encoding', 'utf-8' ]
 
   - repo: https://github.com/Trim21/poetry-check-lock
-    rev: v0.0.1
+    rev: v0.0.2
     hooks:
       - id: poetry-check-lock
 
