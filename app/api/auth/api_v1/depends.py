@@ -6,7 +6,6 @@ from starlette.exceptions import HTTPException
 from app.db.redis import PickleRedis
 from app.db_models import sa
 from app.db.depends import get_db, get_redis
-
 from .scheme import API_KEY_HEADER, API_KEY_COOKIES
 from .session import KEY_PREFIX, DEFAULT_TIMEOUT, SessionValue
 

@@ -10,7 +10,6 @@ from app.log import logger
 from app.db.mysql import Session
 from app.services import bgm_tv
 from app.db_models import sa
-
 from .base import BaseWebsite, UrlNotValidError
 from ..db.utils import preserve_fields
 

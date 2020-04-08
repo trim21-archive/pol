@@ -9,7 +9,6 @@ from icalendar import Event, Calendar
 from app import aio_services
 from app.res import CalendarResponse, response
 from app.models.errors import ErrorDetail
-
 from .view_ip import router as view_ip_router
 
 router = APIRouter()

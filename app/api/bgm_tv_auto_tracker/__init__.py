@@ -1,7 +1,6 @@
 from fastapi import APIRouter
 
 from app.api.bgm_tv_auto_tracker.api_v1 import user_submit
-
 from . import api_v1
 
 router = APIRouter()
