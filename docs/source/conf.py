@@ -33,7 +33,7 @@ if not (config.PROJ_ROOT / "docs" / "source" / "openapi.json").exists():
 
 # -- Project information -----------------------------------------------------
 project = "pol"
-copyright = "2017-2019, Trim21"
+copyright = "2017-2020, Trim21"
 author = "Trim21"
 
 # -- General configuration ---------------------------------------------------
