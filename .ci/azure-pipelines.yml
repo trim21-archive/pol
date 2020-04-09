@@ -6,6 +6,9 @@ trigger:
     exclude:
       - dependabot/*
       - renovate/*
+  tags:
+    include:
+      - 'v*'
 
 schedules:
   - cron: "0 12 * * 6"
