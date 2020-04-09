@@ -28,48 +28,42 @@ app = FastAPI(
     debug=config.DEBUG,
     title=config.APP_NAME,
     version=config.COMMIT_REF,
-    docs_url='/',
+    docs_url="/",
     redoc_url=None,
     swagger_ui_oauth2_redirect_url=None,
-    openapi_url='/openapi.json',
+    openapi_url="/openapi.json",
     description=template,
 )
 
 setup_sentry(app)
-app.add_middleware(cors.CORSMiddleware, allow_origins='*')
+app.add_middleware(cors.CORSMiddleware, allow_origins="*")
 setup_http_middleware(app)
 app.add_middleware(LogExceptionMiddleware)
-app.include_router(auth.router, prefix='/auth', tags=['auth'])
+app.include_router(auth.router, prefix="/auth", tags=["auth"])
 bind_deprecated_path(app)
-app.include_router(api_router, prefix='/api.v1')
-app.include_router(bgm_tv_auto_tracker.router, prefix='/bgm-tv-auto-tracker')
+app.include_router(api_router, prefix="/api.v1")
+app.include_router(bgm_tv_auto_tracker.router, prefix="/bgm-tv-auto-tracker")
 app.include_router(md2bbc_router)
-app.include_router(bgm_tv.router, prefix='/bgm.tv', tags=['bgm.tv'])
+app.include_router(bgm_tv.router, prefix="/bgm.tv", tags=["bgm.tv"])
 
 
-@app.on_event('startup')
+@app.on_event("startup")
 async def startup():
     app.state.db = database
     await database.connect()
     app.state.client_session = aiohttp.ClientSession(
-        headers={'user-agent': config.REQUEST_SERVICE_USER_AGENT}
+        headers={"user-agent": config.REQUEST_SERVICE_USER_AGENT}
     )
     app.state.redis_pool = await setup_redis_pool()
     app.state.logger = logger
     app.state.logger.bind(
-        event='startup',
-        kwargs={
-            'pid': os.getpid(),
-            'thread': threading.get_ident(),
-        },
+        event="startup", kwargs={"pid": os.getpid(), "thread": threading.get_ident(),},
     ).info(
-        'server start at pid {}, tid {}',
-        os.getpid(),
-        threading.get_ident(),
+        "server start at pid {}, tid {}", os.getpid(), threading.get_ident(),
     )
 
 
-@app.on_event('shutdown')
+@app.on_event("shutdown")
 async def shutdown():
     await app.state.db.disconnect()
     app.state.redis_pool.close()

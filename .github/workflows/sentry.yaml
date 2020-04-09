@@ -1,0 +1,30 @@
+name: sentry
+
+on:
+  push:
+    branches:
+      - dev
+      - master
+
+jobs:
+  main:
+
+    runs-on: ubuntu-16.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Sentry cli
+        run: curl -sL https://sentry.io/get-cli/ | bash
+
+      - name: Run Sentry Cli
+        run: |
+          VERSION=${GITHUB_SHA:0:7}
+
+          sentry-cli releases new -p pol $VERSION
+          sentry-cli releases set-commits --auto $VERSION
+          sentry-cli releases finalize "$VERSION"
+
+        env:
+          SENTRY_ORG: trim21
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}

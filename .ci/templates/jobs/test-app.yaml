@@ -12,18 +12,6 @@ jobs:
 
       - template: /.ci/templates/steps/install-project.yaml
 
-      - bash: |
-          set -ex
-          sudo apt-get install mysql-client -y
-          mkdir -p ./tests_data
-          curl -sSL https://github.com/Trim21/pol/releases/download/test_data/c.sql.gz -o ./tests_data/all.sql.gz
-          gunzip ./tests_data/all.sql.gz
-
-          MYSQL_CLIENT_ARGS="--host=127.0.0.1 --port=3307 --database=$MYSQL_DB -u root -p$MYSQL_PASSWORD"
-          mysql $MYSQL_CLIENT_ARGS -e "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'NO_AUTO_CREATE_USER',''));"
-          mysql $MYSQL_CLIENT_ARGS < ./tests_data/all.sql
-        displayName: Download Test Data
-
       - script: coverage run -m pytest --junitxml=junit/test_report.xml
         displayName: Unittest
         env:

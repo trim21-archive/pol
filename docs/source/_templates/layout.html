@@ -1,12 +1,17 @@
 {% extends "!layout.html" %}
 {% block extrahead %}
-    <link href="{{ pathto("_static/style.css", True) }}" rel="stylesheet" type="text/css">
+<style>
+    .wy-nav-content {
+        max-width: none;
+    }
+</style>
 {% endblock %}
 {%- block footer %}
-    {{ super() }}
-    <script>
-        $(document).ready(function () {
-            $("a[href^='http']").attr('target', '_blank');
-        });
-    </script>
+{{ super() }}
+<script>
+    $(document).ready(function () {
+        $("a[href^='https://']").attr('target', '_blank');
+        $("a[href^='http://']").attr('target', '_blank');
+    });
+</script>
 {% endblock %}

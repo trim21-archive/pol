@@ -5,6 +5,9 @@
     "github>Trim21/renovate-config:poetry",
     "github>Trim21/renovate-config:py-app"
   ],
+  "lockFileMaintenance": {
+    "enabled": true
+  },
   "separateMinorPatch": false,
   "separateMajorMinor": false,
   "baseBranches": [

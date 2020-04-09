@@ -1,11 +1,44 @@
 jobs:
-- job: 'Docker'
-  pool:
-    vmImage: $(vm_image)
+  - job: 'Docker'
+    pool:
+      vmImage: $(vm_image)
 
-  steps:
-  - task: Docker@2
-    displayName: Build an image
-    inputs:
-      buildContext: '$(Build.Repository.LocalPath)'
-      command: build
+    steps:
+      - script: |
+          GITHUB_SHA=$(Build.SourceVersion)
+          GITHUB_REF=$(Build.SourceBranch)
+
+          if [[ ${GITHUB_REF} == refs/tags* ]]; then
+            REF=${GITHUB_REF:10}
+            SLUG=latest
+          else
+            REF=${GITHUB_REF:11}
+            SLUG="${GITHUB_REF:11}-${GITHUB_SHA:0:7}"
+          fi
+
+          echo "##vso[task.setvariable variable=SHA]${GITHUB_SHA:0:7}"
+          echo "##vso[task.setvariable variable=REF]$REF"
+          echo "##vso[task.setvariable variable=SLUG]$SLUG"
+
+      - script: |
+          docker build \
+            -t trim21/pol:current \
+            --build-arg "COMMIT_SHA=$SHA" \
+            --build-arg "COMMIT_REF=$REF" \
+            .
+        displayName: Build Docker
+
+      - script: |
+          docker login --username trim21 --password $DOCKER_PASS
+          docker tag trim21/pol:current trim21/pol:$REF
+          docker tag trim21/pol:current trim21/pol:$SLUG
+          docker push trim21/pol:$REF
+          docker push trim21/pol:$SLUG
+        displayName: Publish Docker
+        condition: |
+          or(
+            startsWith(variables['build.sourceBranch'], 'refs/tags/v'),
+            in(variables['Build.SourceBranchName'],'dev','master')
+          )
+        env:
+          DOCKER_PASS: $(DOCKER_PASS)

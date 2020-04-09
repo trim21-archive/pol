@@ -8,9 +8,10 @@ from .base import BaseWebsite
 
 class SupportWebsite(str, Enum):
     """support website now"""
-    bilibili = 'bilibili'
+
+    bilibili = "bilibili"
     """https://www.bilibili.com"""
-    iqiyi = 'iqiyi'
+    iqiyi = "iqiyi"
     """https://www.iqiyi.com"""
 
 
@@ -36,10 +37,10 @@ class Dispatcher:
     @staticmethod
     def get_website(url):
         u: ParseResult = urlparse(url)
-        if u.hostname == 'www.bilibili.com':
+        if u.hostname == "www.bilibili.com":
             return SupportWebsite.bilibili
             # return self.d[SupportWebsite.bilibili]
-        elif u.hostname == 'www.iqiyi.com':
+        elif u.hostname == "www.iqiyi.com":
             return SupportWebsite.iqiyi
             # return self.d[SupportWebsite.iqiyi]
 
@@ -52,4 +53,4 @@ class Dispatcher:
         return self.d.get(website)
 
 
-__all__ = ['iqiyi', 'bilibili', 'SupportWebsite', 'Dispatcher']
+__all__ = ["iqiyi", "bilibili", "SupportWebsite", "Dispatcher"]

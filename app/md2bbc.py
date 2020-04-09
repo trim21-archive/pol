@@ -5,11 +5,11 @@ router = APIRouter()
 
 
 @router.get(
-    '/md2bbc',
+    "/md2bbc",
     deprecated=True,
     description="go to <https://bgm.tv/group/topic/355388>",
     response_class=HTMLResponse,
 )
 async def md2bbc():
-    url = 'https://bgm.tv/group/topic/355388'
+    url = "https://bgm.tv/group/topic/355388"
     return f"<a href={url}>{url}</a>"

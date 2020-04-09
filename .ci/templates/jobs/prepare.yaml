@@ -5,19 +5,4 @@ jobs:
 
   steps:
     - template: /.ci/templates/steps/install-project.yaml
-
-    - task: Cache@2
-      inputs:
-        key: '"pre-commit" | "$(PY)" | .pre-commit-config.yaml'
-        restoreKeys: |
-          "pre-commit" | "$(PY)" | .pre-commit-config.yaml
-          "pre-commit" | "$(PY)"
-          "pre-commit"
-        path: $(HOME)/.cache/pre-commit
-      displayName: Cache Pre-commit
-
-    - script: pre-commit run --all-files && pre-commit gc
-      displayName: Pre-commit
-
-#    - script: mypy app data_manager bgm_tv_spider
-#      displayName: Mypy
+    - template: python/pre-commit.yaml@trim21

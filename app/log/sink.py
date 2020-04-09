@@ -8,15 +8,10 @@ import msgpack
 
 class Sink:
 
-    FIELD = frozenset(['event', 'kwargs', 'url', 'query', 'headers', 'exception'])
+    FIELD = frozenset(["event", "kwargs", "url", "query", "headers", "exception"])
 
     def __init__(
-        self,
-        client,
-        *,
-        key='python-log',
-        extra: dict = None,
-        tz=pytz.utc,
+        self, client, *, key="python-log", extra: dict = None, tz=pytz.utc,
     ) -> None:
         """
         Initializes the instance - basically setting the formatter to None
@@ -39,21 +34,23 @@ class Sink:
     def format(self, record):
         body = str(record)
         record = record.record
-        serialized_time = record['time'].astimezone(self.tz).isoformat()
+        serialized_time = record["time"].astimezone(self.tz).isoformat()
         o = deepcopy(self.extra)
-        o.update({
-            'body': body,
-            'msg': record['message'],
-            'logged_at': serialized_time,
-            'line_number': record['line'],
-            'function': record['function'],
-            'level': record['level'].name,
-            'module': record['name'],
-            'process': record['process'].id,
-            'thread': record['thread'].id,
-        })
+        o.update(
+            {
+                "body": body,
+                "msg": record["message"],
+                "logged_at": serialized_time,
+                "line_number": record["line"],
+                "function": record["function"],
+                "level": record["level"].name,
+                "module": record["name"],
+                "process": record["process"].id,
+                "thread": record["thread"].id,
+            }
+        )
         for field in self.FIELD:
-            value = record['extra'].get(field)
+            value = record["extra"].get(field)
             if value is not None:
                 o[field] = value
         return self.packer.pack(o)

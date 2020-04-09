@@ -10,6 +10,6 @@ else:
     database = Database(config.MYSQL_URI)
 
 engine = create_engine(
-    str(DatabaseURL(config.MYSQL_URI).replace(dialect='mysql+pymysql'))
+    str(DatabaseURL(config.MYSQL_URI).replace(dialect="mysql+pymysql"))
 )
 Session = sessionmaker(bind=engine)

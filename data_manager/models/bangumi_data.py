@@ -21,7 +21,7 @@ class Item(BaseModel):
 
     @property
     def name_cn(self):
-        return self.titleTranslate.get('zh-Hans', [self.title])[0]
+        return self.titleTranslate.get("zh-Hans", [self.title])[0]
 
 
 class BangumiData(BaseModel):

@@ -24,9 +24,9 @@ class SubjectSearch(BaseModel):
 
 
 @router.get(
-    '/subjects',
-    description='and condition for many texts, '
-    'ordered by subject id, maximum of limit is 50',
+    "/subjects",
+    description="and condition for many texts, "
+    "ordered by subject id, maximum of limit is 50",
     response_model=SubjectSearch,
 )
 async def search_by_tag(
@@ -42,14 +42,14 @@ async def search_by_tag(
         )
 
     else:
-        where = (sa.Subject.locked == 0)
+        where = sa.Subject.locked == 0
 
     query: Select = Select([sa.Subject], whereclause=where).order_by(
         sa.Subject.id
     ).limit(limit).offset(offset)
 
     for i, t in enumerate(tag):
-        alias = aliased(sa.Tag, name=f'table_tag_{i}')
+        alias = aliased(sa.Tag, name=f"table_tag_{i}")
 
         query = query.select_from(
             sa.join(
@@ -59,10 +59,10 @@ async def search_by_tag(
             )
         )
     return {
-        'limit': limit,
-        'offset': offset,
-        'count': 0,
-        'subjects': await db.fetch_all(query),
+        "limit": limit,
+        "offset": offset,
+        "count": 0,
+        "subjects": await db.fetch_all(query),
     }
 
 

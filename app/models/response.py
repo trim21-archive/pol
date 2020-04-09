@@ -5,9 +5,9 @@ from pydantic import BaseModel
 
 
 class ResponseStatus(str, Enum):
-    success = 'success'
-    warning = 'warning'
-    error = 'error'
+    success = "success"
+    warning = "warning"
+    error = "error"
 
 
 class CommonResponse(BaseModel):

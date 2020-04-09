@@ -14,26 +14,23 @@ def setup_logger():
         sink,
         enqueue=True,
         level=logging.INFO,
-        filter=lambda record: 'event' in record['extra']
+        filter=lambda record: "event" in record["extra"],
     )
     if config.DEBUG:
         logger.add(sys.stdout, level=logging.DEBUG, colorize=True)
     else:
         logger.add(sys.stdout, level=logging.INFO, colorize=True)
 
-    logger.debug('setup logger')
+    logger.debug("setup logger")
 
 
 sink = Sink(
     client=redis.StrictRedis.from_url(config.REDIS_URI),
-    key=f'{config.APP_NAME}-log',
+    key=f"{config.APP_NAME}-log",
     extra={
-        '@metadata': {
-            'beat': 'py_logging',
-            'version': config.COMMIT_REF,
-        },
-        'version': config.COMMIT_REF,
-        'platform': platform.platform(),
+        "@metadata": {"beat": "py_logging", "version": config.COMMIT_REF,},
+        "version": config.COMMIT_REF,
+        "platform": platform.platform(),
     },
     tz=config.TIMEZONE,
 )
