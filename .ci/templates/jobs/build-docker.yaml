@@ -11,34 +11,38 @@ jobs:
 
           if [[ ${REF} == refs/tags* ]]; then
             REF=${REF:10}
+            BRANCH_OR_TAG=${REF}
             SLUG=latest
           else
             REF=${REF:11}
+            BRANCH_OR_TAG=${REF}
             REF=${REF////.}
             SLUG="${REF}-${SHA}"
           fi
 
           echo "##vso[task.setvariable variable=SHA]$SHA"
           echo "##vso[task.setvariable variable=REF]$REF"
+          echo "##vso[task.setvariable variable=BRANCH_OR_TAG]$BRANCH_OR_TAG"
           echo "##vso[task.setvariable variable=SLUG]$SLUG"
 
       - script: |
           docker build \
             -t current \
             --build-arg "COMMIT_SHA=$SHA" \
-            --build-arg "COMMIT_REF=$REF" \
+            --build-arg "COMMIT_REF=$BRANCH_OR_TAG" \
             .
         displayName: Build Docker
 
       - script: |
           docker login --username trim21 --password $DOCKER_PASS
+
           Tags=(
             "$REF"
             "$SLUG"
             "$SHA"
           )
 
-          for tag in "${Tags[@]}" ;do
+          for tag in "${Tags[@]}"; do
             docker tag current trim21/pol:$tag
             docker push trim21/pol:$tag
           done
