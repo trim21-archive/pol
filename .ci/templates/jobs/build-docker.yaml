@@ -5,24 +5,26 @@ jobs:
 
     steps:
       - script: |
-          GITHUB_SHA=$(Build.SourceVersion)
-          GITHUB_REF=$(Build.SourceBranch)
+          SHA=$(Build.SourceVersion)
+          SHA=${SHA:0:7}
+          REF=$(Build.SourceBranch)
 
-          if [[ ${GITHUB_REF} == refs/tags* ]]; then
-            REF=${GITHUB_REF:10}
+          if [[ ${REF} == refs/tags* ]]; then
+            REF=${REF:10}
             SLUG=latest
           else
-            REF=${GITHUB_REF:11}
-            SLUG="${GITHUB_REF:11}-${GITHUB_SHA:0:7}"
+            REF=${REF:11}
+            REF=${REF////.}
+            SLUG="${REF:11}-${SHA}"
           fi
 
-          echo "##vso[task.setvariable variable=SHA]${GITHUB_SHA:0:7}"
+          echo "##vso[task.setvariable variable=SHA]$SHA"
           echo "##vso[task.setvariable variable=REF]$REF"
           echo "##vso[task.setvariable variable=SLUG]$SLUG"
 
       - script: |
           docker build \
-            -t trim21/pol:current \
+            -t current \
             --build-arg "COMMIT_SHA=$SHA" \
             --build-arg "COMMIT_REF=$REF" \
             .
@@ -30,15 +32,23 @@ jobs:
 
       - script: |
           docker login --username trim21 --password $DOCKER_PASS
-          docker tag trim21/pol:current trim21/pol:$REF
-          docker tag trim21/pol:current trim21/pol:$SLUG
-          docker push trim21/pol:$REF
-          docker push trim21/pol:$SLUG
+          Tags=(
+            "$REF"
+            "$SLUG"
+            "$SHA"
+          )
+
+          for tag in "${Tags[@]}" ;do
+            docker tag current trim21/pol:$tag
+            docker push trim21/pol:$tag
+          done
+
         displayName: Publish Docker
         condition: |
           or(
             startsWith(variables['build.sourceBranch'], 'refs/tags/v'),
-            in(variables['Build.SourceBranchName'],'dev','master')
+            startsWith(variables['build.sourceBranch'], 'refs/heads/'),
           )
+#            in(variables['Build.SourceBranch'],'refs/heads/dev','refs/heads/master')
         env:
           DOCKER_PASS: $(DOCKER_PASS)
