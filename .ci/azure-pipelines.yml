@@ -67,14 +67,10 @@ variables:
     value: rabbit_pass
   - name: VIRTUAL_HOST
     value: 127.0.0.1:8000
-  - name: PROTOCOL
-    value: http
   - name: BGM_TV_AUTO_TRACKER_APP_SECRET
     value: 3e452da34f146314694a0e1e7f23b722
   - name: BGM_TV_AUTO_TRACKER_APP_ID
     value: bgm2955b3b3050e7bf2
-  - name: COMMIT_SHA
-    value: dev
   - name: vm_image
     value: ubuntu-18.04
   - name: PYTHONPATH
