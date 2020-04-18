@@ -27,7 +27,7 @@ jobs:
 
       - script: |
           docker build \
-            -t current \
+            -t trim21/pol:current \
             --build-arg "COMMIT_SHA=$SHA" \
             --build-arg "COMMIT_REF=$BRANCH_OR_TAG" \
             .
@@ -43,7 +43,7 @@ jobs:
           )
 
           for tag in "${Tags[@]}"; do
-            docker tag current trim21/pol:$tag
+            docker tag trim21/pol:current trim21/pol:$tag
             docker push trim21/pol:$tag
           done
 
