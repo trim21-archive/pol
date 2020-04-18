@@ -15,7 +15,7 @@ jobs:
           else
             REF=${REF:11}
             REF=${REF////.}
-            SLUG="${REF:11}-${SHA}"
+            SLUG="${REF}-${SHA}"
           fi
 
           echo "##vso[task.setvariable variable=SHA]$SHA"
