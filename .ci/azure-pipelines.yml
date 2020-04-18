@@ -75,8 +75,6 @@ variables:
     value: bgm2955b3b3050e7bf2
   - name: COMMIT_SHA
     value: dev
-  - name: python_version
-    value: '3.7'
   - name: vm_image
     value: ubuntu-18.04
   - name: PYTHONPATH
