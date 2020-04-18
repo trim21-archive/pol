@@ -9,16 +9,26 @@ jobs:
           SHA=${SHA:0:7}
           REF=$(Build.SourceBranch)
 
-          if [[ ${REF} == refs/tags* ]]; then
-            REF=${REF:10}
-            BRANCH_OR_TAG=${REF}
-            SLUG=latest
-          else
-            REF=${REF:11}
-            BRANCH_OR_TAG=${REF}
-            REF=${REF////.}
-            SLUG="${REF}-${SHA}"
-          fi
+          BRANCH_OR_TAG=$(echo "$REF" | cut -d "/" -f 3- )
+          TYPE=$(echo "$REF" | cut -d "/" -f 2 )
+
+          case "$TYPE" in
+
+            tags)
+              REF=${BRANCH_OR_TAG}
+              SLUG=latest
+              ;;
+
+            heads)
+              REF=${BRANCH_OR_TAG////.}
+              SLUG="${REF}-${SHA}"
+              ;;
+
+            *)
+              REF=${BRANCH_OR_TAG}
+              SLUG="${REF}-${SHA}"
+              ;;
+          esac
 
           echo "##vso[task.setvariable variable=SHA]$SHA"
           echo "##vso[task.setvariable variable=REF]$REF"
