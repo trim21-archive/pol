@@ -47,7 +47,7 @@ jobs:
         condition: |
           or(
             startsWith(variables['build.sourceBranch'], 'refs/tags/v'),
-            startsWith(variables['build.sourceBranch'], 'refs/heads/'),
+            startsWith(variables['build.sourceBranch'], 'refs/heads/')
           )
 #            in(variables['Build.SourceBranch'],'refs/heads/dev','refs/heads/master')
         env:
