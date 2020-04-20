@@ -12,7 +12,7 @@ jobs:
 
       - template: /.ci/templates/steps/install-project.yaml
 
-      - script: coverage run -m pytest --junitxml=junit/test_report.xml
+      - script: pytest --junitxml=junit/test_report.xml --cov=. --cov-report=xml
         displayName: Unittest
         env:
           TESTING: 'true'
@@ -23,4 +23,8 @@ jobs:
           testResultsFiles: 'junit/test_*.xml'
           testRunTitle: 'Publish test results for Python $(python.version)'
 
-      - template: /.ci/templates/steps/codecov.yaml
+      - task: PublishCodeCoverageResults@1
+        inputs:
+          codeCoverageTool: cobertura
+          summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
+          failIfCoverageEmpty: true # Optional
