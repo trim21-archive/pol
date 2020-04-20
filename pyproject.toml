@@ -42,8 +42,8 @@ pytest-asyncio = "0.10.0"
 asynctest = "0.13.0"
 pytest-rerunfailures = "7.0"
 mock = "4.0.2"
+pytest-cov = "2.8.1"
 aioresponses = "0.6.3"
-coverage = "5.0.4"
 # linter and formatter
 pre-commit = "2.2.0"
 flake8 = '3.7.9'
@@ -58,4 +58,4 @@ sphinxcontrib-openapi = { version = "0.6.0", extras = ["markdown"] }
 sphinx-issues = "1.2.0"
 sphinx-rtd-theme = "0.4.3"
 mypy = "0.750"
-black = "^19.10b0"
+black = "19.10b0"
