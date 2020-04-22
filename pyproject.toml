@@ -31,7 +31,7 @@ beautifulsoup4 = "4.9.0"
 requests = "2.23.0"
 redis = "3.3.11"
 aiohttp = {version = "3.6.2", extras = ["speedups"]}
-databases = {version = "0.2.6", extras = ["mysql"]}
+databases = {version = "0.3.0", extras = ["mysql"]}
 alembic = "1.4.2"
 aiomysql = '0.0.20'
 
