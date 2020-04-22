@@ -28,12 +28,12 @@ resources:
       ref: refs/tags/v0.0.3
 
 stages:
-  - stage: Lint
-    jobs:
-      - template: ./templates/jobs/prepare.yaml
-  - stage: Test
-    jobs:
-      - template: ./templates/jobs/test-app.yaml
+#  - stage: Lint
+#    jobs:
+#      - template: ./templates/jobs/prepare.yaml
+#  - stage: Test
+#    jobs:
+#      - template: ./templates/jobs/test-app.yaml
   - stage: Build
     jobs:
       - template: ./templates/jobs/build-docker.yaml
