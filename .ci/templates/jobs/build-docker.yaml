@@ -45,7 +45,7 @@ jobs:
 
       - script: |
           mkdir -p $(Pipeline.Workspace)/docker
-          docker save pol/trim21:current -o $(Pipeline.Workspace)/docker/pol-image
+          docker save trim21/pol:current -o $(Pipeline.Workspace)/docker/pol-image
         displayName: Save Docker Image as Artifact
 
       - publish: $(Pipeline.Workspace)/docker
