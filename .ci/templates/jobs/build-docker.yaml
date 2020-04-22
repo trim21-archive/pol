@@ -44,25 +44,9 @@ jobs:
         displayName: Build Docker
 
       - script: |
-          docker login --username trim21 --password $DOCKER_PASS
+          mkdir -p $(Pipeline.Workspace)/docker
+          docker save pol/trim21:current -o $(Pipeline.Workspace)/docker/pol-image
+        displayName: Save Docker Image as Artifact
 
-          Tags=(
-            "$REF"
-            "$SLUG"
-            "$SHA"
-          )
-
-          for tag in "${Tags[@]}"; do
-            docker tag trim21/pol:current trim21/pol:$tag
-            docker push trim21/pol:$tag
-          done
-
-        displayName: Publish Docker
-        condition: |
-          or(
-            startsWith(variables['build.sourceBranch'], 'refs/tags/v'),
-            startsWith(variables['build.sourceBranch'], 'refs/heads/')
-          )
-#            in(variables['Build.SourceBranch'],'refs/heads/dev','refs/heads/master')
-        env:
-          DOCKER_PASS: $(DOCKER_PASS)
+      - publish: $(Pipeline.Workspace)/docker
+        artifact: docker

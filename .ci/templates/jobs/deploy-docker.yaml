@@ -1,0 +1,37 @@
+jobs:
+  - job: 'Docs'
+    condition: |
+      or(
+        startsWith(variables['build.sourceBranch'], 'refs/tags/v'),
+        startsWith(variables['build.sourceBranch'], 'refs/heads/')
+      )
+    #            in(variables['Build.SourceBranch'],'refs/heads/dev','refs/heads/master')
+
+    pool:
+      vmImage: $(vm_image)
+
+    steps:
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          source: current
+          artifact: docker
+          path: $(Pipeline.Workspace)/docker
+
+      - script: |
+          docker load $(Pipeline.Workspace)/docker/pol-image
+          docker login --username trim21 --password $DOCKER_PASS
+
+          Tags=(
+            "$REF"
+            "$SLUG"
+            "$SHA"
+          )
+
+          for tag in "${Tags[@]}"; do
+            docker tag trim21/pol:current trim21/pol:$tag
+            docker push trim21/pol:$tag
+          done
+
+        displayName: Publish Docker
+        env:
+          DOCKER_PASS: $(DOCKER_PASS)

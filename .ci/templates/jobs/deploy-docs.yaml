@@ -1,5 +1,6 @@
 jobs:
   - job: 'Docs'
+    condition: startsWith(variables['build.sourceBranch'], 'refs/tags/v')
     pool:
       vmImage: $(vm_image)
 
