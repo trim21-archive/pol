@@ -24,11 +24,11 @@ jobs:
 
       - script: |
           docker load -i $(Pipeline.Workspace)/docker/pol-image
-          docker images ls
+          docker images
         displayName: Load Docker Image
 
       - script: |
-          docker images ls
+          docker images
           Tags=(
             "$REF"
             "$SLUG"
