@@ -38,7 +38,7 @@ aiomysql = '0.0.20'
 [tool.poetry.dev-dependencies]
 # tests
 pytest = "5.4.1"
-pytest-asyncio = "0.10.0"
+pytest-asyncio = "0.11.0"
 asynctest = "0.13.0"
 pytest-rerunfailures = "7.0"
 mock = "4.0.2"
@@ -53,7 +53,7 @@ flake8-commas = "2.0.0"
 flake8-mutable = "1.2.0"
 flake8-broken-line = "0.2.0"
 # build docs
-sphinx = "3.0.0"
+sphinx = "3.0.2"
 sphinxcontrib-openapi = { version = "0.6.0", extras = ["markdown"] }
 sphinx-issues = "1.2.0"
 sphinx-rtd-theme = "0.4.3"
