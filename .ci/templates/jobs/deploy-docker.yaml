@@ -23,8 +23,9 @@ jobs:
           path: $(Pipeline.Workspace)/docker
 
       - script: |
-          docker load -i $(Pipeline.Workspace)/docker/pol-image
+          cat $(Pipeline.Workspace)/docker/pol-image.tar.gz | docker import - trim21/pol:current
           docker images
+#          docker load -i $(Pipeline.Workspace)/docker/pol-image
         displayName: Load Docker Image
 
       - script: |
