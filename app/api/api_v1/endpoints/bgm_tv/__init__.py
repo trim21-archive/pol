@@ -17,7 +17,8 @@ router.include_router(view_ip_router, prefix="/view_ip")
 
 @router.get(
     "/calendar/bgm.tv/{user_id}",
-    summary="iCalendar for watching bangumi",
+    description="go to <https://bgm.tv/group/topic/355388>",
+    deprecated=True,
     response_class=CalendarResponse,
     responses={
         404: response(model=ErrorDetail, description="user not existing"),

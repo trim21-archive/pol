@@ -19,7 +19,7 @@ router = APIRouter()
     response_model=Subject,
     include_in_schema=config.DEBUG,
 )
-async def bgm_calendar(subject_id: int, db: Database = Depends(get_db)):
+async def subject_data(subject_id: int, db: Database = Depends(get_db)):
     try:
         s = await curd.subject.get_by_id(db, subject_id)
     except NotFoundError:

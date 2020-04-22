@@ -3,6 +3,7 @@ import threading
 
 import aiohttp
 from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 from starlette.middleware import cors
 
 from app.api import auth, bgm_tv, bgm_tv_auto_tracker
@@ -22,15 +23,13 @@ template = f"""出于兴趣写的一些api，源码见[GitHub](https://github.co
 当前版本[{config.COMMIT_REF}](https://github.com/Trim21/pol/tree/{config.COMMIT_REF})
 
 更详细的文档见 [github pages](https://trim21.github.io/pol/)
-
-[鲁ICP备16017566号-1](http://beian.miit.gov.cn)
 """
 
 app = FastAPI(
     debug=config.DEBUG,
     title=config.APP_NAME,
     version=config.COMMIT_REF,
-    docs_url="/",
+    docs_url=None,
     redoc_url=None,
     swagger_ui_oauth2_redirect_url=None,
     openapi_url="/openapi.json",
@@ -71,3 +70,42 @@ async def shutdown():
     app.state.redis_pool.close()
     await app.state.redis_pool.wait_closed()
     await app.state.client_session.close()
+
+
+@app.get("/", response_class=HTMLResponse, include_in_schema=False)
+async def doc():
+    return """
+    <!DOCTYPE html>
+    <html lang=zh-cmn-Hans>
+    <head>
+    <link type="text/css" rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui.css">
+    <link rel="shortcut icon" href="https://blog.trim21.cn/favicon.ico">
+    <title>Pol server - Swagger UI</title>
+    </head>
+    <body>
+    <div id="swagger-ui"></div>
+    <hr>
+    <div class='wrapper'' style='text-align: center'>
+        <a href="http://beian.miit.gov.cn/">鲁ICP备16017566号-1</a>
+    </div>
+    <script
+        src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui-bundle.js">
+    </script>
+    <!-- `SwaggerUIBundle` is now available on the page -->
+    <script>
+    const ui = SwaggerUIBundle({
+        url: '/openapi.json',
+
+        dom_id: '#swagger-ui',
+        presets: [
+        SwaggerUIBundle.presets.apis,
+        SwaggerUIBundle.SwaggerUIStandalonePreset
+        ],
+        layout: "BaseLayout",
+        deepLinking: true
+    })
+    </script>
+    </body>
+    </html>
+    """

@@ -21,6 +21,7 @@ class SubjectIdResponse(BaseModel):
 @router.get(
     "/subject_id",
     response_model=SubjectIdResponse,
+    deprecated=True,
     responses={
         200: res.response(cls=JSONResponse),
         404: res.response(cls=JSONResponse),
