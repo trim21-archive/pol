@@ -28,20 +28,20 @@ resources:
       ref: refs/tags/v0.0.3
 
 stages:
-#  - stage: Lint
-#    jobs:
-#      - template: ./templates/jobs/prepare.yaml
-#  - stage: Test
-#    jobs:
-#      - template: ./templates/jobs/test-app.yaml
+  - stage: Lint
+    jobs:
+      - template: ./templates/jobs/prepare.yaml
+  - stage: Test
+    jobs:
+      - template: ./templates/jobs/test-app.yaml
   - stage: Build
     jobs:
       - template: ./templates/jobs/build-docker.yaml
-#      - template: ./templates/jobs/build-docs.yaml
+      - template: ./templates/jobs/build-docs.yaml
   - stage: Deploy
     jobs:
       - template: ./templates/jobs/deploy-docker.yaml
-#      - template: ./templates/jobs/deploy-docs.yaml
+      - template: ./templates/jobs/deploy-docs.yaml
 
 
 variables:
