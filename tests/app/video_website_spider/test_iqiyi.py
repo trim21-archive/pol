@@ -1,3 +1,5 @@
+import pytest
+
 from app.db.mysql import Session
 from app.db_models import sa
 from app.video_website_spider.iqiyi import Iqiyi
@@ -34,6 +36,7 @@ def test_submit_ep(db_session: Session):
         db_session.close()
 
 
+@pytest.mark.skip
 def test_submit_bangumi(db_session: Session):
     bangumi_values = {"subject_id": 219200, "bangumi_id": "a_19rrh1ss1p"}
     ep_values = {
