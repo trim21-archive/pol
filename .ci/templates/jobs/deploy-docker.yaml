@@ -34,7 +34,7 @@ jobs:
           )
 
           for tag in "${Tags[@]}"; do
-            docker tag trim21/pol:current trim21/pol:$tag
+            docker tag current trim21/pol:$tag
             docker push trim21/pol:$tag
           done
         displayName: Publish Docker

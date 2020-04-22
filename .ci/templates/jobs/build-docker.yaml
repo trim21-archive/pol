@@ -37,7 +37,7 @@ jobs:
 
       - script: |
           docker build \
-            -t trim21/pol:current \
+            -t current \
             --build-arg "COMMIT_SHA=$SHA" \
             --build-arg "COMMIT_REF=$BRANCH_OR_TAG" \
             .
@@ -45,7 +45,7 @@ jobs:
 
       - script: |
           mkdir -p $(Pipeline.Workspace)/docker
-          docker save trim21/pol:current | gzip > $(Pipeline.Workspace)/docker/pol-image.tar.gz
+          docker save current | gzip > $(Pipeline.Workspace)/docker/pol-image.tar.gz
 #          docker save trim21/pol:current -o $(Pipeline.Workspace)/docker/pol-image
         displayName: Save Docker Image as Artifact
 
