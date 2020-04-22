@@ -22,10 +22,10 @@ jobs:
           artifact: docker
           path: $(Pipeline.Workspace)/docker
 
-      - script: docker load -i $(Pipeline.Workspace)/docker/pol-image.tar.gz
+      - script: |
+          docker load -i $(Pipeline.Workspace)/docker/pol-image
+          docker images ls
         displayName: Load Docker Image
-
-      - script: docker images ls
 
       - script: |
           docker images ls
@@ -36,7 +36,7 @@ jobs:
           )
 
           for tag in "${Tags[@]}"; do
-            docker tag current trim21/pol:$tag
+            docker tag trim21/pol:current trim21/pol:$tag
             docker push trim21/pol:$tag
           done
         displayName: Publish Docker
