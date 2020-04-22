@@ -5,31 +5,27 @@ jobs:
         startsWith(variables['build.sourceBranch'], 'refs/tags/v'),
         startsWith(variables['build.sourceBranch'], 'refs/heads/')
       )
-    #            in(variables['Build.SourceBranch'],'refs/heads/dev','refs/heads/master')
 
     pool:
       vmImage: $(vm_image)
 
     steps:
-      - script: docker login --username trim21 --password $DOCKER_PASS
-        displayName: Docker Login
-        env:
-          DOCKER_PASS: $(DOCKER_PASS)
-
       - task: DownloadPipelineArtifact@2
         inputs:
           source: current
           artifact: docker
           path: $(Pipeline.Workspace)/docker
 
-      - script: |
-          cat $(Pipeline.Workspace)/docker/pol-image.tar.gz | docker import - trim21/pol:current
-          docker images
-#          docker load -i $(Pipeline.Workspace)/docker/pol-image
+      - script: docker load -i $(Pipeline.Workspace)/docker/pol-image.tar.gz
         displayName: Load Docker Image
 
+      - script: docker login --username trim21 --password $DOCKER_PASS
+        displayName: Docker Login
+        env:
+          DOCKER_PASS: $(DOCKER_PASS)
+
       - script: |
-          docker images
+          source $(Pipeline.Workspace)/docker/env
           Tags=(
             "$REF"
             "$SLUG"

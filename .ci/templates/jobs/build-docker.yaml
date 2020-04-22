@@ -46,7 +46,9 @@ jobs:
       - script: |
           mkdir -p $(Pipeline.Workspace)/docker
           docker save trim21/pol:current | gzip > $(Pipeline.Workspace)/docker/pol-image.tar.gz
-#          docker save trim21/pol:current -o $(Pipeline.Workspace)/docker/pol-image
+          echo SHA=$SHA >> $(Pipeline.Workspace)/docker/env
+          echo SLUG=$SLUG >> $(Pipeline.Workspace)/docker/env
+          echo REF=$REF >> $(Pipeline.Workspace)/docker/env
         displayName: Save Docker Image as Artifact
 
       - publish: $(Pipeline.Workspace)/docker
