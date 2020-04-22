@@ -17,7 +17,7 @@ jobs:
           artifact: docker
           path: $(Pipeline.Workspace)/docker
 
-      - script: docker load $(Pipeline.Workspace)/docker/pol-image
+      - script: docker load -i $(Pipeline.Workspace)/docker/pol-image.tar.gz
         displayName: Load Docker Image
 
       - script: docker login --username trim21 --password $DOCKER_PASS
