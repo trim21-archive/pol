@@ -26,6 +26,7 @@ jobs:
           DOCKER_PASS: $(DOCKER_PASS)
 
       - script: |
+          docker images
           Tags=(
             "$REF"
             "$SLUG"
