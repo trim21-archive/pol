@@ -11,6 +11,11 @@ jobs:
       vmImage: $(vm_image)
 
     steps:
+      - script: docker login --username trim21 --password $DOCKER_PASS
+        displayName: Docker Login
+        env:
+          DOCKER_PASS: $(DOCKER_PASS)
+
       - task: DownloadPipelineArtifact@2
         inputs:
           source: current
@@ -20,10 +25,7 @@ jobs:
       - script: docker load -i $(Pipeline.Workspace)/docker/pol-image.tar.gz
         displayName: Load Docker Image
 
-      - script: docker login --username trim21 --password $DOCKER_PASS
-        displayName: Docker Login
-        env:
-          DOCKER_PASS: $(DOCKER_PASS)
+      - script: docker images ls
 
       - script: |
           docker images ls
