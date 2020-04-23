@@ -8,7 +8,7 @@
   "separateMinorPatch": false,
   "separateMajorMinor": false,
   "baseBranches": [
-    "dev"
+    "master"
   ],
   "ignoreDeps": [
     "mysql",
