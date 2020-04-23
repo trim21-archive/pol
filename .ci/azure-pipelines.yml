@@ -37,11 +37,9 @@ stages:
   - stage: Build
     jobs:
       - template: ./templates/jobs/build-docker.yaml
-      - template: ./templates/jobs/build-docs.yaml
   - stage: Deploy
     jobs:
       - template: ./templates/jobs/deploy-docker.yaml
-      - template: ./templates/jobs/deploy-docs.yaml
 
 
 variables:

@@ -22,7 +22,7 @@ template = f"""出于兴趣写的一些api，源码见[GitHub](https://github.co
 
 当前版本[{config.COMMIT_REF}](https://github.com/Trim21/pol/tree/{config.COMMIT_REF})
 
-更详细的文档见 [github pages](https://trim21.github.io/pol/)
+[其他说明](https://github.com/Trim21/pol/tree/{config.COMMIT_REF}/docs)
 """
 
 app = FastAPI(
