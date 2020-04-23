@@ -6,4 +6,6 @@
 
 后端使用mysql和redis
 
-API见[https://www.trim21.cn/](https://www.trim21.cn/)
+[更多说明](./docs)
+
+[API Spec](https://www.trim21.cn/)
