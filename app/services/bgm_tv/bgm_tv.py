@@ -35,5 +35,8 @@ class BgmApi:
             return None
         return UserInfo.parse_obj(r)
 
-    def __del__(self):
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
         self.session.close()

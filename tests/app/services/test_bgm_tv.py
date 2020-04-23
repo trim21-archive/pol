@@ -13,7 +13,8 @@ _re_run = 3
 
 @pytest.fixture()
 def bgm_api():
-    yield BgmApi()
+    with BgmApi(mirror=True) as b:
+        yield b
 
 
 @pytest.mark.flaky(reruns=_re_run)
