@@ -14,5 +14,5 @@ def test_openapi_json(client: TestClient):
 
 
 def test_bgm_tv_user_calendar(client: TestClient):
-    response = client.get("/api.v1/calendar/bgm.tv/1")
-    assert "text/calendar" in response.headers["content-type"], response.text
+    response = client.get("/api.v1/calendar/bgm.tv/1", allow_redirects=False)
+    assert response.headers["location"] == "https://api.bgm38.com/bgm.tv/v1/calendar/1"
