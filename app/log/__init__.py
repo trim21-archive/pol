@@ -3,7 +3,7 @@ import logging
 import platform
 
 import redis
-from loguru import logger
+from aiologger.loggers.json import JsonLogger
 
 from app.core import config
 from app.log.sink import Sink
@@ -34,5 +34,5 @@ sink = Sink(
     },
     tz=config.TIMEZONE,
 )
-logger.remove()
-setup_logger()
+
+logger = JsonLogger(name="pol")

@@ -13,6 +13,7 @@ from app.md2bbc import router as md2bbc_router
 from app.db.mysql import database
 from app.db.redis import setup_redis_pool
 from app.deprecation import bind_deprecated_path
+from app.log.new_sink import RedisHandler
 from app.api.api_v1.api import api_router
 from app.middlewares.log import LogExceptionMiddleware
 from app.middlewares.http import setup_http_middleware
@@ -55,17 +56,23 @@ async def startup():
         headers={"user-agent": config.REQUEST_SERVICE_USER_AGENT}
     )
     app.state.redis_pool = await setup_redis_pool()
-    app.state.logger = logger
-    app.state.logger.bind(
-        event="startup", kwargs={"pid": os.getpid(), "thread": threading.get_ident(),},
-    ).info(
-        "server start at pid {}, tid {}", os.getpid(), threading.get_ident(),
+    h = RedisHandler()
+    await h.init()
+    logger.add_handler(h)
+    logger.info(
+        "server start at pid %(pid)d, tid %(tid)d",
+        {"pid": os.getpid(), "tid": threading.get_ident()},
+        extra={
+            "event": "startup",
+            "kwargs": {"pid": os.getpid(), "thread": threading.get_ident(),},
+        },
     )
 
 
 @app.on_event("shutdown")
 async def shutdown():
     await app.state.db.disconnect()
+    await logger.shutdown()
     app.state.redis_pool.close()
     await app.state.redis_pool.wait_closed()
     await app.state.client_session.close()
