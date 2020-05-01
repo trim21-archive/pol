@@ -5,6 +5,17 @@
     "github>Trim21/renovate-config:poetry",
     "github>Trim21/renovate-config:py-app"
   ],
+  "enabledManagers": [
+    "github-actions",
+    "git-submodules",
+    "poetry"
+  ],
+  "git-submodules": {
+    "enabled": true
+  },
+  "github-actions": {
+    "enabled": true
+  },
   "separateMinorPatch": false,
   "separateMajorMinor": false,
   "baseBranches": [

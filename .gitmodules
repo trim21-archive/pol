@@ -1,3 +1,4 @@
 [submodule "bangumi-data"]
 	path = bangumi-data
 	url = https://github.com/bangumi-data/bangumi-data.git
+	branch = master
