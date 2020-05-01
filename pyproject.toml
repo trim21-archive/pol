@@ -32,6 +32,8 @@ aiohttp = { version = "3.6.2", extras = ["speedups"] }
 databases = { version = "0.3.2", extras = ["mysql"] }
 alembic = "1.4.2"
 aiomysql = '0.0.20'
+aiologger = "^0.5.0"
+better_exceptions = "^0.2.2"
 
 [tool.poetry.dev-dependencies]
 # tests
