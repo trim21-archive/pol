@@ -7,12 +7,8 @@
   ],
   "enabledManagers": [
     "github-actions",
-    "git-submodules",
     "poetry"
   ],
-  "git-submodules": {
-    "enabled": true
-  },
   "github-actions": {
     "enabled": true
   },
