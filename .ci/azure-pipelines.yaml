@@ -2,13 +2,22 @@ trigger:
   #  batch: true
   branches:
     include:
-      - '*'
+      - "*"
     exclude:
       - dependabot/*
       - renovate/*
   tags:
     include:
-      - 'v*'
+      - "v*"
+
+  paths:
+    exclude:
+      - ".github/"
+      - "docs/"
+      - readme.md
+      - .gitignore
+      - .readthedocs.yml
+      - LICENSE
 
 schedules:
   - cron: "0 12 * * 6"
@@ -41,7 +50,6 @@ stages:
     jobs:
       - template: ./templates/jobs/deploy-docker.yaml
 
-
 variables:
   - group: github-token-group
   - name: MYSQL_HOST
@@ -71,4 +79,4 @@ variables:
   - name: vm_image
     value: ubuntu-18.04
   - name: PYTHONPATH
-    value: '.'
+    value: "."
