@@ -1,24 +1,8 @@
 {
   "extends": [
-    "github>Trim21/renovate-config:monthly",
-    "github>Trim21/renovate-config",
-    "github>Trim21/renovate-config:poetry",
-    "github>Trim21/renovate-config:py-app"
-  ],
-  "enabledManagers": [
-    "github-actions",
-    "poetry"
-  ],
-  "github-actions": {
-    "enabled": true
-  },
-  "separateMinorPatch": false,
-  "separateMajorMinor": false,
-  "baseBranches": [
-    "master"
-  ],
-  "ignoreDeps": [
-    "mysql",
-    "redis"
+    "@trim21",
+    "@trim21:monthly",
+    "@trim21:poetry",
+    "@trim21:app"
   ]
 }
