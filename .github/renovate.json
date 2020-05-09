@@ -4,5 +4,7 @@
     "@trim21:monthly",
     "@trim21:poetry",
     "@trim21:app"
-  ]
+  ],
+  "separateMajorMinor": false,
+  "separateMinorPatch": false
 }
