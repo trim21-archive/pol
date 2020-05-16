@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.5.0
+    rev: v3.0.0
     hooks:
       - id: check-case-conflict
       - id: check-ast
@@ -47,7 +47,7 @@ repos:
         args: ["--max-line-length", "88", "--file-encoding", "utf-8"]
 
   - repo: https://github.com/Trim21/poetry-check-lock
-    rev: v0.0.2
+    rev: v0.0.3
     hooks:
       - id: poetry-check-lock
 
