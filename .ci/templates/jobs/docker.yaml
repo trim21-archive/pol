@@ -44,12 +44,23 @@ jobs:
         displayName: Build Docker
 
       - script: |
-          mkdir -p $(Pipeline.Workspace)/docker
-          docker save trim21/pol:current | gzip > $(Pipeline.Workspace)/docker/pol-image.tar.gz
-          echo SHA=$SHA >> $(Pipeline.Workspace)/docker/env
-          echo SLUG=$SLUG >> $(Pipeline.Workspace)/docker/env
-          echo REF=$REF >> $(Pipeline.Workspace)/docker/env
-        displayName: Save Docker Image as Artifact
+          docker login --username trim21 --password $DOCKER_PASS
 
-      - publish: $(Pipeline.Workspace)/docker
-        artifact: docker
+          Tags=(
+            "$REF"
+            "$SLUG"
+            "$SHA"
+          )
+
+          for tag in "${Tags[@]}"; do
+            docker tag trim21/pol:current trim21/pol:$tag
+            docker push trim21/pol:$tag
+          done
+        displayName: Publish Docker
+        env:
+          DOCKER_PASS: $(DOCKER_PASS)
+        condition: |
+          or(
+            startsWith(variables['build.sourceBranch'], 'refs/tags/v'),
+            startsWith(variables['build.sourceBranch'], 'refs/heads/')
+          )

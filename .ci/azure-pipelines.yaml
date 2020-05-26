@@ -45,10 +45,7 @@ stages:
       - template: ./templates/jobs/test-app.yaml
   - stage: Build
     jobs:
-      - template: ./templates/jobs/build-docker.yaml
-  - stage: Deploy
-    jobs:
-      - template: ./templates/jobs/deploy-docker.yaml
+      - template: ./templates/jobs/docker.yaml
 
 variables:
   - group: github-token-group
