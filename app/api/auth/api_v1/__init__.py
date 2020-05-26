@@ -143,7 +143,7 @@ async def oauth_callback(
 
     except aiohttp.ServerTimeoutError:
         return JSONResponse(
-            content={"detail": f"connect to bgm.tv timeout"},
+            content={"detail": "connect to bgm.tv timeout"},
             status_code=HTTP_503_SERVICE_UNAVAILABLE,
         )
 

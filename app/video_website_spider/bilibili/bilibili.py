@@ -192,10 +192,12 @@ class Bilibili(BaseWebsite):
                     },
                 )
                 logger.info(
-                    "upsert BilibiliEpisode with kwargs {{!r}}".format(
-                        source_ep_id=ep_id,
-                        ep_id=initial_state.epInfo.ep_id,
-                        subject_id=ep.subject_id,
+                    "upsert BilibiliEpisode with kwargs {!r}".format(
+                        {
+                            "source_ep_id": ep_id,
+                            "ep_id": initial_state.epInfo.ep_id,
+                            "subject_id": ep.subject_id,
+                        }
                     )
                 )
 

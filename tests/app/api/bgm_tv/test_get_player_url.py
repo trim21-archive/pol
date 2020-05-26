@@ -2,7 +2,7 @@ from starlette.testclient import TestClient
 
 
 def test_get_subject_url(client: TestClient):
-    r = client.get(f"/bgm.tv/api.v1/subject/player/927")
+    r = client.get("/bgm.tv/api.v1/subject/player/927")
     assert r.status_code == 200, "subject with content should return 200"
     for item in r.json():
         if item["website"] == "bilibili":
