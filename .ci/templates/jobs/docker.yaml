@@ -27,6 +27,7 @@ jobs:
               ;;
 
             *)
+              echo "$REF"
               # on pr
               REF=${BRANCH_OR_TAG}
               SLUG="${REF}-${SHA}"
