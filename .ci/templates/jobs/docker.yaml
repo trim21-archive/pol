@@ -7,7 +7,6 @@ jobs:
       - script: |
           SHA=$(Build.SourceVersion)
           SHA=${SHA:0:7}
-          REF=$(Build.SourceBranch)
 
           BRANCH_OR_TAG=$(echo "$REF" | cut -d "/" -f 3- )
           TYPE=$(echo "$REF" | cut -d "/" -f 2 )
@@ -15,47 +14,50 @@ jobs:
           case "$TYPE" in
 
             tags)
-              REF=${BRANCH_OR_TAG}
-              SLUG=latest
+              # on tag
+              BUILD_REF=${BRANCH_OR_TAG}
+              echo "##vso[task.setvariable variable=TAGS]$SHA,$BRANCH_OR_TAG,latest"
               ;;
 
             heads)
-              REF=${BRANCH_OR_TAG////.}
-              SLUG="${REF}-${SHA}"
+              # on branch
+              BUILD_REF=$SHA
+              echo "##vso[task.setvariable variable=TAGS]$SHA,$BRANCH_OR_TAG"
               ;;
 
             *)
+              # on pr
               REF=${BRANCH_OR_TAG}
               SLUG="${REF}-${SHA}"
               ;;
           esac
 
-          echo "##vso[task.setvariable variable=SHA]$SHA"
-          echo "##vso[task.setvariable variable=REF]$REF"
-          echo "##vso[task.setvariable variable=BRANCH_OR_TAG]$BRANCH_OR_TAG"
-          echo "##vso[task.setvariable variable=SLUG]$SLUG"
+          echo "##vso[task.setvariable variable=BUILD_REF]$BUILD_REF"
 
       - script: |
           docker build \
             -t trim21/pol:current \
-            --build-arg "COMMIT_SHA=$SHA" \
-            --build-arg "COMMIT_REF=$BRANCH_OR_TAG" \
+            --build-arg "COMMIT_REF=$BUILD_REF" \
             .
         displayName: Build Docker
 
       - script: |
           docker login --username trim21 --password $DOCKER_PASS
 
-          Tags=(
-            "$REF"
-            "$SLUG"
-            "$SHA"
-          )
+          #Define the string value
+          text=$TAGS
+
+          # Set space as the delimiter
+          IFS=','
+
+          #Read the split words into an array based on space delimiter
+          read -a Tags <<< "$text"
 
           for tag in "${Tags[@]}"; do
             docker tag trim21/pol:current trim21/pol:$tag
             docker push trim21/pol:$tag
           done
+
         displayName: Publish Docker
         env:
           DOCKER_PASS: $(DOCKER_PASS)

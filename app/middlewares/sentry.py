@@ -9,5 +9,5 @@ from app.core import config
 def setup_sentry(app: FastAPI):
     if config.DSN:  # pragma: no cover
         ignore_logger("asyncio")
-        sentry_sdk.init(dsn=config.DSN, release=config.COMMIT_SHA)
+        sentry_sdk.init(dsn=config.DSN, release=config.COMMIT_REF)
         app.add_middleware(SentryAsgiMiddleware)

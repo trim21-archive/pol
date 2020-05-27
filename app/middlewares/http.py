@@ -15,7 +15,7 @@ def setup_http_middleware(app: FastAPI):
         response = await call_next(request)
         process_time = time.time() - start_time
         response.headers["X-Process-Time"] = str(int(process_time * 1000)) + "ms"
-        response.headers["x-server-version"] = config.COMMIT_SHA
+        response.headers["x-server-version"] = config.COMMIT_REF
         return response
 
     @app.middleware("http")
