@@ -16,9 +16,7 @@ celery = "4.4.2"
 email-validator = "==1.1.1"
 fastapi = "==0.55.1"
 gunicorn = "20.0.4"
-loguru = "==0.5.0"
 lxml = "==4.5.1"
-msgpack = "1.0.0"
 pydantic = "1.5.1"
 python-dateutil = "2.8.1"
 python-multipart = "0.0.5"
@@ -32,6 +30,8 @@ aiohttp = { version = "3.6.2", extras = ["speedups"] }
 databases = { version = "0.3.2", extras = ["mysql"] }
 alembic = "1.4.2"
 aiomysql = '0.0.20'
+aiologger = "^0.5.0"
+better_exceptions = "^0.2.2"
 
 [tool.poetry.dev-dependencies]
 # tests
