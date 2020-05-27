@@ -1,6 +1,3 @@
-"""
-this test will test both logger and msgpack
-"""
 import json
 
 import pytest
