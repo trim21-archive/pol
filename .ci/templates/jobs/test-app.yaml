@@ -12,7 +12,7 @@ jobs:
 
       - template: /.ci/templates/steps/install-project.yaml
 
-      - script: pytest --junitxml=junit/test_report.xml --cov=. --cov-report=xml
+      - script: coverage run -m pytest --junitxml=junit/test_report.xml
         displayName: Unittest
         env:
           TESTING: 'true'
@@ -23,8 +23,9 @@ jobs:
           testResultsFiles: 'junit/test_*.xml'
           testRunTitle: 'Publish test results for Python $(python.version)'
 
-      - task: PublishCodeCoverageResults@1
-        inputs:
-          codeCoverageTool: cobertura
-          summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
-          failIfCoverageEmpty: true # Optional
+      - bash: |
+          export BUILD_SOURCEBRANCHNAME=${BRANCH#"refs/heads/"} # fix azure branch source name
+          bash <(curl -s https://codecov.io/bash) -Z -C $(Build.SourceVersion)
+        name: Codecov
+        env:
+          BRANCH: $(Build.SourceBranch)
