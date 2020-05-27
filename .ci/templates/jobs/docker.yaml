@@ -17,7 +17,7 @@ jobs:
             tags)
               # on tag
               BUILD_REF=${BRANCH_OR_TAG}
-              TAGS=SHA,$BRANCH_OR_TAG,latest
+              TAGS=$BRANCH_OR_TAG,latest
               ;;
 
             heads)
