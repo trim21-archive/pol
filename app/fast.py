@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from starlette.middleware import cors
 
-from app.api import auth, bgm_tv, bgm_tv_auto_tracker
+from app.api import auth, bgm_tv
 from app.log import logger
 from app.core import config
 from app.md2bbc import router as md2bbc_router
@@ -43,7 +43,6 @@ app.add_middleware(LogExceptionMiddleware)
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
 bind_deprecated_path(app)
 app.include_router(api_router, prefix="/api.v1")
-app.include_router(bgm_tv_auto_tracker.router, prefix="/bgm-tv-auto-tracker")
 app.include_router(md2bbc_router)
 app.include_router(bgm_tv.router, prefix="/bgm.tv", tags=["bgm.tv"])
 

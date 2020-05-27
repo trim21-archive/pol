@@ -21,7 +21,7 @@ def test_send_event(redis_client: redis.StrictRedis):
 
     bind = {
         "event": "test_event",
-        "kwargs": {"arg1": 1, "arg2": [2], "arg3": "你好",},
+        "kwargs": {"arg1": 1, "arg2": [2], "arg3": "你好"},
     }
     redis_client.delete(KEY)
     logger.bind(**bind).info("logger info")
