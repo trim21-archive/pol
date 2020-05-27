@@ -21,7 +21,7 @@ def setup_http_middleware(app: FastAPI):
     @app.middleware("http")
     async def log(request: Request, call_next):
         try:
-            await call_next(request)
+            return await call_next(request)
         except Exception as exc:
             body = "".join(
                 traceback.format_exception(
