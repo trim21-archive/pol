@@ -14,7 +14,6 @@ from app.db.mysql import database
 from app.db.redis import setup_redis_pool
 from app.deprecation import bind_deprecated_path
 from app.api.api_v1.api import api_router
-from app.middlewares.log import LogExceptionMiddleware
 from app.middlewares.http import setup_http_middleware
 from app.middlewares.sentry import setup_sentry
 
@@ -39,7 +38,6 @@ app = FastAPI(
 setup_sentry(app)
 app.add_middleware(cors.CORSMiddleware, allow_origins="*")
 setup_http_middleware(app)
-app.add_middleware(LogExceptionMiddleware)
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
 bind_deprecated_path(app)
 app.include_router(api_router, prefix="/api.v1")
