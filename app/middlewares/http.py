@@ -31,7 +31,7 @@ def setup_http_middleware(app: FastAPI):
                     limit=19 - len_tb(exc.__traceback__),
                 )
             )
-            request.app.state.logger.exception(
+            app.state.logger.exception(
                 "catch exception in middleware",
                 extra={
                     "body": body,
