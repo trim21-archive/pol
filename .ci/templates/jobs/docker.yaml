@@ -6,8 +6,8 @@ jobs:
     steps:
       - script: |
           SHA=$(Build.SourceVersion)
-          REF=$(Build.SourceBranch)
           SHA=${SHA:0:7}
+          REF=$(Build.SourceBranch)
 
           BRANCH_OR_TAG=$(echo "$REF" | cut -d "/" -f 3- )
           TYPE=$(echo "$REF" | cut -d "/" -f 2 )
