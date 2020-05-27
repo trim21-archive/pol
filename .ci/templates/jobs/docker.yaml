@@ -16,13 +16,13 @@ jobs:
             tags)
               # on tag
               BUILD_REF=${BRANCH_OR_TAG}
-              echo "##vso[task.setvariable variable=TAGS]$SHA,$BRANCH_OR_TAG,latest"
+              TAGS=SHA,$BRANCH_OR_TAG,latest
               ;;
 
             heads)
               # on branch
               BUILD_REF=$SHA
-              echo "##vso[task.setvariable variable=TAGS]$SHA,$BRANCH_OR_TAG"
+              TAGS=$SHA,${BRANCH_OR_TAG////-}
               ;;
 
             *)
@@ -32,7 +32,9 @@ jobs:
               ;;
           esac
 
+          echo "Tags: $TAGS"
           echo "##vso[task.setvariable variable=BUILD_REF]$BUILD_REF"
+          echo "##vso[task.setvariable variable=TAGS]$TAGS"
 
       - script: |
           docker build \
@@ -44,14 +46,11 @@ jobs:
       - script: |
           docker login --username trim21 --password $DOCKER_PASS
 
-          #Define the string value
-          text=$TAGS
-
           # Set space as the delimiter
           IFS=','
 
           #Read the split words into an array based on space delimiter
-          read -a Tags <<< "$text"
+          read -a Tags <<< "$TAGS"
 
           for tag in "${Tags[@]}"; do
             docker tag trim21/pol:current trim21/pol:$tag
