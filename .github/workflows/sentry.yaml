@@ -2,9 +2,8 @@ name: sentry
 
 on:
   push:
-    branches:
-      - dev
-      - master
+    tags:
+      - "*"
 
 jobs:
   main:
@@ -16,9 +15,13 @@ jobs:
       - name: Install Sentry cli
         run: curl -sL https://sentry.io/get-cli/ | bash
 
+      - name: Get the version
+        id: get_version
+        run: echo "::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)"
+
       - name: Run Sentry Cli
         run: |
-          VERSION=${GITHUB_SHA:0:7}
+          VERSION=${{ steps.get_version.outputs.VERSION }}
 
           sentry-cli releases new -p pol $VERSION
           sentry-cli releases set-commits --auto $VERSION

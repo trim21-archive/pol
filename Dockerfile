@@ -15,7 +15,5 @@ RUN pip install --require-hashes --no-cache-dir --no-deps -r /requirements.txt
 
 COPY / /
 
-ARG COMMIT_SHA
-ENV COMMIT_SHA=${COMMIT_SHA}
 ARG COMMIT_REF
 ENV COMMIT_REF=${COMMIT_REF}

@@ -16,7 +16,6 @@ DEBUG = _config("DEBUG", cast=bool, default=False)
 
 DSN = _config("DSN", default=None)
 
-COMMIT_SHA = _config("COMMIT_SHA", default="None")
 COMMIT_REF = _config("COMMIT_REF", default="dev")
 
 TIMEZONE = pytz.timezone("Etc/GMT-8")
@@ -55,9 +54,7 @@ class BgmTvAutoTracker:
     )
 
 
-REQUEST_SERVICE_USER_AGENT = (
-    f"app/{COMMIT_REF} ({COMMIT_SHA}) https://github.com/trim21/pol"
-)
+REQUEST_SERVICE_USER_AGENT = f"pol/{COMMIT_REF} https://github.com/trim21/pol"
 
 REQUEST_USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
