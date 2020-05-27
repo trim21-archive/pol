@@ -1,34 +1,32 @@
 """
 this test will test both logger and msgpack
 """
-import logging
+import json
 
-import redis
-import msgpack
+import pytest
+import aioredis
+from aiologger import Logger
 
-from app.log import sink, logger
+from app.log import setup_logger
 from app.core import config
 
 KEY = f"{config.APP_NAME}-log"
 
 
-def test_send_event(redis_client: redis.StrictRedis):
+@pytest.mark.asyncio
+async def test_send_event():
+    redis_client = await aioredis.create_redis(config.REDIS_URI)
+    await redis_client.delete(KEY)
 
-    logger.remove()
-    logger.add(
-        sink, level=logging.INFO, filter=lambda record: "event" in record["extra"],
-    )
+    logger: Logger = await setup_logger()
+    await logger.info("logger info", extra={"headers": {"x-request-id": "233"}})
+    await logger.shutdown()
 
-    bind = {
-        "event": "test_event",
-        "kwargs": {"arg1": 1, "arg2": [2], "arg3": "你好"},
-    }
-    redis_client.delete(KEY)
-    logger.bind(**bind).info("logger info")
-    assert redis_client.llen(KEY) == 1
-    e = redis_client.lpop(KEY)
-    data = msgpack.loads(e, raw=False)
-    for key, value in bind.items():
-        assert data[key] == value
+    assert 1 == await redis_client.llen(KEY)
+    e = await redis_client.lpop(KEY)
+    data = json.loads(e)
+    assert data["headers"]["x-request-id"] == "233"
     assert data["@metadata"] == {"beat": "py_logging", "version": "dev"}
     assert data["msg"] == "logger info"
+    redis_client.close()
+    await redis_client.wait_closed()

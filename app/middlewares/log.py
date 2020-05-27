@@ -1,7 +1,6 @@
 import types
 import traceback
 
-from app.log import logger
 from app.middlewares.base import Middleware
 
 
@@ -24,7 +23,7 @@ class LogExceptionMiddleware(Middleware):
                     )
                 )
                 print(body)
-                logger.exception(
+                self.app.state.logger.exception(
                     "catch exception in middleware",
                     extra={
                         "body": body,

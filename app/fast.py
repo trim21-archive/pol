@@ -7,13 +7,12 @@ from fastapi.responses import HTMLResponse
 from starlette.middleware import cors
 
 from app.api import auth, bgm_tv
-from app.log import logger
+from app.log import setup_logger
 from app.core import config
 from app.md2bbc import router as md2bbc_router
 from app.db.mysql import database
 from app.db.redis import setup_redis_pool
 from app.deprecation import bind_deprecated_path
-from app.log.new_sink import RedisHandler
 from app.api.api_v1.api import api_router
 from app.middlewares.log import LogExceptionMiddleware
 from app.middlewares.http import setup_http_middleware
@@ -56,10 +55,9 @@ async def startup():
         headers={"user-agent": config.REQUEST_SERVICE_USER_AGENT}
     )
     app.state.redis_pool = await setup_redis_pool()
-    h = RedisHandler()
-    await h.init()
-    logger.add_handler(h)
-    logger.info(
+
+    app.state.logger = await setup_logger()
+    app.state.logger.info(
         "server start at pid %(pid)d, tid %(tid)d",
         {"pid": os.getpid(), "tid": threading.get_ident()},
         extra={
@@ -72,7 +70,7 @@ async def startup():
 @app.on_event("shutdown")
 async def shutdown():
     await app.state.db.disconnect()
-    await logger.shutdown()
+    await app.state.logger.shutdown()
     app.state.redis_pool.close()
     await app.state.redis_pool.wait_closed()
     await app.state.client_session.close()

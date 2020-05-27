@@ -5,16 +5,16 @@ import aiohttp
 import dateutil.parser
 from fastapi import Depends, APIRouter
 from pydantic import ValidationError
+from aiologger import Logger
 from databases import Database
 from starlette.status import HTTP_502_BAD_GATEWAY, HTTP_503_SERVICE_UNAVAILABLE
 from starlette.responses import HTMLResponse, JSONResponse, RedirectResponse
 from starlette.exceptions import HTTPException
 
 from app import res
-from app.log import logger
 from app.core import config
 from app.models import ErrorDetail
-from app.depends import aiohttp_session
+from app.depends import get_logger, aiohttp_session
 from app.db.redis import PickleRedis
 from app.db.utils import preserve_fields
 from app.db_models import sa
@@ -169,6 +169,7 @@ async def refresh_token(
     db: Database = Depends(get_db),
     current_user: sa.UserToken = Depends(get_current_user),
     aio_client: aiohttp.ClientSession = Depends(aiohttp_session),
+    logger: Logger = Depends(get_logger),
 ):
     try:
         async with aio_client.post(

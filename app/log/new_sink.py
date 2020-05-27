@@ -1,36 +1,37 @@
 import json
 import platform
 
-from aioredis import Redis, create_redis_pool
+from aioredis import Redis
 from aiologger.loggers.json import ExtendedLogRecord
 from aiologger.handlers.base import Handler
 
 from app.core import config
 
-key = f"{config.APP_NAME}-log"
-extra = {
-    "@metadata": {"beat": "py_logging", "version": config.COMMIT_REF},
-    "version": config.COMMIT_REF,
-    "platform": platform.platform(),
-}
-tz = (config.TIMEZONE,)
-
 
 class RedisHandler(Handler):
-    def __init__(self, *args, **kwargs):
+    def __init__(
+        self, redis_client, key=f"{config.APP_NAME}-log", extra=None, *args, **kwargs,
+    ):
         super().__init__(*args, **kwargs)
-        self.redis_client: Redis = None
+        if extra is None:
+            self.extras = {
+                "@metadata": {"beat": "py_logging", "version": config.COMMIT_REF},
+                "version": config.COMMIT_REF,
+                "platform": platform.platform(),
+            }
+        self.key = key
+        self.redis_client: Redis = redis_client
 
-    async def init(self):
-        self.redis_client = await create_redis_pool(
-            config.REDIS_URI, password=config.REDIS_PASSWORD
-        )
+    @property
+    def initialized(self):
+        return not self.redis_client.closed
 
     async def emit(self, record: ExtendedLogRecord) -> None:
-        await self.redis_client.rpush(key, self.format(record))
+        await self.redis_client.rpush(self.key, self.format(record))
 
     async def close(self) -> None:
         self.redis_client.close()
+        await self.redis_client.wait_closed()
 
     @staticmethod
     def format(record: ExtendedLogRecord):

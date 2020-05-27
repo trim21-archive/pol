@@ -1,38 +1,24 @@
-import sys
-import logging
 import platform
 
-import redis
+from aioredis import create_redis_pool
 from aiologger.loggers.json import JsonLogger
 
 from app.core import config
-from app.log.sink import Sink
+from app.log.new_sink import RedisHandler
 
 
-def setup_logger():
-    logger.add(
-        sink,
-        enqueue=True,
-        level=logging.INFO,
-        filter=lambda record: "event" in record["extra"],
+async def setup_logger():
+    logger = JsonLogger(name="pol")
+
+    h = RedisHandler(
+        redis_client=await create_redis_pool(config.REDIS_URI),
+        key=f"{config.APP_NAME}-log",
+        extra={
+            "@metadata": {"beat": "py_logging", "version": config.COMMIT_REF,},
+            "version": config.COMMIT_REF,
+            "platform": platform.platform(),
+        },
     )
-    if config.DEBUG:
-        logger.add(sys.stdout, level=logging.DEBUG, colorize=True)
-    else:
-        logger.add(sys.stdout, level=logging.INFO, colorize=True)
+    logger.add_handler(h)
 
-    logger.debug("setup logger")
-
-
-sink = Sink(
-    client=redis.StrictRedis.from_url(config.REDIS_URI),
-    key=f"{config.APP_NAME}-log",
-    extra={
-        "@metadata": {"beat": "py_logging", "version": config.COMMIT_REF,},
-        "version": config.COMMIT_REF,
-        "platform": platform.platform(),
-    },
-    tz=config.TIMEZONE,
-)
-
-logger = JsonLogger(name="pol")
+    return logger
