@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   mysql:
@@ -17,15 +17,6 @@ services:
     ports:
       - "6379:6379"
     command: redis-server --requirepass "redis_password"
-
-  rabbitmq:
-    image: rabbitmq:3
-    ports:
-      - "5672:5672"
-      - "5671:5671"
-    environment:
-      RABBITMQ_DEFAULT_USER: rabbit_user
-      RABBITMQ_DEFAULT_PASS: rabbit_pass
 
 networks:
   backend:

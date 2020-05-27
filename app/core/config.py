@@ -8,51 +8,45 @@ from starlette.config import Config
 
 PROJ_ROOT = Path(os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
-config = Config(str(PROJ_ROOT / "env" / "dev"))
+_config = Config(str(PROJ_ROOT / "env" / "dev"))
 
 APP_NAME = "Pol server"
 
-DEBUG = config("DEBUG", cast=bool, default=False)
+DEBUG = _config("DEBUG", cast=bool, default=False)
 
-DSN = config("DSN", default=None)
+DSN = _config("DSN", default=None)
 
-COMMIT_SHA = config("COMMIT_SHA", default="None")
-COMMIT_REF = config("COMMIT_REF", default="dev")
+COMMIT_SHA = _config("COMMIT_SHA", default="None")
+COMMIT_REF = _config("COMMIT_REF", default="dev")
 
 TIMEZONE = pytz.timezone("Etc/GMT-8")
 
-MYSQL_HOST = config("MYSQL_HOST")
-MYSQL_USER = config("MYSQL_USER")
-MYSQL_PASSWORD = config("MYSQL_PASSWORD")
-MYSQL_DB = config("MYSQL_DB")
+MYSQL_HOST = _config("MYSQL_HOST")
+MYSQL_USER = _config("MYSQL_USER")
+MYSQL_PASSWORD = _config("MYSQL_PASSWORD")
+MYSQL_DB = _config("MYSQL_DB")
 MYSQL_URI = f"mysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}/{MYSQL_DB}"
 
-REDIS_HOST = config("REDIS_HOST")
-REDIS_PASSWORD = config("REDIS_PASSWORD")
+REDIS_HOST = _config("REDIS_HOST")
+REDIS_PASSWORD = _config("REDIS_PASSWORD")
 
 REDIS_URI = f"redis://{REDIS_HOST}/0"
 
 if REDIS_PASSWORD:
     REDIS_URI = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}/0"
 
-SPIDER_KEY = config("SPIDER_KEY", default="bgm_tv_spider:start_urls")
+VIRTUAL_HOST = _config("VIRTUAL_HOST", default="localhost:6001")
+PROTOCOL = _config("PROTOCOL", default="http")
 
-RABBITMQ_ADDR = config("RABBITMQ_ADDR")
-RABBITMQ_USER = config("RABBITMQ_USER")
-RABBITMQ_PASS = config("RABBITMQ_PASS")
-
-VIRTUAL_HOST = config("VIRTUAL_HOST", default="localhost:6001")
-PROTOCOL = config("PROTOCOL", default="http")
-
-SECRET_KEY = (config("SECRET_KEY", default=secrets.token_hex(32)))[:32]
+SECRET_KEY = (_config("SECRET_KEY", default=secrets.token_hex(32)))[:32]
 assert len(SECRET_KEY) == 32
 
-TESTING = config("TESTING", default=False)
+TESTING = _config("TESTING", default=False)
 
 
 class BgmTvAutoTracker:
-    APP_ID = config("BGM_TV_AUTO_TRACKER_APP_ID")
-    APP_SECRET = config("BGM_TV_AUTO_TRACKER_APP_SECRET")
+    APP_ID = _config("BGM_TV_AUTO_TRACKER_APP_ID")
+    APP_SECRET = _config("BGM_TV_AUTO_TRACKER_APP_SECRET")
     callback_url = (
         f"{PROTOCOL}://{VIRTUAL_HOST}/bgm-tv-auto-tracker" f"/api.v1/oauth_callback"
     )
@@ -62,7 +56,7 @@ class BgmTvAutoTracker:
 
 
 REQUEST_SERVICE_USER_AGENT = (
-    f"app/{COMMIT_REF} ({COMMIT_SHA})" "https://github.com/trim21/pol"
+    f"app/{COMMIT_REF} ({COMMIT_SHA}) https://github.com/trim21/pol"
 )
 
 REQUEST_USER_AGENT = (
