@@ -23,7 +23,7 @@ jobs:
             heads)
               # on branch
               BUILD_REF=$SHA
-              TAGS=$SHA,${BRANCH_OR_TAG////-}
+              TAGS=${BRANCH_OR_TAG////.}-$SHA,${BRANCH_OR_TAG////.}
               ;;
 
             *)
