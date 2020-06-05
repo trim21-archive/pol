@@ -6,5 +6,22 @@
     "@trim21:app"
   ],
   "separateMajorMinor": false,
-  "separateMinorPatch": false
+  "separateMinorPatch": false,
+  "enabledManagers": [
+    "poetry",
+    "regex"
+  ],
+  "regexManagers": [
+    {
+      "fileMatch": [
+        "^\\.ci/azure-pipelines\\.yaml$"
+      ],
+      "matchStrings": [
+        "type: github\n\\s*name:\\s*(?<depName>.+?)\n\\s*ref:\\s*refs/tags/(?<currentValue>.+?)\n"
+      ],
+      "datasourceTemplate": "git-tags",
+      "versioningTemplate": "semver",
+      "lookupNameTemplate": "https://github.com/{{depName}}.git"
+    }
+  ]
 }
