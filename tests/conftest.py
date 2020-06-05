@@ -12,13 +12,13 @@ def pytest_sessionstart(session):
     "session start"
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_aiohttp():
     with aioresponses() as m:
         yield m
 
 
-@pytest.fixture
+@pytest.fixture()
 def db_session():
     db_session = Session()
     try:
