@@ -1,5 +1,4 @@
 import json
-import platform
 
 from aioredis import Redis
 from aiologger.loggers.json import ExtendedLogRecord
@@ -10,15 +9,9 @@ from app.core import config
 
 class RedisHandler(Handler):
     def __init__(
-        self, redis_client, key=f"{config.APP_NAME}-log", extra=None, *args, **kwargs,
+        self, redis_client, key=f"{config.APP_NAME}-log", *args, **kwargs,
     ):
         super().__init__(*args, **kwargs)
-        if extra is None:
-            self.extras = {
-                "@metadata": {"beat": "py_logging", "version": config.COMMIT_REF},
-                "version": config.COMMIT_REF,
-                "platform": platform.platform(),
-            }
         self.key = key
         self.redis_client: Redis = redis_client
 
@@ -36,16 +29,14 @@ class RedisHandler(Handler):
     @staticmethod
     def format(record: ExtendedLogRecord):
         o = {
-            "@metadata": {"beat": "py_logging", "version": config.COMMIT_REF},
-            "version": config.COMMIT_REF,
-            "platform": platform.platform(),
             "msg": record.get_message(),
             "logged_at": record.created,
             "line_number": record.lineno,
+            "file": record.pathname,
             "function": record.funcName,
             "level": record.levelname,
             "module": record.module,
-            "process": record.process,
+            "kwargs": record.args,
+            **record.extra,
         }
-        o.update(record.extra)
-        return json.dumps(o)
+        return json.dumps(o, ensure_ascii=False)

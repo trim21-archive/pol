@@ -58,10 +58,7 @@ async def startup():
     app.state.logger.info(
         "server start at pid %(pid)d, tid %(tid)d",
         {"pid": os.getpid(), "tid": threading.get_ident()},
-        extra={
-            "event": "startup",
-            "kwargs": {"pid": os.getpid(), "thread": threading.get_ident(),},
-        },
+        extra={"event": "startup"},
     )
 
 
