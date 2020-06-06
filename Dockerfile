@@ -1,7 +1,9 @@
-FROM trim21/poetry:1.0.5 as generator
+FROM python:3.7.7 as generator
 WORKDIR /src/app
 COPY poetry.lock pyproject.toml /src/app/
-RUN poetry export --format requirements.txt > requirements.txt
+
+RUN pip install --no-cache-dir poetry && \
+    poetry export --format requirements.txt > requirements.txt
 
 #######################################
 
