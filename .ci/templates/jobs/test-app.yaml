@@ -1,5 +1,5 @@
 jobs:
-  - job: 'App'
+  - job: App
     pool:
       vmImage: $(vm_image)
 
@@ -8,7 +8,7 @@ jobs:
         displayName: Setup Containers
         inputs:
           action: Run services
-          dockerComposeFile: '$(Build.Repository.LocalPath)/.ci/composes/docker-compose.yaml'
+          dockerComposeFile: $(Build.Repository.LocalPath)/.ci/composes/docker-compose.yaml
 
       - template: /.ci/templates/steps/install-project.yaml
 
@@ -20,8 +20,8 @@ jobs:
       - task: PublishTestResults@2
         condition: succeededOrFailed()
         inputs:
-          testResultsFiles: 'junit/test_*.xml'
-          testRunTitle: 'Publish test results for Python $(python.version)'
+          testResultsFiles: junit/test_*.xml
+          testRunTitle: Publish test results for Python $(python.version)
 
       - bash: |
           export BUILD_SOURCEBRANCHNAME=${BRANCH#"refs/heads/"} # fix azure branch source name

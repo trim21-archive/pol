@@ -1,8 +1,8 @@
 jobs:
-- job: 'Lint'
-  pool:
-    vmImage: $(vm_image)
+  - job: Lint
+    pool:
+      vmImage: $(vm_image)
 
-  steps:
-    - template: /.ci/templates/steps/install-project.yaml
-    - template: python/pre-commit.yaml@trim21
+    steps:
+      - template: /.ci/templates/steps/install-project.yaml
+      - template: python/pre-commit.yaml@trim21

@@ -1,4 +1,9 @@
 repos:
+  - repo: https://github.com/Trim21/pre-commit-hooks
+    rev: refs/tags/v0.0.1
+    hooks:
+      - id: yamlfmt
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.1.0
     hooks:
@@ -11,20 +16,14 @@ repos:
       - id: check-json
       - id: check-docstring-first
       - id: check-merge-conflict
-      - id: check-added-large-files
+      - id: check-added-large-files  # check for file bigger than 500kb
       - id: debug-statements
       - id: trailing-whitespace
       - id: debug-statements
       - id: mixed-line-ending
         args: [--fix=lf]
       - id: pretty-format-json
-        args:
-          - --no-ensure-ascii
-          - --no-sort-keys
-          - --indent
-          - "2"
-          - --autofix
-      # check for file bigger than 500kb
+        args: [--no-ensure-ascii, --no-sort-keys, --indent, '2', --autofix]
       - id: end-of-file-fixer
       - id: fix-encoding-pragma
         args: [--remove]
@@ -38,13 +37,13 @@ repos:
     rev: v2.4.4
     hooks:
       - id: pyupgrade
-        args: ["--py37-plus"]
+        args: [--py37-plus]
 
   - repo: https://github.com/PyCQA/doc8
     rev: 0.8.1rc3
     hooks:
       - id: doc8
-        args: ["--max-line-length", "88", "--file-encoding", "utf-8"]
+        args: [--max-line-length, '88', --file-encoding, utf-8]
 
   - repo: https://github.com/Trim21/poetry-check-lock
     rev: v0.0.3
@@ -52,7 +51,7 @@ repos:
       - id: poetry-check-lock
 
   - repo: https://github.com/timothycrosley/isort
-    rev: 4.3.21
+    rev: 4.3.21-2
     hooks:
       - id: isort
 
@@ -62,12 +61,10 @@ repos:
       - id: autoflake
         require_serial: true
         args:
-          [
-            "--in-place",
-            "--remove-unused-variables",
-            "--remove-all-unused-imports",
-            "--expand-star-imports",
-          ]
+          - --in-place
+          - --remove-unused-variables
+          - --remove-all-unused-imports
+          - --expand-star-imports
 
   - repo: local
     hooks:
@@ -84,4 +81,4 @@ repos:
         entry: flake8
         language: system
         types: [python]
-        args: ["--config=setup.cfg"]
+        args: [--config=setup.cfg]

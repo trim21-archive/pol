@@ -1,26 +1,26 @@
 trigger:
-  #  batch: true
+#  batch: true
   branches:
     include:
-      - "*"
+      - '*'
     exclude:
       - dependabot/*
       - renovate/*
   tags:
     include:
-      - "v*"
+      - v*
 
   paths:
     exclude:
-      - ".github/"
-      - "docs/"
+      - .github/
+      - docs/
       - readme.md
       - .gitignore
       - .readthedocs.yml
       - LICENSE
 
 schedules:
-  - cron: "0 12 * * 6"
+  - cron: 0 12 * * 6
     displayName: Weekly Saturday build
     branches:
       include:
@@ -76,4 +76,4 @@ variables:
   - name: vm_image
     value: ubuntu-18.04
   - name: PYTHONPATH
-    value: "."
+    value: .

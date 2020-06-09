@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 
 services:
   mysql:
@@ -6,7 +6,7 @@ services:
     networks:
       - backend
     ports:
-      - "3307:3306" # 3306 is in use
+      - 3307:3306  # 3306 is in use
     environment:
       MYSQL_USER: root
       MYSQL_ROOT_PASSWORD: root_password
@@ -15,7 +15,7 @@ services:
   redis:
     image: redis:2.8.23
     ports:
-      - "6379:6379"
+      - 6379:6379
     command: redis-server --requirepass "redis_password"
 
 networks:
