@@ -1,16 +1,23 @@
-from typing import Type
+from typing import Any, Type
 
-from starlette.responses import Response
+import orjson
+from starlette.responses import Response, JSONResponse
 
 
 class CalendarResponse(Response):
     media_type = "text/calendar"
 
 
+class ORJSONResponse(JSONResponse):
+    media_type = "application/json"
+
+    def render(self, content: Any) -> bytes:
+        return orjson.dumps(content)
+
+
 def response(
     model: Type = None, description: str = None, headers=None, cls: Type = None
 ):
-
     if model is None:
         d = {}
     else:

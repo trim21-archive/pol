@@ -8,6 +8,7 @@ from starlette.middleware import cors
 
 from app.api import auth, bgm_tv
 from app.log import setup_logger
+from app.res import ORJSONResponse
 from app.core import config
 from app.md2bbc import router as md2bbc_router
 from app.db.mysql import database
@@ -33,6 +34,7 @@ app = FastAPI(
     swagger_ui_oauth2_redirect_url=None,
     openapi_url="/openapi.json",
     description=template,
+    default_response_class=ORJSONResponse,
 )
 
 setup_sentry(app)

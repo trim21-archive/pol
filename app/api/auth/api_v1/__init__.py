@@ -8,10 +8,11 @@ from pydantic import ValidationError
 from aiologger import Logger
 from databases import Database
 from starlette.status import HTTP_502_BAD_GATEWAY, HTTP_503_SERVICE_UNAVAILABLE
-from starlette.responses import HTMLResponse, JSONResponse, RedirectResponse
+from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.exceptions import HTTPException
 
 from app import res
+from app.res import ORJSONResponse
 from app.core import config
 from app.models import ErrorDetail
 from app.depends import get_logger, aiohttp_session
@@ -67,10 +68,10 @@ async def auth_redirect():
             headers={"set-cookies": res.header(str, "会设置cookies, 后续请求会自动通过认证."),},
         ),
         302: res.response(
-            cls=JSONResponse, description="如果授权不成功, 如服务器返回502等, 会将用户转跳会bgm.tv重新进行授权",
+            cls=ORJSONResponse, description="如果授权不成功, 如服务器返回502等, 会将用户转跳会bgm.tv重新进行授权",
         ),
         503: res.response(
-            model=ErrorDetail, description="bgm.tv unreachable", cls=JSONResponse
+            model=ErrorDetail, description="bgm.tv unreachable", cls=ORJSONResponse
         ),
     },
 )
@@ -137,12 +138,12 @@ async def oauth_callback(
         )
 
         session = await new_session(user_id=auth_response.user_id, redis=redis)
-        response = JSONResponse({"api_key": session.api_key})
+        response = ORJSONResponse({"api_key": session.api_key})
         response.set_cookie(cookie_scheme.model.name, session.api_key)
         return response
 
     except aiohttp.ServerTimeoutError:
-        return JSONResponse(
+        return ORJSONResponse(
             content={"detail": "connect to bgm.tv timeout"},
             status_code=HTTP_503_SERVICE_UNAVAILABLE,
         )

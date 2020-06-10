@@ -1,6 +1,5 @@
 from fastapi import Depends, APIRouter, HTTPException
 from databases import Database
-from starlette.responses import JSONResponse
 
 from app import res, curd
 from app.core import config
@@ -29,7 +28,6 @@ async def subject_data(subject_id: int, db: Database = Depends(get_db)):
 
 @router.get(
     "/subject/{subject_id}",
-    response_class=JSONResponse,
     response_model=Map,
     responses={
         404: res.response(
