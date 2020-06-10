@@ -12,7 +12,7 @@ jobs:
 
       - template: /.ci/templates/steps/install-project.yaml
 
-      - script: coverage run -m pytest --junitxml=junit/test_report.xml
+      - script: coverage run --source=app -m pytest --junitxml=junit/test_report.xml
         displayName: Unittest
         env:
           TESTING: 'true'
