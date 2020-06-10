@@ -17,5 +17,5 @@ RUN pip install --require-hashes --no-cache-dir --no-deps -r /requirements.txt
 
 COPY / /
 
-ARG COMMIT_REF
+ARG COMMIT_REF=dev
 ENV COMMIT_REF=${COMMIT_REF}
