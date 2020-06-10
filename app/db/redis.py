@@ -45,11 +45,7 @@ class PickleRedis(Redis):
 
 async def setup_redis_pool():
     pool: PickleRedis = await aioredis.create_redis_pool(
-        config.REDIS_URI,
-        password=config.REDIS_PASSWORD,
-        minsize=5,
-        maxsize=20,
-        commands_factory=PickleRedis,
+        config.REDIS_URI, minsize=5, maxsize=20, commands_factory=PickleRedis,
     )
     for lua_fs in (config.PROJ_ROOT / "app" / "lua").glob("*.lua"):
         with lua_fs.open("r") as f:
@@ -58,3 +54,7 @@ async def setup_redis_pool():
         pool.script_hash[lua_fs.name] = script_hash
 
     return pool
+
+
+async def create_redis_client():
+    return await aioredis.create_redis_pool(config.REDIS_URI)

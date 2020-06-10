@@ -15,5 +15,9 @@ def client():
 
 @pytest.fixture()
 def redis_client():
-    with redis.StrictRedis.from_url(config.REDIS_URI) as redis_client:
+    with redis.Redis(
+        host=config.REDIS_HOST, password=config.REDIS_PASSWORD
+    ) as redis_client:
+        redis_client.flushdb()
         yield redis_client
+        redis_client.flushdb()
