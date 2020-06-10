@@ -54,6 +54,16 @@ repos:
     rev: cd9c2f6e70196bd429d0179635e0fac2d034ac5e  # frozen: 4.3.21-2
     hooks:
       - id: isort
+        args:
+          - --length-sort
+          - --line-width=88
+          - --trailing-comma
+          - --multi-line=3
+          - --project=app
+          - --force-grid-wrap=0
+          - --use-parentheses
+          - -sd=THIRDPARTY
+          - --no-lines-before=LOCALFOLDER
 
   - repo: https://github.com/Trim21/mirrors-autoflake
     rev: b8c878d1121dc5160be52479e8d0790fc116fb6a  # frozen: v1.3.1
@@ -81,4 +91,4 @@ repos:
         entry: flake8
         language: system
         types: [python]
-        args: [--config=setup.cfg]
+        args: [--max-line-length=89, '--ignore=C812,B008,C812,C819,E231', '--exclude=.git,__pycache__,dist,build']

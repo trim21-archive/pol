@@ -11,7 +11,7 @@ async def setup_logger():
     logger = JsonLogger(
         name="pol",
         extra={
-            "@metadata": {"beat": "py_logging", "version": config.COMMIT_REF,},
+            "@metadata": {"beat": "py_logging", "version": config.COMMIT_REF},
             "version": config.COMMIT_REF,
             "platform": platform.platform(),
         },

@@ -40,7 +40,7 @@ PROTOCOL = _config("PROTOCOL", default="http")
 SECRET_KEY = (_config("SECRET_KEY", default=secrets.token_hex(32)))[:32]
 assert len(SECRET_KEY) == 32
 
-TESTING = _config("TESTING", default=False)
+TESTING = _config("TESTING", cast=bool, default=False)
 
 
 class BgmTvAutoTracker:
@@ -50,7 +50,7 @@ class BgmTvAutoTracker:
         f"{PROTOCOL}://{VIRTUAL_HOST}/bgm-tv-auto-tracker" f"/api.v1/oauth_callback"
     )
     oauth_url = "https://bgm.tv/oauth/authorize?" + urlencode(
-        {"client_id": APP_ID, "response_type": "code", "redirect_uri": callback_url,}
+        {"client_id": APP_ID, "response_type": "code", "redirect_uri": callback_url}
     )
 
 

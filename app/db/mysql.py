@@ -4,10 +4,7 @@ from sqlalchemy.orm import sessionmaker
 
 from app.core import config
 
-if config.TESTING:
-    database = Database(config.MYSQL_URI, force_rollback=True)
-else:
-    database = Database(config.MYSQL_URI)
+database = Database(config.MYSQL_URI, force_rollback=config.TESTING)
 
 engine = create_engine(
     str(DatabaseURL(config.MYSQL_URI).replace(dialect="mysql+pymysql"))

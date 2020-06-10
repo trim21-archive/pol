@@ -44,7 +44,7 @@ router = APIRouter()
 
 @router.get(
     "/bgm.tv_auth",
-    description=("如果需要授权, 客户端应该把用户转跳到此地址让用户进行授权\n\n" "会把用户转跳到bgm真正的授权页面"),
+    description="如果需要授权, 客户端应该把用户转跳到此地址让用户进行授权\n\n会把用户转跳到bgm真正的授权页面",
     summary="login with bgm.tv oauth",
     status_code=307,
     response_class=HTMLResponse,
@@ -65,7 +65,7 @@ async def auth_redirect():
     response_description="授权成功时, 会设置cookies. 在对应cookies存在的情况下不需要把返回的`api_key`放在请求头中",
     responses={
         200: res.response(
-            headers={"set-cookies": res.header(str, "会设置cookies, 后续请求会自动通过认证."),},
+            headers={"set-cookies": res.header(str, "会设置cookies, 后续请求会自动通过认证.")},
         ),
         302: res.response(
             cls=ORJSONResponse, description="如果授权不成功, 如服务器返回502等, 会将用户转跳会bgm.tv重新进行授权",
