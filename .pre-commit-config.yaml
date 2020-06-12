@@ -34,7 +34,7 @@ repos:
       - id: find-trailing-comma
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: 4656fbe8173b927bc215d09db1af0ef739741ad0  # frozen: v2.5.0
+    rev: 7187ad61625472088070201708bf5d71d3552fb1  # frozen: v2.6.1
     hooks:
       - id: pyupgrade
         args: [--py37-plus]
@@ -51,7 +51,7 @@ repos:
       - id: poetry-check-lock
 
   - repo: https://github.com/timothycrosley/isort
-    rev: cd9c2f6e70196bd429d0179635e0fac2d034ac5e  # frozen: 4.3.21-2
+    rev: 7c29dd9d55161704cfc45998c6f5c2c43d39264b  # frozen: 4.3.21
     hooks:
       - id: isort
         args:
