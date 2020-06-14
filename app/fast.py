@@ -18,12 +18,7 @@ from app.api.api_v1.api import api_router
 from app.middlewares.http import setup_http_middleware
 from app.middlewares.sentry import setup_sentry
 
-template = f"""出于兴趣写的一些api，源码见[GitHub](https://github.com/Trim21/pol)
-
-当前版本[{config.COMMIT_REF}](https://github.com/Trim21/pol/tree/{config.COMMIT_REF})
-
-[其他说明](https://github.com/Trim21/pol/tree/{config.COMMIT_REF}/docs)
-"""
+template = "[说明](https://github.com/Trim21/pol/blob/master/docs/readme.md)"
 
 app = FastAPI(
     debug=config.DEBUG,
@@ -32,7 +27,7 @@ app = FastAPI(
     docs_url=None,
     redoc_url=None,
     swagger_ui_oauth2_redirect_url=None,
-    openapi_url="/openapi.json",
+    openapi_url=None,
     description=template,
     default_response_class=ORJSONResponse,
 )
@@ -73,40 +68,41 @@ async def shutdown():
     await app.state.client_session.close()
 
 
+@app.get("/openapi.json", include_in_schema=False)
+async def openapi():
+    return app.openapi()
+
+
 @app.get("/", response_class=HTMLResponse, include_in_schema=False)
 async def doc():
-    return """
-    <!DOCTYPE html>
-    <html lang=zh-cmn-Hans>
-    <head>
-    <link type="text/css" rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui.css">
-    <link rel="shortcut icon" href="https://blog.trim21.cn/favicon.ico">
-    <title>Pol server - Swagger UI</title>
-    </head>
-    <body>
-    <div id="swagger-ui"></div>
-    <hr>
-    <div class='wrapper'' style='text-align: center'>
-        <a href="http://beian.miit.gov.cn/">鲁ICP备16017566号-1</a>
-    </div>
-    <script
-        src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui-bundle.js">
-    </script>
-    <!-- `SwaggerUIBundle` is now available on the page -->
-    <script>
-    const ui = SwaggerUIBundle({
-        url: '/openapi.json',
-
-        dom_id: '#swagger-ui',
-        presets: [
+    return """<!DOCTYPE html>
+<html lang=zh-cmn-Hans>
+<head>
+<link type="text/css" rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui.css">
+<link rel="shortcut icon" href="https://blog.trim21.cn/favicon.ico">
+<title>Pol server - Swagger UI</title>
+</head>
+<body>
+<div id="swagger-ui"></div>
+<hr>
+<div class='wrapper'' style='text-align: center'>
+    <a href="http://beian.miit.gov.cn/">鲁ICP备16017566号-1</a>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui-bundle.js">
+</script>
+<script>
+const ui = SwaggerUIBundle({
+    url: '/openapi.json',
+    dom_id: '#swagger-ui',
+    presets: [
         SwaggerUIBundle.presets.apis,
         SwaggerUIBundle.SwaggerUIStandalonePreset
-        ],
-        layout: "BaseLayout",
-        deepLinking: true
-    })
-    </script>
-    </body>
-    </html>
-    """
+    ],
+    layout: "BaseLayout",
+    deepLinking: true
+})
+</script>
+</body>
+</html>
+"""
