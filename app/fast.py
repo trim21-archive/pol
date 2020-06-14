@@ -82,6 +82,11 @@ async def doc():
     href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui.css">
 <link rel="shortcut icon" href="https://blog.trim21.cn/favicon.ico">
 <title>Pol server - Swagger UI</title>
+<style>
+    a {
+        text-decoration: none
+    }
+</style>
 </head>
 <body>
 <div id="swagger-ui"></div>
