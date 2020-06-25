@@ -34,7 +34,7 @@ repos:
       - id: find-trailing-comma
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: 7187ad61625472088070201708bf5d71d3552fb1  # frozen: v2.6.1
+    rev: b6c20d14667c568c92a4e4ea1e0329743f371a2c  # frozen: v2.6.2
     hooks:
       - id: pyupgrade
         args: [--py37-plus]
