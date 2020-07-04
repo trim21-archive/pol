@@ -206,9 +206,10 @@ __all__ = [
     "UserToken",
 ]
 if __name__ == "__main__":
-    from app.core import config
-    from sqlalchemy import create_engine
     from databases import DatabaseURL
+    from sqlalchemy import create_engine
+
+    from app.core import config
 
     engine = create_engine(
         str(DatabaseURL(config.MYSQL_URI).replace(dialect="mysql+pymysql"))

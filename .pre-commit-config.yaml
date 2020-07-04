@@ -51,7 +51,7 @@ repos:
       - id: poetry-check-lock
 
   - repo: https://github.com/timothycrosley/isort
-    rev: 7c29dd9d55161704cfc45998c6f5c2c43d39264b  # frozen: 4.3.21
+    rev: 5325832ef78a98e4a6445a0a68a2d4cdf93d5f5b  # frozen: 5.0.2
     hooks:
       - id: isort
         args:
@@ -62,7 +62,7 @@ repos:
           - --project=app
           - --force-grid-wrap=0
           - --use-parentheses
-          - -sd=THIRDPARTY
+          - --sd=THIRDPARTY
           - --no-lines-before=LOCALFOLDER
 
   - repo: https://github.com/Trim21/mirrors-autoflake
