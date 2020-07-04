@@ -1,10 +1,10 @@
 from fastapi import Header
 from aioresponses import aioresponses
 from starlette.testclient import TestClient
-from tests.mock_aiohttp.app import mock_bgm_auth_app
 
 from app.db_models import sa
 from app.api.auth.api_v1 import OAUTH_URL, get_current_user
+from tests.mock_aiohttp.app import mock_bgm_auth_app
 
 
 def test_oauth_redirect(client: TestClient):
