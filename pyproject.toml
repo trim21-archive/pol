@@ -20,7 +20,7 @@ pydantic = "1.5.1"
 python-dateutil = "2.8.1"
 python-multipart = "0.0.5"
 pytz = "2020.1"
-sentry-sdk = "==0.15.1"
+sentry-sdk = "==0.16.0"
 uvicorn = "0.11.5"
 beautifulsoup4 = "==4.9.1"
 requests = "==2.24.0"
@@ -29,7 +29,7 @@ databases = { version = "0.3.2", extras = ["mysql"] }
 alembic = "1.4.2"
 aiomysql = '0.0.20'
 aiologger = "0.5.0"
-orjson = "==3.1.2"
+orjson = "==3.2.1"
 
 [tool.poetry.dev-dependencies]
 # tests
