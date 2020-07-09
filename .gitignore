@@ -12,3 +12,4 @@ a.html
 docs/build
 docs/source/openapi.json
 *.egg-info
+.venv
