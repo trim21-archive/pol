@@ -1,4 +1,4 @@
-from typing import Any, Type
+from typing import Any, Dict, Type
 
 import orjson
 from starlette.responses import Response, JSONResponse
@@ -18,10 +18,9 @@ class ORJSONResponse(JSONResponse):
 def response(
     model: Type = None, description: str = None, headers=None, cls: Type = None
 ):
-    if model is None:
-        d = {}
-    else:
-        d = {"model": model}
+    d: Dict[str, Any] = {}
+    if model is not None:
+        d["model"] = model
     if description:
         d["description"] = description
     if headers is not None:
@@ -32,7 +31,7 @@ def response(
 
 
 def header(t: Type = None, description: str = ""):
-    d = {}
+    d: Dict[str, Any] = {}
     if t is not None:
         d = {"schema": {"type": _type_map(t)}}
     if description:

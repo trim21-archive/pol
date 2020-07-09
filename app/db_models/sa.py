@@ -27,7 +27,7 @@ class ORMMixin:
         return d
 
 
-Base = declarative_base()
+Base: sqlalchemy.ext.declarative.api.DeclarativeMeta = declarative_base()
 metadata = Base.metadata
 
 
