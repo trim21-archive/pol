@@ -91,4 +91,7 @@ repos:
         entry: flake8
         language: system
         types: [python]
-        args: [--max-line-length=89, '--ignore=C812,B008,C812,C819,E231', '--exclude=.git,__pycache__,dist,build']
+        args:
+          - --max-line-length=89
+          - --ignore=C812,B008,C812,C819,E231
+          - --exclude=.git,__pycache__,dist,build
