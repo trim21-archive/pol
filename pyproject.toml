@@ -32,7 +32,9 @@ aiologger = "0.5.0"
 orjson = "==3.2.1"
 
 [tool.poetry.dev-dependencies]
+redis = "==3.5.3"
 # tests
+coverage = "^5.1"
 pytest = "==5.4.3"
 pytest-asyncio = "==0.14.0"
 asynctest = "0.13.0"
@@ -46,11 +48,12 @@ flake8-bugbear = "20.1.4"
 flake8-commas = "2.0.0"
 flake8-mutable = "1.2.0"
 flake8-broken-line = "==0.2.1"
-mypy = "==0.782"
-black = "19.10b0"
-coverage = "^5.1"
-redis = "==3.5.3"
 flake8-pytest-style = "==1.2.1"
+mypy = "==0.782"
 
 [tool.coverage.report]
-exclude_lines = ['pragma: no cover', 'if TYPE_CHECKING:', 'if __name__ == "__main__":']
+exclude_lines = [
+  'pragma: no cover',
+  'if TYPE_CHECKING:',
+  'if __name__ == "__main__":'
+]

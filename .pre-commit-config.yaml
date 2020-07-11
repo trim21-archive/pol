@@ -75,16 +75,13 @@ repos:
           - --remove-all-unused-imports
           - --expand-star-imports
 
-  - repo: local
+  - repo: https://github.com/psf/black
+    rev: 6bedb5c58a7d8c25aa9509f8217bc24e9797e90d  # frozen: 19.10b0
     hooks:
       - id: black
-        name: black
-        entry: black
-        language: python
-        language_version: python3
-        require_serial: true
-        types: [python]
 
+  - repo: local
+    hooks:
       - id: flake8
         name: flake8
         entry: flake8
