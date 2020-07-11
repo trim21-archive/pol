@@ -65,11 +65,10 @@ repos:
           - --sd=THIRDPARTY
           - --no-lines-before=LOCALFOLDER
 
-  - repo: https://github.com/Trim21/mirrors-autoflake
-    rev: b8c878d1121dc5160be52479e8d0790fc116fb6a  # frozen: v1.3.1
+  - repo: https://github.com/myint/autoflake
+    rev: b330072a26bb13aea8843f8083cee5332d71f78f
     hooks:
       - id: autoflake
-        require_serial: true
         args:
           - --in-place
           - --remove-unused-variables
