@@ -77,6 +77,7 @@ class Ep(Base, ORMMixin):
     subject_id = Column(INTEGER(11), nullable=False, index=True)
     name = Column(String(400), nullable=False)
     episode = Column(String(255), nullable=False)
+    air_time = Column(DateTime)
 
 
 class EpBilibili(Base, ORMMixin):
