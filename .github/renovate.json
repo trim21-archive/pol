@@ -3,13 +3,27 @@
     "@trim21",
     "@trim21:monthly",
     "@trim21:poetry",
-    "@trim21:app"
+    "@trim21:app",
+    "docker:pinDigests"
   ],
   "separateMajorMinor": false,
   "separateMinorPatch": false,
   "enabledManagers": [
     "poetry",
+    "dockerfile",
     "regex"
+  ],
+  "packageRules": [
+    {
+      "datasources": [
+        "docker"
+      ],
+      "updateTypes": [
+        "major",
+        "minor"
+      ],
+      "enabled": false
+    }
   ],
   "regexManagers": [
     {
