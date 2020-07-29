@@ -9,7 +9,20 @@
   "separateMinorPatch": false,
   "enabledManagers": [
     "poetry",
+    "dockerfile",
     "regex"
+  ],
+  "packageRules": [
+    {
+      "managers": [
+        "dockerfile"
+      ],
+      "updateTypes": [
+        "pin",
+        "patch",
+        "digest"
+      ]
+    }
   ],
   "regexManagers": [
     {
