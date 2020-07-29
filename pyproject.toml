@@ -35,7 +35,7 @@ orjson = "==3.2.2"
 redis = "==3.5.3"
 # tests
 coverage = "5.2.1"
-pytest = "==5.4.3"
+pytest = "==6.0.0"
 pytest-asyncio = "==0.14.0"
 asynctest = "0.13.0"
 pytest-rerunfailures = "9.0"
@@ -48,7 +48,7 @@ flake8-bugbear = "20.1.4"
 flake8-commas = "2.0.0"
 flake8-mutable = "1.2.0"
 flake8-broken-line = "==0.2.1"
-flake8-pytest-style = "==1.2.1"
+flake8-pytest-style = "==1.2.2"
 mypy = "==0.782"
 
 [tool.coverage.report]
@@ -57,3 +57,7 @@ exclude_lines = [
   'if TYPE_CHECKING:',
   'if __name__ == "__main__":'
 ]
+
+[tool.pytest.ini_options]
+addopts = '-ra -q --reruns-delay 1'
+junit_family = 'legacy'
