@@ -57,3 +57,7 @@ exclude_lines = [
   'if TYPE_CHECKING:',
   'if __name__ == "__main__":'
 ]
+
+[tool.pytest.ini_options]
+addopts = '-ra -q --reruns-delay 1'
+junit_family = 'legacy'
