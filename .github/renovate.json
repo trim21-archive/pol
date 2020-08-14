@@ -9,6 +9,7 @@
   "separateMinorPatch": false,
   "enabledManagers": [
     "poetry",
+    "github-actions",
     "regex"
   ],
   "regexManagers": [
