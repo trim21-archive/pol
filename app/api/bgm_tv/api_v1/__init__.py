@@ -42,9 +42,12 @@ async def search_by_tag(
     else:
         where = sa.Subject.locked == 0
 
-    query: Select = Select([sa.Subject], whereclause=where).order_by(
-        sa.Subject.id
-    ).limit(limit).offset(offset)
+    query: Select = (
+        Select([sa.Subject], whereclause=where)
+        .order_by(sa.Subject.id)
+        .limit(limit)
+        .offset(offset)
+    )
 
     for i, t in enumerate(tag):
         alias = aliased(sa.Tag, name=f"table_tag_{i}")

@@ -40,7 +40,8 @@ def setup_http_middleware(app: FastAPI):
                     "x-request-id": request.headers.get("x-request-id", ""),
                     "event": "http.exception",
                     "exception": "{}.{}".format(
-                        getattr(exc, "__module__", "builtin"), exc.__class__.__name__,
+                        getattr(exc, "__module__", "builtin"),
+                        exc.__class__.__name__,
                     ),
                 },
             )

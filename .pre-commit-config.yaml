@@ -1,11 +1,11 @@
 repos:
   - repo: https://github.com/Trim21/pre-commit-hooks
-    rev: c37e29c1e823c5ce25cac879a0aa7fd63d387c25  # frozen: v0.0.1
+    rev: 62dc921d5be199dd91853cdbe5be3e776f44ab4b  # frozen: v0.0.2
     hooks:
       - id: yamlfmt
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: ebc15addedad713c86ef18ae9632c88e187dd0af  # frozen: v3.1.0
+    rev: e1668fe86af3810fbca72b8653fe478e66a0afdc  # frozen: v3.2.0
     hooks:
       - id: check-case-conflict
       - id: check-ast
@@ -40,7 +40,7 @@ repos:
         args: [--py37-plus]
 
   - repo: https://github.com/PyCQA/doc8
-    rev: 0ef8e5665926edac4f9f86a98891b963c33a702a  # frozen: 0.8.1rc3
+    rev: 1fc3c214b267d57188658c17b60cfed0752deb2f  # frozen: 0.9.0a1
     hooks:
       - id: doc8
         args: [--max-line-length, '88', --file-encoding, utf-8]
@@ -51,7 +51,7 @@ repos:
       - id: poetry-check-lock
 
   - repo: https://github.com/timothycrosley/isort
-    rev: 05baa33ff0fbaaa6a4c3d19523975a9d1b7c91f0  # frozen: 5.2.0
+    rev: 6a3cc7646d8f54ba0d1b90958e4107bfb1b31e76  # frozen: 5.5.1
     hooks:
       - id: isort
         args:
@@ -66,7 +66,7 @@ repos:
           - --no-lines-before=LOCALFOLDER
 
   - repo: https://github.com/myint/autoflake
-    rev: b330072a26bb13aea8843f8083cee5332d71f78f
+    rev: 7a53fdafc82c33f446915b60fcac947c51279260  # frozen: v1.4
     hooks:
       - id: autoflake
         args:
@@ -76,7 +76,7 @@ repos:
           - --expand-star-imports
 
   - repo: https://github.com/psf/black
-    rev: 6bedb5c58a7d8c25aa9509f8217bc24e9797e90d  # frozen: 19.10b0
+    rev: e66be67b9b6811913470f70c28b4d50f94d05b22  # frozen: 20.8b1
     hooks:
       - id: black
 

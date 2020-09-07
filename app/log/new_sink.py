@@ -9,7 +9,11 @@ from app.core import config
 
 class RedisHandler(Handler):
     def __init__(
-        self, redis_client, key=f"{config.APP_NAME}-log", *args, **kwargs,
+        self,
+        redis_client,
+        key=f"{config.APP_NAME}-log",
+        *args,
+        **kwargs,
     ):
         super().__init__(*args, **kwargs)
         self.key = key

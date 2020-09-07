@@ -68,7 +68,8 @@ async def auth_redirect():
             headers={"set-cookies": res.header(str, "会设置cookies, 后续请求会自动通过认证.")},
         ),
         302: res.response(
-            cls=ORJSONResponse, description="如果授权不成功, 如服务器返回502等, 会将用户转跳会bgm.tv重新进行授权",
+            cls=ORJSONResponse,
+            description="如果授权不成功, 如服务器返回502等, 会将用户转跳会bgm.tv重新进行授权",
         ),
         503: res.response(
             model=ErrorDetail, description="bgm.tv unreachable", cls=ORJSONResponse
@@ -235,7 +236,9 @@ class Me(AuthResponse, RefreshResponse):
 
 
 @router.get(
-    "/me", response_model=Me, include_in_schema=config.DEBUG,
+    "/me",
+    response_model=Me,
+    include_in_schema=config.DEBUG,
 )
 async def get_my_user_info(user: sa.UserToken = Depends(get_current_user)):
     return user.dict()
