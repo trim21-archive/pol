@@ -18,7 +18,9 @@ async def new_session(user_id: int, redis: PickleRedis) -> SessionValue:
     token = generator_session_id(user_id)
     session = SessionValue(api_key=token, user_id=user_id)
     await redis.set(
-        KEY_PREFIX + token, session, expire=DEFAULT_TIMEOUT,
+        KEY_PREFIX + token,
+        session,
+        expire=DEFAULT_TIMEOUT,
     )
     return session
 

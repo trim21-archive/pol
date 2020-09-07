@@ -18,7 +18,8 @@ async def setup_logger():
     )
 
     h = RedisHandler(
-        redis_client=await create_redis_client(), key=f"{config.APP_NAME}-log",
+        redis_client=await create_redis_client(),
+        key=f"{config.APP_NAME}-log",
     )
     logger.add_handler(h)
 

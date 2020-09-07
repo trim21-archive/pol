@@ -37,7 +37,8 @@ async def get_api_key(
 
 
 async def get_session(
-    token: str = Depends(get_api_key), redis: PickleRedis = Depends(get_redis),
+    token: str = Depends(get_api_key),
+    redis: PickleRedis = Depends(get_redis),
 ) -> SessionValue:
     token = token
     key = KEY_PREFIX + token
@@ -48,7 +49,8 @@ async def get_session(
 
 
 async def get_current_user(
-    session: SessionValue = Depends(get_session), db: Database = Depends(get_db),
+    session: SessionValue = Depends(get_session),
+    db: Database = Depends(get_db),
 ):
     r = await db.fetch_one(
         sa.select([sa.UserToken]).where(sa.UserToken.user_id == session.user_id)

@@ -6,9 +6,15 @@ from app.curd import subject
 from app.db_models import sa
 
 
-async def get_by_subject_id(db: Database, subject_id: int,) -> Tuple[list, list]:
+async def get_by_subject_id(
+    db: Database,
+    subject_id: int,
+) -> Tuple[list, list]:
     s = await subject.get(
-        db, sa.Subject.id == subject_id, sa.Subject.locked == 0, sa.Subject.map != 0,
+        db,
+        sa.Subject.id == subject_id,
+        sa.Subject.locked == 0,
+        sa.Subject.map != 0,
     )
 
     nodes = [
