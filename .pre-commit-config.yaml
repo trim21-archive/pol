@@ -46,12 +46,12 @@ repos:
         args: [--max-line-length, '88', --file-encoding, utf-8]
 
   - repo: https://github.com/Trim21/poetry-check-lock
-    rev: 63621580c70f106fd07748c262b6e08fef886ecc  # frozen: v0.0.3
+    rev: 85c22f5c571ebc5ba8c935ae5aeb20ec0a9a3add  # frozen: v0.0.4
     hooks:
       - id: poetry-check-lock
 
   - repo: https://github.com/timothycrosley/isort
-    rev: 6a3cc7646d8f54ba0d1b90958e4107bfb1b31e76  # frozen: 5.5.1
+    rev: 2e02c195afdb499be9068ca0d08c9d7d45912d4d  # frozen: 5.5.4
     hooks:
       - id: isort
         args:
